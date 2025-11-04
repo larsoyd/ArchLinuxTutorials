@@ -205,7 +205,7 @@ EOF
 # essential stuff to have.
 yay -S --needed --noconfirm informant \
 gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly \
-systemd-timer-notify rebuild-detector \
+systemd-timer-notify rebuild-detector aurutils \
 python-pip kdeconnect journalctl-desktop-notification
 
 # add yourself to group informant
