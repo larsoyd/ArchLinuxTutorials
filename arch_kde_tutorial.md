@@ -414,12 +414,12 @@ Here's why I included those:
 ### pkgstats 
 pkstats is a super harmless way to help out the Arch developers that work hard and mostly for free to make our wonderful distro.
 It basically just advertises a list of your core and extra packages that you use to them  so they can know what packages to 
-prioritize and other things. 
+prioritize in testing and for other things. If you are extremely paranoid then you can leave it out.
 
 ### kitty 
 kitty is a terminal that I think is the best sort of default terminal on Linux. It's easy to use, GPU accelerated, fast enough and hassle free.
 It allows you to zoom in by pressing `CTRL + SHIFT and +` and zoom out by `CTRL + SHIFT and -` It doesn't look terrible like some terminals do.
-konsole is included as a backup.
+konsole is included as a backup. If you want to use another terminal as your main, replace it.
 
 ---
 
