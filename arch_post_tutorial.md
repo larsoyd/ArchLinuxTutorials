@@ -127,7 +127,7 @@ Edit `/etc/pacman.conf`:
 # Color adds color (duh),
 # ILoveCandy is a fun setting that adds animations to when you update pacman. 
 Color                      # uncomment
-ILoveCandy                 # add under Color
+ILoveCandy                 # write this manually under Color
 ```
 
 ### Enable syntax highlighting in nano
