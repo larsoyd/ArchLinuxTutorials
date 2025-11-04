@@ -172,7 +172,7 @@ rfkill list
 rfkill unblock all         # if you see "Soft blocked: yes" for wlan      (safe to run always)
 
 # Discover your wireless device name (often "wlan0" on ISO)
-iwctl device list          # copies device name from first column
+iwctl device list          
 
 # Scan & connect (replace SSID if your AP name has spaces keep the quotes)
 iwctl station "YOUR-DEV" scan
