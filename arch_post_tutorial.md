@@ -44,7 +44,9 @@ sudo pacman -S --needed base-devel git  # when you run pacman with the --needed 
 
 ### DISCLAIMER FOR THE AUR:
 
-**NOTE:** Before installing anything from the AUR, **read the PKGBUILD first.**
+**NOTE:** Before installing anything other than what is in this tutorial from the AUR, 
+**read the PKGBUILD first.**
+
 ```md
 To do so with `neofetch` for example, go to:
 https://aur.archlinux.org/packages/neofetch
