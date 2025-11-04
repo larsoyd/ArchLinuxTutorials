@@ -636,15 +636,6 @@ mkinitcpio -P
 #### Configure bootloader
 
 ```bash
-# 1) Show where the ESP is mounted (edit ESP/loader/loader.conf there)
-bootctl --print-esp-path
-
-# 2) Show $BOOT (XBOOTLDR if present, else ESP) — where entries/UKIs should go
-bootctl -x
-
-# 3) Confirm systemd-boot sees your UKIs
-bootctl list | sed -n '1,120p'
-
 # write the loader
 nano /efi/loader/loader.conf
 
