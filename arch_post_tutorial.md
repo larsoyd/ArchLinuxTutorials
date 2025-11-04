@@ -185,6 +185,8 @@ sudo true
 ### Persist configure X11 keymap for non U.S keyboards
 
 ```bash
+sudo mkdir -p /etc/X11/xorg.conf.d
+
 # even if you dont use x11 it's good to set this just in case
 # ignore if you dont use a weird keyboard (non US one = weird)
 cat << EOF > /etc/X11/xorg.conf.d/00-keyboard.conf
