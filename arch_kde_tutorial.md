@@ -657,22 +657,13 @@ editor no
 ### 4.9 Create swap file & Configure Zswap
 
 ```bash
-# Create a 16 GiB zero-filled file to serve as swap’s backing store.
-#   if=/dev/zero   -> read zero bytes
-#   of=/swapfile   -> write to /swapfile
-#   bs=1G          -> use 1 GiB block size
-#   count=16       -> write 16 blocks (≈16 GiB total)
-#   status=progress-> show running progress
-dd if=/dev/zero of=/swapfile bs=1G count=16 status=progress
-
-# Lock down permissions so only root can read/write it.
-# Swap files must not be world-readable for security.
-chmod 600 /swapfile
-
-# Initialize the file’s swap area metadata (creates the swap header).
-# Doesn’t enable it yet; it just marks the file as swap.
-mkswap /swapfile
+# Create a 16 GiB swap file and initialize it in one step.
+#   --size 16G   -> allocate a 16 GiB file
+#   --file       -> create the file with correct mode and real blocks
+#   -U clear     -> clear any existing UUID in the header
+mkswap -U clear --size 16G --file /swapfile
 ```
+
 edit:
 ```bash
 nano /etc/systemd/system/swapfile.swap
