@@ -42,6 +42,15 @@ sudo pacman -S --needed base-devel git  # when you run pacman with the --needed 
                                         # any package that is already on the system. Try it.
 ```
 
+
+**NOTE:** Before installing anything from the AUR, **read the PKGBUILD first.**
+To do so with `neofetch` for example, go to:
+https://aur.archlinux.org/packages/neofetch
+and click on the hyperlink that says "PKGBUILD"
+
+LLMs can help in parsing them if you are new, but *try* to learn how to read them without it.
+What you are looking out for are malicious links or anything else out of the ordinary.
+
 ### 2.2 Build and install yay
 ```bash
 cd /tmp                                      # go to the temporary directory
@@ -53,14 +62,6 @@ cd ~ && rm -rf /tmp/yay                      # go home, remove the temporary bui
 yay --version  # quick test | NOTE: Whenever you run any 'yay' command, do not use 'sudo' before it.
 yay -S --needed --noconfirm fastfetch   # The --noconfirm flag makes it auto confirms the endless
                                         # questions if you want to install something or not.
-
-# NOTE: Before installing anything from the AUR, read the PKGBUILD first.
-# To do so with `neofetch` for example, go to:
-# https://aur.archlinux.org/packages/neofetch
-# and click the link that says "PKGBUILD"
-#
-# LLMs can help in parsing them if you are new, but try to learn how to read them
-# What you are looking out for are malicious links or anything else out of the ordinary.
 ```
 
 ### 2.5 Shell and terminal bliss
