@@ -237,8 +237,8 @@ systemd-repart --definitions=/tmp/repart.d --empty=force "$d"
 systemd-repart --definitions=/tmp/repart.d --dry-run=no --empty=force "$d"
 
 # Optional: If you want `fast_commit` enabled you run this command.
-ext4 has a faster journaling system called fast_commit
-It supposedly according to the Arch wiki improves performance:
+# ext4 has a faster journaling system called fast_commit
+# It supposedly according to the Arch wiki improves performance:
 SYSTEMD_REPART_MKFS_OPTIONS_EXT4='-O fast_commit' \
   systemd-repart --definitions=/tmp/repart.d --dry-run=no --empty=force "$d"
 
