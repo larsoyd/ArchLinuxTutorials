@@ -42,9 +42,10 @@ sudo pacman -S --needed base-devel git  # when you run pacman with the --needed 
                                         # any package that is already on the system. Try it.
 ```
 
-### DISCLAIMER FOR THE AUR
-```md
+### DISCLAIMER FOR THE AUR:
+
 **NOTE:** Before installing anything from the AUR, **read the PKGBUILD first.**
+```md
 To do so with `neofetch` for example, go to:
 https://aur.archlinux.org/packages/neofetch
 and click on the hyperlink that says "PKGBUILD"
