@@ -402,6 +402,22 @@ yay -S --needed --noconfirm steam lib32-gst-plugins-base lib32-gst-plugins-good
 steam
 ```
 
+### 4.2.6 plocate - Quickly find any file or folder on your Arch Linux system
+```bash
+# To quickly learn how to find steamapps for example without googling you can use plocate
+# It's the fastest way to find any file or folder on your system, first install plocate:
+sudo pacman -S plocate
+
+# Then build the database:
+sudo updatedb
+
+# And finally write a command like so to find steamapps for example:
+locate -b '\steamapps'   # instant results
+
+# You may also want to enable the daily systemd timer to update the database automatically:
+sudo systemctl start --now plocate-updatedb.timer
+```
+
 ---
 
 ## 5 · Maintenance hooks
