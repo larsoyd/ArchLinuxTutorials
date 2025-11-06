@@ -268,9 +268,9 @@ dumpe2fs -h /dev/disk/by-label/root | grep -i 'Fast commit length'
 # Mount root first
 mount /dev/disk/by-label/root /mnt
 
-# Create and mount EFI directory
+# Create and mount EFI directory with strict masks
 mkdir -p /mnt/efi
-mount /dev/disk/by-label/EFI /mnt/efi
+mount -o fmask=0177,dmask=0077,noexec,nodev,nosuid /dev/disk/by-label/EFI /mnt/efi
 ```
 
 ## Step 3: Base System Install
