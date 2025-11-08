@@ -154,10 +154,12 @@ mkdir -p ~/.config/nano
 yay -S --needed --noconfirm nano-syntax-highlighting
 
 # enable all bundled syntaxes
+# paste into terminal with CTRL + SHIFT + V:
 printf 'include "/usr/share/nano/*.nanorc"\ninclude "/usr/share/nano/extra/*.nanorc"\n' >> ~/.config/nano/nanorc
 echo 'include "/usr/share/nano-syntax-highlighting/*.nanorc"' >> ~/.config/nano/nanorc
 
 # enable it system wide
+# paste into terminal with CTRL + SHIFT + V:
 sudo tee -a /etc/nanorc >/dev/null <<'EOF'
 include "/usr/share/nano/*.nanorc"
 include "/usr/share/nano/extra/*.nanorc"
@@ -205,18 +207,15 @@ sudo mkdir -p /etc/X11/xorg.conf.d
 
 # even if you dont use x11 it's good to set this just in case
 # ignore if you dont use a weird keyboard (non US one = weird)
-sudo EDITOR=/usr/bin/nano visudo -f /etc/X11/xorg.conf.d/00-keyboard.conf
-```
-
-Add:
-
-```bash
+# paste into terminal with CTRL + SHIFT + V:
+sudo tee /etc/X11/xorg.conf.d/00-keyboard.conf >/dev/null <<'EOF'
 Section "InputClass"
     Identifier "system-keyboard"
     MatchIsKeyboard "on"
     Option "XkbLayout" "no"
     Option "XkbModel" "pc105"
 EndSection
+EOF
 ```
 ### Install Basic packages:
 
