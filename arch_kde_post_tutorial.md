@@ -147,7 +147,10 @@ ILoveCandy                 # write this manually under Color
 
 ### Enable syntax highlighting in nano
 ```bash
-# create your nano config if it does not exist
+# This command `mkdir -p` is essentially, "if it doesnt exist, create it + w/ the subfolder"
+# If it already exists it will skip the action, it doesn't overwrite the folder that's there
+# This is a good way to prevent issues where you try to make a file in a folder that dont exist.
+#
 mkdir -p ~/.config/nano
 
 # package with enhanced rules
