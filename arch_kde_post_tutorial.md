@@ -199,9 +199,12 @@ Defaults pwfeedback
 sudo -k
 sudo true
 ```
-### Persist configure X11 keymap for non U.S keyboards
+### Persist configure X11 keymap for non-normative U.S keyboards
 
 ```bash
+# If you are using a non-normative U.S keyboard like me,
+# it's worth setting the default keymap for X11 sessions.
+#
 # If it doesn't exist, create directory
 sudo mkdir -p /etc/X11/xorg.conf.d
 
