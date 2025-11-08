@@ -242,7 +242,13 @@ yay -S --needed --noconfirm firefox
 yay -S --needed --noconfirm chromium   # example of "anything else"
 ```
 
-### Configuring Firefox:
+### Fixing Firefox:
+
+These optional knobs are only if the GDK portal we set up in the install itself didn't work.
+Sometimes after install Firefox looks odd, some buttons are off and incorrect. 
+The technical reason is a bit out of scope for this tutorial, but essentially it thinks that it is
+in another desktop environment. Portals are supposed to fix that, but if they don't you can try these
+fixes:
 
 #### (Optional) - Force Firefox to use Dolphin
 ```bash
@@ -261,6 +267,8 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'icon:minimize,maxi
 # If that still doesn't work, then try:
 yay -S --needed --noconfirm xdg-desktop-portal-gtk
 ```
+
+### Configuring Firefox:
 
 #### Make Firefox follow your KDE default apps via mimeapps.list on Arch.
 ```bash
