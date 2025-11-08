@@ -537,8 +537,6 @@ Save and then run: `source ~/.zshrc`
 ytdla downloads audio, ytdlv downloads video and places them in appropriate folders with names.
 You simply write either of these and a link. 
 
----
-
 Here is a script I made that makes clipping videos easier.
 
 ```bash
