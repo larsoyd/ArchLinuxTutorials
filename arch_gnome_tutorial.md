@@ -481,7 +481,8 @@ pacman -S --needed \
   gnome-browser-connector gnome-themes-extra \
   firefox gst-plugins-bad gst-plugins-base gst-plugins-espeak gst-plugins-good gst-plugins-ugly \
   gufw hunspell hunspell-en_us quota-tools dconf-editor \
-  noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols \
+  noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font ttf-dejavu ttf-liberation \
+  ttf-nerd-fonts-symbols \
   pacman-contrib git wget \
   base-devel
 ```
