@@ -439,15 +439,14 @@ sudo systemctl start --now plocate-updatedb.timer
 # these hooks are great for system maintenance
 #
 # pacdiff shows you if any .pacnew is on your system needed to merge
-# reflector will run reflector any time mirrorlist updates
-# paccache-hook is the GOAT. it cleans your cache after using pacman.
-# systemd-boot-pacman-hook needed to update systemd boot for you if you don't got the timer
 #
+# reflector will run reflector any time mirrorlist updates
+#
+# paccache-hook is the GOAT. it cleans your cache after using pacman.
 yay -S --needed --noconfirm \
   pacdiff-pacman-hook-git \
   reflector-pacman-hook-git \
-  paccache-hook \
-  systemd-boot-pacman-hook
+  paccache-hook
 ```
 
 ### Install & Enable Nohang:
