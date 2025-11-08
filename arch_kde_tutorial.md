@@ -771,7 +771,7 @@ shutdown now
 ---
 
 # 1) OPTIONAL: Post-Install Tutorial
-Head to `arch_post_tutorial.md` to do the post-install tutorial.
+Head to `arch_kde_post_tutorial.md` to do the post-install tutorial.
 
 ---
 
