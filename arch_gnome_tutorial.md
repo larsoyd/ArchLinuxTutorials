@@ -657,21 +657,6 @@ vm.watermark_scale_factor = 125
 sysctl --system
 ```
 
-#### Force GTK to use Portals
-```bash
-# This is important for file pickers etc
-# Sometimes programs insist on using the wrong one
-# instead of Dolphin (Your File Manager)
-#
-mkdir -p /etc/environment.d
-nano /etc/environment.d/99-portal.conf 
-```
-```ini
-# 99-portal.conf 
-GTK_USE_PORTAL=1
-GDK_DEBUG=portals
-```
-
 ### 4.10 Enable Essential Services
 
 ```bash
