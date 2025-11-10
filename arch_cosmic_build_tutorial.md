@@ -715,7 +715,7 @@ sysctl --system
 # Enable network, display manager, and timesyncd
 # Include cups.service if you are using printer
 # Include bluetooth.service for Bluetooth if you installed bluez and bluez-utils
-systemctl enable NetworkManager gdm.service systemd-timesyncd systemd-boot-update.service \
+systemctl enable NetworkManager cosmic-greeter.service systemd-timesyncd systemd-boot-update.service \
 fstrim.timer reflector.timer pkgstats.timer
 ```
 
