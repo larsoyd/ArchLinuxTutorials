@@ -470,7 +470,7 @@ pacman -Syu
 
 ```bash
 pacman -S --needed \
-  networkmanager reflector pkgstats rustup mold sccache clang pkgconf cmake ninja \
+  networkmanager reflector pkgstats rustup mold sccache clang cmake ninja \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   kitty linux-zen-headers linux-lts-headers \
   nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda \
