@@ -485,16 +485,25 @@ pacman -S --needed \
 ```
 
 ```bash
-# Log in to the account
+# Switch to your regular user with a login shell
+# - '-' loads the user's login environment (.zprofile, etc.)
+# - Needed because you will build as the unprivileged user, not root
 su - lars
 ```
 
 ```bash
+# Install and select the stable Rust toolchain for this user
+# - 'rustup install stable' downloads the stable channel
+# - 'rustup default stable' sets it as the active default toolchain
 rustup install stable
 rustup default stable
 ```
 
 ```bash
+# Create a Cargo config that:
+# - enables sccache as the compiler wrapper to speed up rebuilds
+# - uses clang + mold for faster linking
+# - sets CPU tuning to your machine (native) and thin LTO for release
 mkdir -p ~/.cargo && cat > ~/.cargo/config.toml << 'EOF'
 [build]
 rustc-wrapper = "sccache"
@@ -509,35 +518,45 @@ EOF
 ```
 
 ```bash
+# Start the sccache daemon if not already running
+# - '|| true' prevents the script from stopping if the server is already up
 sccache --start-server || true
 ```
 
 ```bash
+# Mirror the same Cargo config for root
+# - Some build steps or packaging helpers might invoke root builds
+# - This keeps toolchain flags consistent across user and root
 sudo mkdir -p /root/.cargo && sudo cp ~/.cargo/config.toml /root/.cargo/
 ```
 
 ```bash
+# Clone COSMIC with all submodules (required)
+# - cosmic-epoch uses multiple subrepos; --recurse-submodules pulls them in
+# - build from your home to avoid root-owned artifacts
 git clone --recurse-submodules https://github.com/pop-os/cosmic-epoch ~/src/cosmic-epoch
 cd ~/src/cosmic-epoch
 ```
 
 ```bash
+# Build a systemd system extension ("sysext") containing COSMIC
+# - Requires 'just' and build deps installed
+# - Produces a 'cosmic-sysext' directory under ./target/*/
 just sysext
 ```
 
 ```bash
+# Install and activate the system extension overlay
+# - Copy the generated 'cosmic-sysext' into /var/lib/extensions/
+# - Enable systemd-sysext so overlays are activated at boot
+# - Refresh now to activate without reboot
 sudo mkdir -p /var/lib/extensions
 sudo find target -type d -name cosmic-sysext -exec cp -r {} /var/lib/extensions/ \;
 sudo systemctl enable --now systemd-sysext && sudo systemd-sysext refresh
 ```
 
 ```bash
-for r in cosmic-applets cosmic-applibrary cosmic-bg cosmic-comp cosmic-edit cosmic-files cosmic-greeter \
-cosmic-icons cosmic-idle cosmic-initial-setup cosmic-launcher \
-cosmic-notifications; do (cd "$HOME/src/cosmic-epoch/$r" && cargo build --release); done
-```
-
-```bash
+# Leave the 'lars' login shell back to the root shell inside the chroot
 exit
 ```
 
