@@ -477,7 +477,7 @@ pacman -S --needed \
   firefox gst-plugins-bad gst-plugins-base gst-plugins-espeak gst-plugins-good gst-plugins-ugly \
   hunspell hunspell-en_us quota-tools \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font ttf-dejavu ttf-liberation \
-  ttf-nerd-fonts-symbols \
+  ttf-nerd-fonts-symbols gnome-keyring dconf \
   pacman-contrib git wget \
   just llvm lld pkgconf wayland wayland-protocols libxkbcommon libinput seatd mesa libglvnd dbus \
   xorg-xwayland libpulse \
@@ -531,28 +531,20 @@ sudo mkdir -p /root/.cargo && sudo cp ~/.cargo/config.toml /root/.cargo/
 ```
 
 ```bash
-# Clone COSMIC with all submodules (required)
-# - cosmic-epoch uses multiple subrepos; --recurse-submodules pulls them in
-# - build from your home to avoid root-owned artifacts
-git clone --recurse-submodules https://github.com/pop-os/cosmic-epoch ~/src/cosmic-epoch
-cd ~/src/cosmic-epoch
-```
+# install yay to recurse AUR deps cleanly
+mkdir -p ~/builds && cd ~/builds
+git clone https://aur.archlinux.org/yay.git
+cd yay && makepkg -si  # will prompt for sudo
 
-```bash
-# Build a systemd system extension ("sysext") containing COSMIC
-# - Requires 'just' and build deps installed
-# - Produces a 'cosmic-sysext' directory under ./target/*/
-just sysext
-```
+# heavy link step tip for cosmic-applets: reduce RAM use
+export MOLD_JOBS=1
+export CARGO_TARGET_DIR=/tmp/cosmic-target
 
-```bash
-# Install and activate the system extension overlay
-# - Copy the generated 'cosmic-sysext' into /var/lib/extensions/
-# - Enable systemd-sysext so overlays are activated at boot
-# - Refresh now to activate without reboot
-sudo mkdir -p /var/lib/extensions
-sudo find target -type d -name cosmic-sysext -exec cp -r {} /var/lib/extensions/ \;
-sudo systemctl enable --now systemd-sysext && sudo systemd-sysext refresh
+# build and install the whole desktop from HEAD (all AUR -git deps)
+yay -S cosmic-session-git
+
+# back to root
+exit
 ```
 
 ```bash
