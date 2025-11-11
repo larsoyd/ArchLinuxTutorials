@@ -1,6 +1,6 @@
-# Complete Arch Linux Tutorial (GNOME + Wayland w/ Automounting Partitions)
+(WIP) # Complete Arch Linux Tutorial (COSMIC + Wayland w/ Automounting Partitions)
 
-This is a Arch installation guide for noobs **WITHOUT LUKS encryption and SecureBoot** who just want a working system to game on that's straight forward with GNOME.
+This is a Arch installation guide for noobs **WITHOUT LUKS encryption and SecureBoot** who just want a working system to game on that's straight forward with COSMIC.
 
 
 ## NOTE (ACTUALLY READ THIS): 
@@ -61,7 +61,7 @@ Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random update
 ## What I will mainly be using/setting:
 
 - systemd-automount for GPT partitions 
-- GNOME on Wayland
+- COSMIC Desktop
 - NVME SSD
 - `linux-zen` default kernel which is a kernel optimized for desktop use.
 - `linux-lts` for a fallback and debug kernel
@@ -94,7 +94,7 @@ If you use an English lang keyboard you can ignore all of it, but it's worth kno
 
 ### TUTORIAL PROPER
 
-**GPT Auto-Mount + GNOME (Wayland) + NVIDIA**
+**GPT Auto-Mount + COSMIC + NVIDIA**
 
 > **Prerequisites:** This guide assumes you have an AMD processor with NVIDIA graphics.
 
