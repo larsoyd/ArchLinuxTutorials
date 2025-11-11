@@ -1,4 +1,6 @@
-(WIP) # Complete Arch Linux Tutorial (COSMIC + Wayland w/ Automounting Partitions)
+(WIP - Not tested yet) 
+
+# Complete Arch Linux Tutorial (COSMIC + Wayland w/ Automounting Partitions)
 
 This is a Arch installation guide for noobs **WITHOUT LUKS encryption and SecureBoot** who just want a working system to game on that's straight forward with COSMIC.
 
