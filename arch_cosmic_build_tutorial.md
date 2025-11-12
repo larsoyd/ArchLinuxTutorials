@@ -480,7 +480,7 @@ pacman -S --needed \
   hunspell hunspell-en_us quota-tools \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font ttf-dejavu ttf-liberation \
   ttf-nerd-fonts-symbols gnome-keyring dconf \
-  pacman-contrib git wget \
+  pacman-contrib git wget archlinux-appstream-data packagekit \
   just llvm lld pkgconf wayland wayland-protocols libxkbcommon libinput seatd mesa libglvnd dbus \
   xorg-xwayland libpulse \
   base-devel
@@ -543,7 +543,7 @@ export MOLD_JOBS=1
 export CARGO_TARGET_DIR=/tmp/cosmic-target
 
 # build and install the whole desktop from HEAD (all AUR -git deps)
-yay -S cosmic-session-git
+yay -S cosmic-session-git cosmic-edit-git cosmic-player-git cosmic-term-git cosmic-wallpapers-git cosmic-store-git
 
 # back to root
 exit
