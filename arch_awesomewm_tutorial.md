@@ -1,4 +1,4 @@
-# Complete Arch Linux Tutorial (GNOME + AwesomeWM w/ Automounting Partitions)
+# Complete Arch Linux Tutorial (AwesomeWM w/ Automounting Partitions)
 
 This is a Arch installation guide for the awesome window manager on Arch Linux.
 
