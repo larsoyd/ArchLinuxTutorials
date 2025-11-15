@@ -1,8 +1,8 @@
-# Complete Arch Linux Tutorial (GNOME + Wayland w/ Automounting Partitions)
+# Complete Arch Linux Tutorial (GNOME + AwesomeWM w/ Automounting Partitions)
 
-This is a Arch installation guide for awesomewm on Arch Linux.
+This is a Arch installation guide for the awesome window manager on Arch Linux.
 
-**GPT Auto-Mount + awesomewm + NVIDIA**
+**GPT Auto-Mount + awesome + NVIDIA**
 
 > **Prerequisites:** This guide assumes you have an AMD processor with NVIDIA graphics.
 
