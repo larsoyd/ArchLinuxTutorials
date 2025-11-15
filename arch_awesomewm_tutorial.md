@@ -586,6 +586,40 @@ chmod +x ~/.xinitrc
 startx
 ```
 
+### Copy default rc.lua to home so you can start ricing
+
+```bash
+mkdir -p ~/.config/awesome
+cp /etc/xdg/awesome/rc.lua ~/.config/awesome/
+```
+
+### Optional: Add keyboard that persists if non-US default
+Open a terminal in Awesome and run:
+
+```sh
+setxkbmap -layout no
+```
+
+That switches the layout to Norwegian for example for the current X session.
+
+
+### Set it automatically when Awesome starts
+
+Edit your `rc.lua` (usually `~/.config/awesome/rc.lua`) and add an autostart line.
+
+Somewhere near other `awful.spawn` calls, add:
+
+```lua
+local awful = require("awful")
+
+awful.spawn.with_shell("setxkbmap -layout no")
+```
+
+Put this in the main body of the config, not inside a function that is never called. 
+A safe place is near the other autostart stuff, for example after your `awful.layout.layouts = { ... }` block.
+
+Then reload Awesome with `Mod4 + Control + r` or log out and back in.
+
 ### Optional: Automatically Start & Login To Awesome
 If you don't want to login and write startx every time you boot:
 
