@@ -6,7 +6,7 @@ This is a Arch installation guide for awesomewm on Arch Linux.
 
 > **Prerequisites:** This guide assumes you have an AMD processor with NVIDIA graphics.
 
-## Step 0: Boot from ISO
+## Boot from ISO
 
 Set up your keyboard layout if you're not on an US keyboard, and verify UEFI boot:
 
@@ -56,7 +56,7 @@ iwctl station "YOUR-DEV" connect "YOUR-SSID"   # iwctl will prompt for passphras
 ping -c 3 archlinux.org
 ```
 
-## Step 1: Partition the NVMe drive with systemd-repart
+## Partition the NVMe drive with systemd-repart
 
 ```bash
 lsblk -l
@@ -128,7 +128,7 @@ tune2fs -l /dev/disk/by-label/root | grep features
 dumpe2fs -h /dev/disk/by-label/root | grep -i 'Fast commit length'
 ```
 
-## Step 2: Mount filesystems (labels match your original layout)
+## Mount filesystems (labels match your original layout)
 
 ```bash
 # Mount root first
@@ -165,8 +165,9 @@ mount -o fmask=0177,dmask=0077,noexec,nodev,nosuid /dev/disk/by-label/EFI /mnt/e
 ## Optional: Stop mkinitcpio From Running After Pacstrap
 
 If you are like me you find it annoying to have a redundant step where it does this after pacstrap
-considering we will be disabling fallback and also doing it later anyways. You can disable the hook
-in the ArchISO only by doing this. **Not reccomended unless you know what you are doing:**
+considering we will be disabling fallback and also doing it later anyways. Generating the MODULES and HOOKS can be time consuming
+on some older systems. You can disable the hook in the ArchISO only by doing this. **NB: Do not skip the manual step later**
+This will not affect the hook on your actual system.
 
 ```bash
 # In the live Arch ISO, before pacstrap
