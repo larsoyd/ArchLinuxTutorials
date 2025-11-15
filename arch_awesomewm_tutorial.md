@@ -527,13 +527,13 @@ Login to user:
 # Enter user name then your password
 ```
 
-Build Optimization
+Build Optimization for Building awesomewm:
 ```bash
 sudo nano /etc/makepkg.conf
 ```
 
-Add
 ```bash
+# Add these flags for optimized builds
 CFLAGS="-march=native -O2 -pipe -fno-plt -fexceptions \
         -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security \
         -fstack-clash-protection -fcf-protection=full"
@@ -541,12 +541,137 @@ CXXFLAGS="${CFLAGS}"
 MAKEFLAGS="-j$(nproc)"
 ```
 
+Install yay:
+```bash
+cd /tmp
+git clone https://aur.archlinux.org/yay.git
+cd yay
 
-### Enable Any Other Services
+# Build and install the package
+makepkg -si
+
+# Confirm
+yay --version
+```
+
+Install and Build awesomewm:
+```bash
+yay -S awesome-git
+```
+
+Set up ~/.xinitrc in your user’s home:
+```bash
+# Edit/Add awesome to xinit
+nano ~/.xinitrc
+```
 
 ```bash
-systemctl enable fstrim.timer reflector.timer pkgstats.timer
+#!/bin/sh
+
+# Start xterm in the background
+# Temporary, just to have one when you log in
+xterm &
+
+# Start Awesome
+exec awesome
 ```
+
+```bash
+# Make executable
+chmod +x ~/.xinitrc
+
+# Now enter Awesome!
+startx
+```
+
+### Optional: Automatically Start & Login To Awesome
+If you don't want to login and write startx every time you boot:
+
+```bash
+# Create for zsh:
+nano ~/.zprofile
+```
+
+```bash
+# ~/.zprofile
+#
+# Source main zsh config if you want
+[ -f ~/.zshrc ] && . ~/.zshrc
+
+# Auto start X only on tty1
+if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+  exec startx
+fi
+```
+
+## 3. Set up systemd autologin on tty1
+
+ArchWiki recommends using a systemd drop-in for `getty@tty1.service`. 
+
+Create the directory:
+
+```sh
+sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+```
+
+Create the autologin config:
+
+```sh
+sudo nano /etc/systemd/system/getty@tty1.service.d/autologin.conf
+```
+
+Put this inside, replacing `youruser` with your actual username:
+
+```ini
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty --noreset --noclear --autologin youruser - ${TERM}
+Type=simple
+# Optional, helps some software identify the session correctly as X11
+Environment=XDG_SESSION_TYPE=x11
+```
+
+Key bits:
+
+* The empty `ExecStart=` line clears the original `ExecStart` from the template
+* The second `ExecStart` line adds agetty with `--autologin youruser`
+* `Type=simple` makes getty start immediately, which the ArchWiki notes can help when you also auto start X 
+
+Reload systemd so it sees the drop-in:
+
+```sh
+sudo systemctl daemon-reload
+```
+
+Make sure `getty@tty1` is enabled (it usually is by default, but no harm checking):
+
+```sh
+sudo systemctl enable getty@tty1.service
+```
+
+Now reboot:
+
+```sh
+reboot
+```
+
+Boot flow after this:
+
+1. Systemd starts `getty@tty1.service`
+2. That agetty instance auto logs in `youruser` on tty1
+3. Your login shell starts
+4. The `if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]` check in `~/.bash_profile` or `~/.zprofile` passes
+5. `exec startx` runs, which loads `~/.xinitrc` and starts Awesome
+
+You end up in Awesome with no manual login or `startx` typing.
+
+---
+
+## 4. Things to watch out for
+
+* If you ever get stuck in a loop or need to debug, switch to another TTY with `Ctrl+Alt+F2`, log in there, and temporarily comment out the `exec startx` block or move `autologin.conf` out of the way.
+* This setup effectively means anyone with physical access to the machine and keyboard has full access to your user account.
+* If you later decide you want a greeter with optional autologin instead, something like `greetd` with `tuigreet` can do that.
 
 ### Reboot
 
