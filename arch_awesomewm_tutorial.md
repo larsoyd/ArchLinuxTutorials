@@ -541,7 +541,57 @@ console-mode auto
 editor no
 ```
 
-# 4.6 Install the System
+
+### 4.9 Create swap file & Configure Zswap
+
+```bash
+# Create a 16 GiB swap file and initialize it in one step.
+#   --size 16G   -> allocate a 16 GiB file
+#   --file       -> create the file with correct mode and real blocks
+#   -U clear     -> clear any existing UUID in the header
+mkswap -U clear --size 16G --file /swapfile
+
+```
+edit:
+```bash
+nano /etc/systemd/system/swapfile.swap
+```
+and add:
+```ini
+[Unit]
+Description=Swap file
+
+[Swap]
+What=/swapfile
+Priority=100
+
+[Install]
+WantedBy=swap.target
+```
+then:
+```bash
+systemctl enable swapfile.swap
+```
+
+### Optimizations for swap use:
+
+```bash
+# These are optimizations taken from the wiki.
+# Generally considered to be optimal.
+nano /etc/sysctl.d/99-zswap.conf
+
+# add
+vm.swappiness = 100
+vm.page-cluster = 0
+vm.watermark_boost_factor = 0
+vm.watermark_scale_factor = 125
+
+# update the sysctl
+sysctl --system
+```
+
+
+## Install the System
 
 ```bash
 # Update package database
@@ -582,54 +632,6 @@ shutdown now
 ```
 
 ---
-
-### 4.9 Create swap file & Configure Zswap
-
-```bash
-# Create a 16 GiB swap file and initialize it in one step.
-#   --size 16G   -> allocate a 16 GiB file
-#   --file       -> create the file with correct mode and real blocks
-#   -U clear     -> clear any existing UUID in the header
-mkswap -U clear --size 16G --file /swapfile
-
-```
-edit:
-```bash
-nano /etc/systemd/system/swapfile.swap
-```
-and add:
-```ini
-[Unit]
-Description=Swap file
-
-[Swap]
-What=/swapfile
-Priority=100
-
-[Install]
-WantedBy=swap.target
-```
-then:
-```bash
-systemctl enable swapfile.swap
-```
-
-Optimizations for swap use:
-
-```bash
-# These are optimizations taken from the wiki.
-# Generally considered to be optimal.
-nano /etc/sysctl.d/99-zswap.conf
-
-# add
-vm.swappiness = 100
-vm.page-cluster = 0
-vm.watermark_boost_factor = 0
-vm.watermark_scale_factor = 125
-
-# update the sysctl
-sysctl --system
-```
 
 ### 4.10 Enable Other Services
 
