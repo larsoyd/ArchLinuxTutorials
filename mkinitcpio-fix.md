@@ -25,9 +25,10 @@ yay -S --needed --noconfirm mkinitcpio-firmware
 
 #### OPTION B) OR Copy a script that silences them by making dummy firmware
 
-**Disclaimer:** There is no guarantee that what the scripts write dummies for is one of these ancient modules.
-#### so please confirm that the errors you see are irrelevant with the wiki list of firmware first before running this script.
-[https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX
+#### **Disclaimer:** There is no guarantee that what the scripts write dummies for is one of these ancient modules.
+#### PLEASE confirm that the errors you see are irrelevant by checking the wiki list of firmware FIRST, before running this script:
+
+[Arch Wiki | Mkinitcpio/Possibly_missing_firmware_for_module_XXXX
 ](https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX
 )
 
