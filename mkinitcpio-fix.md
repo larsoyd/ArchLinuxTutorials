@@ -24,6 +24,15 @@ yay -S --needed --noconfirm mkinitcpio-firmware
 ```
 
 #### OPTION B) OR Copy a script that silences them by making dummy firmware
+
+**Disclaimer:** There is no guarantee that what the scripts write dummies for is one of these ancient modules.
+#### so please confirm that the errors you see are irrelevant with the wiki list of firmware first before running this script.
+[https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX
+](https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX
+)
+
+This by the way is why this is such a huge problem, people become complacant to seeing firmware errors. That this is still a thing is of the few things I would say are geniune a criticisms of Arch Linux. There is no justification for why mkinitcpio spams this about completely outdated nonsense every initramfs generation.
+
 ```bash
 # The Arch Wiki recommends instead writing dummy files manually for them
 #
@@ -38,6 +47,15 @@ sudo nano /usr/local/sbin/mkinitcpio-silence-missing-fw
 
 #### 1.5) Then paste ALL of this underneath into it with CTRL + **SHIFT** + V
 ```bash
+# MIT License
+# Copyright (c) 2025 Lars Slettan Øydneskleiv
+#
+# Permission is hereby granted to use, copy, modify, and distribute the software
+# and associated documentation for free, under certain conditions:
+# - Include this copyright and permission notice in all copies/substantial portions.
+#
+# The software is provided "as is", with no warranty of any kind.
+#
 # ----- /usr/local/sbin/mkinitcpio-silence-missing-fw -----
 ##!/usr/bin/env bash
 set -euo pipefail
@@ -175,20 +193,21 @@ sudo chmod +x /usr/local/sbin/mkinitcpio-silence-missing-fw
 #### 3) Run & Undo
 
 ```bash
+# By running this you acknowledge you have checked the wiki first and any liability that follows
+
 ## 1) FIRST run this to write the dummies for the ancient modules warned on your machine
 sudo /usr/local/sbin/mkinitcpio-silence-missing-fw
 
 ## 2) THEN run this to confirm, and you are done
 sudo mkinitcpio -P
-
-# Disclaimer: there is no guarantee that what its writing a dummy for is one of these ancient modules
-# You should confirm with the wiki first before running this script.
 ---
 
-## 1) If you ever want to undo
+# Ignored both my warnings up there and found yourself screwed?
+## 1) Don't worry, I wrote a way to undo a run of this script, just do:
 sudo /usr/local/sbin/mkinitcpio-silence-missing-fw --undo
 
-## 2) And if so, run to confirm.
+## 2) And once again to confirm, run this afterwards:
 sudo mkinitcpio -P
 ```
+
 ---
