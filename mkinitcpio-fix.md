@@ -18,12 +18,12 @@
 sudo mkinitcpio -P
 ```
 
-#### OPTION A) Install all the firmware from the AUR (which will take up space)
+#### OPTION A) Install all the firmware from the AUR (which will take up space & is maintained by a third party)
 ```bash
 yay -S --needed --noconfirm mkinitcpio-firmware
 ```
 
-#### OPTION B) Copy a script that silences them by making dummy firmware
+#### OPTION B) OR Copy a script that silences them by making dummy firmware
 ```bash
 # The Arch Wiki recommends instead writing dummy files manually for them
 #
@@ -36,7 +36,7 @@ yay -S --needed --noconfirm mkinitcpio-firmware
 sudo nano /usr/local/sbin/mkinitcpio-silence-missing-fw
 ```
 
-#### 1.5) Then paste the script with CTRL + SHIFT + V
+#### 1.5) Then paste ALL of this underneath into it with CTRL + **SHIFT** + V
 ```bash
 # ----- /usr/local/sbin/mkinitcpio-silence-missing-fw -----
 ##!/usr/bin/env bash
