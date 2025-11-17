@@ -49,8 +49,7 @@ yay -S --needed --noconfirm mkinitcpio-firmware
 
 ```bash
 # The Arch Wiki recommends manually writing dummy files for every single one of them
-# I suppose that is Option C but everytime I wrote it out
-# I felt ridiculous for even suggesting it by proxy.
+# I suppose that is Option C but everytime I wrote it out I felt ridiculous for even suggesting it by proxy.
 #
 # I wrote a script that creates harmless dummy firmware files for you
 # It automatically captures the ones on a single run and then writes dummies for all of them
