@@ -1,6 +1,6 @@
 # Complete Arch Linux Tutorial (KDE Plasma + Wayland w/ Automounting Partitions)
 
-This is a Arch installation guide for noobs **WITHOUT LUKS encryption and SecureBoot** who just want a working system to game on that's straight forward with a DE that is most like Windows
+This is a Arch installation guide for noobs who want a working system to game on that's straight forward with a DE that is most like Windows
 and usually the one most people want to use because of that, at least for their first DE. I've used every DE and WM that is both trendy and some obscure,
 I started with KDE Plasma and Arch Linux. I always come back to both eventually. It's fun to try out new things, but KDE Plasma is OP at the moment I am writing 
 this. It's fully featured, they finally have a good process in eliminating bugs which plagued the DE before, and it's very easy to customize. Most DEs and WMs have
@@ -24,7 +24,6 @@ Now this is still unconventional which is part of the fun of using this as it ju
 
 ## The UUIDs
 
-When you use the partition type codes in this guide:
 - `EF00` (EFI System Partition)
 - `8304` (Linux x86-64 root)  
 
@@ -62,21 +61,24 @@ Container-Friendly: Tools like systemd-nspawn can automatically set up filesyste
 
 Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random updates doing weird stuff messing with it.
 
-## What I will mainly be using/setting:
+## What you will learn to set and use:
 
 - systemd-automount for GPT partitions 
 - KDE Plasma on Wayland
-- NVME SSD
 - `linux-zen` default kernel which is a kernel optimized for desktop use.
 - `linux-lts` for a fallback and debug kernel
-- zsh default shell
+- zsh default shell for users, dash shell for /usr/bin/sh 
 - systemd-boot with UKIs
 - zswap with a 16 GiB swap file
-- EXT4 for `/`
+- BTRFS for `/` with subvolumes, encrypted with LUKS2
+- I will be using systemd-homed to create an encrypted home folder in /home/$USER/
+- sytemd-nspawn to chroot in to the actual system.
+
+## What my guide will primarily target:
 - AMD CPU + NVIDIA GPU w/ `nvidia-open-dkms` 
 **NOTE:** This tutorial assumes you have a Turing (NV160/TUXXX) and newer	card for current driver. Check your card first.
 
-I included some stuff for AMDGPUs too, but my system is NVIDIA so I may have missed some things.
+I included some stuff for AMDGPUs and Intel too, but my system is NVIDIA so I may have missed some things.
 
 NVIDIA modeset is set by default, and according to the wiki setting fbdev manually is now unnecessary so I will not set those. PLEASE check the wiki before install for anything. **POST-INSTALL GUIDE IS SUPER OPINIONATED, FOLLOW BY OWN VOLITION.**
 
