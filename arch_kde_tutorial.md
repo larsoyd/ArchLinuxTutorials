@@ -421,9 +421,8 @@ passwd
 useradd -m -G wheel lars
 passwd lars
 
-# Set zsh as default shell for user and root
+# Set zsh as default shell for user
 chsh -s /usr/bin/zsh lars
-chsh -s /usr/bin/zsh
 
 # Enable sudo for wheel group
 EDITOR=nano visudo
