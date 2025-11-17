@@ -18,21 +18,24 @@
 sudo mkinitcpio -P
 ```
 
-#### OPTION A) Install all the firmware from the AUR (which will take up space & is maintained by a third party)
+### OPTION A) Install all the firmware from the AUR (which will take up space & is maintained by a third party)
 ```bash
 yay -S --needed --noconfirm mkinitcpio-firmware
 ```
 
-#### OPTION B) OR Copy a script that silences them by making dummy firmware
+### OPTION B) OR Copy a script that silences them by making dummy firmware
 
-#### **Disclaimer:** There is no guarantee that what the scripts write dummies for is one of these ancient modules.
-#### PLEASE confirm that the errors you see are irrelevant by checking the wiki list of firmware FIRST, before running this script:
+### **Disclaimer:**  
+#### There is no guarantee that what the scripts write dummies for is one of these ancient modules.
+##### PLEASE confirm that the errors you see are irrelevant by checking the wiki list of firmware FIRST, before running this script:
 
 [Arch Wiki | Mkinitcpio/Possibly_missing_firmware_for_module_XXXX
 ](https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX
 )
 
-This by the way is why this is such a huge problem, people become complacant to seeing firmware errors. That this is still a thing is of the few things I would say are geniune a criticisms of Arch Linux. There is no justification for why mkinitcpio spams this about completely outdated nonsense every initramfs generation.
+This by the way is why this is such a huge problem, people either become complacant to seeing firmware errors so they are unaware of which ones are real and which ones are a problem. Ideally the firmware would only give such errors based on a system information query of some kind, but that is not the case.
+
+This is one of the few things I would say is a geniune a criticism of Arch Linux. There is just no justification for mkinitcpio spamming this type of completely outdated nonsense every initramfs generation. Whatever reason it is, it is still not justified because end users are confused and it leads to a less secure environment when complacancy sets in. This is why I found it vital to include this seperate tutorial despite deciding to remove fallback from my opinionated tutorial.
 
 ```bash
 # The Arch Wiki recommends instead writing dummy files manually for them
