@@ -353,9 +353,9 @@ systemd-nspawn -bD /mnt
 # If you want CachyOS repos and kernel like I do, then this is how you do it
 # My reasoning for including is that the CachyOS kernel and packages are very good
 
-# OPTION A) Use my script. Read it first as you always should, but all it does is automate those
-# steps from hell under there that you do not want to write out by hand
-curl https://termbin.com/iloi | bash
+# OPTION A) Use my script. Read it first as you always should (its in the repo),
+# but all it does is automate those steps from hell under there that you do not want to write out by hand
+curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos.sh | bash
 
 # OPTION B) Or do it manually, have fun!
 #
