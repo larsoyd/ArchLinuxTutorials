@@ -65,15 +65,14 @@ Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random update
 
 - systemd-automount for GPT partitions 
 - KDE Plasma on Wayland
-- `linux-zen` default kernel which is a kernel optimized for desktop use.
-- `linux-lts` for a fallback and debug kernel
-- zsh default shell for users, dash shell for /usr/bin/sh 
+- `linux` default kernel, optional `linux-cachyos` for optimized kernel.
+- zsh default shell for users, optional dash shell for /usr/bin/sh 
 - systemd-boot with UKIs
 - zswap with a 16 GiB swap file
 - EXT4 for `/`
 
 ## What my guide will primarily target:
-- AMD CPU + NVIDIA GPU w/ `nvidia-open-dkms` 
+- AMD CPU + NVIDIA GPU w/ `nvidia-open` 
 **NOTE:** This tutorial assumes you have a Turing (NV160/TUXXX) and newer	card for current driver. Check your card first.
 
 I included some stuff for AMDGPUs and Intel too, but my system is NVIDIA so I may have missed some things.
@@ -337,13 +336,13 @@ pacstrap /mnt base
 
 ## Step 4: System Configuration
 
-### 4.1 Enter the New System
+### 4.1 Enter the Base
 
 ```bash
 # However before you can say you've installed arch you need to configure the system
 # This is how you chroot into your newly installed system:
 #
-arch-chroot /mnt
+systemd-nspawn -bD /mnt
 ```
 
 ---
@@ -400,10 +399,16 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
 ```
 
-FOR NVIDIA, look up AMDGPU if used:
+##### Install CachyOS Kernel + Headers + SCX Tools:
+
 ```bash
 pacman -S --needed linux-cachyos linux-cachyos-headers linux-cachyos-nvidia-open \
-scx-scheds scx-tools 
+scx-scheds scx-tools ananicy-cpp cachyos-ananicy-rules
+
+# AMDGPU and Intel can skip the NVIDIA package.
+
+# Enable SCX and ananicy ccp
+systemctl enable ananicy-cpp scx.service
 ```
 
 ---
@@ -411,7 +416,7 @@ scx-scheds scx-tools
 
 ### 6.5 Install Packages
 ```bash
-# If not CachyOS:
+# If you didn't get the CachyOS kernel:
 pacman -S --needed linux linux-headers
 
 # Install firmware and some core packages:
@@ -830,8 +835,8 @@ fstrim.timer reflector.timer pkgstats.timer
 ## Step 5: Complete Installation
 
 ```bash
-# Exit chroot environment
-exit
+# Exit systemd-nspawn environment
+poweroff
 
 # Unmount all partitions
 umount -R /mnt
