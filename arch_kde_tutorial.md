@@ -413,7 +413,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 
 ```bash
 pacman -S --needed linux-cachyos linux-cachyos-headers linux-cachyos-nvidia-open \
-scx-scheds scx-tools ananicy-cpp cachyos-ananicy-rules
+scx-scheds scx-tools ananicy-cpp
 
 # AMDGPU and Intel can skip the NVIDIA package.
 
