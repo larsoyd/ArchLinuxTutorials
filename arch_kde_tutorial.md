@@ -1,6 +1,6 @@
 # Complete Arch Linux Tutorial (KDE Plasma + Wayland w/ Automounting Partitions)
 
-This is a Arch installation guide for noobs who want a working system to game on that's straight forward with a DE that is most like Windows
+This is an **OPINIONATED** Arch installation guide for regular folks who just want a working system to game on that's straight forward with a DE that is most like Windows
 and usually the one most people want to use because of that, at least for their first DE. I've used every DE and WM that is both trendy and some obscure,
 I started with KDE Plasma and Arch Linux. I always come back to both eventually. It's fun to try out new things, but KDE Plasma is OP at the moment I am writing 
 this. It's fully featured, they finally have a good process in eliminating bugs which plagued the DE before, and it's very easy to customize. Most DEs and WMs have
@@ -69,7 +69,7 @@ Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random update
 - zsh default shell for users, optional dash shell for /usr/bin/sh 
 - systemd-boot with UKIs
 - zswap with a 16 GiB swap file
-- EXT4 for `/`
+- EXT4 for `/` with optional fast_commit journaling
 
 ## What my guide will primarily target:
 - AMD CPU + NVIDIA GPU w/ `nvidia-open` 
@@ -77,7 +77,7 @@ Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random update
 
 I included some stuff for AMDGPUs and Intel too, but my system is NVIDIA so I may have missed some things.
 
-NVIDIA modeset is set by default, and according to the wiki setting fbdev manually is now unnecessary so I will not set those. PLEASE check the wiki before install for anything. **POST-INSTALL GUIDE IS SUPER OPINIONATED, FOLLOW BY OWN VOLITION.**
+NVIDIA modeset is set by default, and according to the wiki setting fbdev manually is now unnecessary so I will not set those. PLEASE check the wiki before install for anything. **POST-INSTALL GUIDE IS EVEN MORE OPINIONATED, FOLLOW BY OWN VOLITION.**
 
 *Protip:* This tutorial uses Norwegian keymaps and locale/timezone settings. Simply replace those with your own (e.g. keymap, `LANG`, `TZ`).
 If you use an English lang keyboard you can ignore all of it, but it's worth knowing if you are new and use a different keyboard like say `de-latin1` for German keyboards.
@@ -347,10 +347,18 @@ systemd-nspawn -bD /mnt
 
 ---
 
-### OPTIONAL: CachyOS packages, Skip If Unwanted
+# OPTIONAL: CachyOS packages and Kernel
 
 ```bash
 # If you want CachyOS repos and kernel like I do, then this is how you do it
+# My reasoning for including is that the CachyOS kernel and packages are very good
+
+# OPTION A) Use my script. Read it first as you always should, but all it does is automate those
+# steps from hell under there that you do not want to write out by hand
+curl https://termbin.com/iloi | bash
+
+# OPTION B) Or do it manually, have fun!
+#
 # Import and locally sign the CachyOS repo key
 # Grab the CachyOS signing key from Ubuntu's keyserver
 pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
@@ -366,7 +374,8 @@ pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-v4-mirrorlist-
 ```
 
 ```bash
-# Edit /etc/pacman.conf
+# Now that you have (hopefully) used the script you need to edit
+# /etc/pacman.conf
 nano /etc/pacman.conf
 ```
 
