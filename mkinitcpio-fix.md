@@ -25,13 +25,17 @@ yay -S --needed --noconfirm mkinitcpio-firmware
 
 ### OPTION B) OR Copy a script that silences them by making dummy firmware
 
+---
+
 ### **Disclaimer:**  
-#### There is no guarantee that what the scripts write dummies for is one of these ancient modules.
+##### There is no guarantee that what the scripts write dummies for is one of these ancient modules.
 ##### PLEASE confirm that the errors you see are irrelevant by checking the wiki list of firmware FIRST, before running this script:
 
 [Arch Wiki | Mkinitcpio/Possibly_missing_firmware_for_module_XXXX
 ](https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX
 )
+
+---
 
 This by the way is why this is such a huge problem, people either become complacant to seeing firmware errors so they are unaware of which ones are real and which ones are a problem. Ideally the firmware would only give such errors based on a system information query of some kind, but that is not the case.
 
