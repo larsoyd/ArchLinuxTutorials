@@ -4,8 +4,6 @@
 
 So this is more than just an annoyance, it is actually a huge problem. Due to this issue people become complacant to seeing firmware errors and are thus unaware of which ones are real and which ones are a problem. If a firmware issue occurs in the future it might go unnoticed, leading to system failure and potential data loss. Ideally the firmware would only give such errors based on a query of the system of some kind, but that is not the case.
 
-This is one of the few things I would say is a geniune a criticism of mkinitcpio/Arch Linux, an otherwise sane and excellent project (both of them). There is just no justification for mkinitcpio spamming this type of completely outdated nonsense every initramfs generation. Whatever reason upstream has for this, it will never be justified because end users are confused and it leads to a less secure environment when complacancy sets in. "RTFM" is not some magic bullet against spreading harm, and that is what this ends up doing. This is why I found it vital to include this separate tutorial despite deciding to remove fallback from my opinionated tutorial.
-
 ---
 
 #### 0) Find the module names that warn
