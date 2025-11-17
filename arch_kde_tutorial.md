@@ -879,5 +879,4 @@ Head to `arch_kde_post_tutorial.md` to do the post-install tutorial.
 
 * NOTE: This is only if you do have the `fallback` option on the UKIs which we removed in the guide, but if you kept it this will annoy you.
 * Whenever you write `mkinitcpio -P` you might notice it keeps warning you about firmware that you are supposedly missing.
-* This only seems to happen on fallback which we disabled here but if you didn't you will see them.
 * If this bothers you, check out my tutorial, `mkinitcpio-fix.md` to fix this.
