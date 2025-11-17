@@ -860,6 +860,15 @@ shutdown now
 
 ---
 
+# PROTIP:
+If you have problems booting or did something wrong in the future you can automatically mount, enter and troubleshoot your system by booting from ArchISO and then when the shell comes up write:
+```bash
+systemd-dissect --mount /dev/nvme0n1 /mnt  # or sda, check with lsblk -l
+systemd-nspawn -bD /mnt
+```
+
+To automatically mount your system 
+
 # 1) OPTIONAL: Post-Install Tutorial
 Head to `arch_kde_post_tutorial.md` to do the post-install tutorial.
 
