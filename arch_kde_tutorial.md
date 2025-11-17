@@ -70,9 +70,7 @@ Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random update
 - zsh default shell for users, dash shell for /usr/bin/sh 
 - systemd-boot with UKIs
 - zswap with a 16 GiB swap file
-- BTRFS for `/` with subvolumes, encrypted with LUKS2
-- I will be using systemd-homed to create an encrypted home folder in /home/$USER/
-- sytemd-nspawn to chroot in to the actual system.
+- EXT4 for `/`
 
 ## What my guide will primarily target:
 - AMD CPU + NVIDIA GPU w/ `nvidia-open-dkms` 
@@ -246,7 +244,8 @@ systemd-repart --definitions=/tmp/repart.d --dry-run=no --empty=force "$d"
 # OPTION B) If you want `fast_commit` enabled you run this command.
 #
 # ext4 has a faster journaling system called fast_commit
-# According to the Arch wiki it supposedly improves performance:
+# Be advised that some have reported issues with it, albeit a few years ago but still
+# According to the Arch wiki it significantly improves performance:
 #
 SYSTEMD_REPART_MKFS_OPTIONS_EXT4='-O fast_commit' \
   systemd-repart --definitions=/tmp/repart.d --dry-run=no --empty=force "$d"
@@ -333,11 +332,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 and then **Install the base of Arch Linux!** :
 
 ```bash
-# For AMD CPUs:
-pacstrap /mnt base linux-zen linux-lts linux-firmware amd-ucode nano sudo zsh
-
-# For Intel CPUs:
-pacstrap /mnt base linux-zen linux-lts linux-firmware intel-ucode nano sudo zsh
+pacstrap /mnt base
 ```
 
 ## Step 4: System Configuration
@@ -349,6 +344,82 @@ pacstrap /mnt base linux-zen linux-lts linux-firmware intel-ucode nano sudo zsh
 # This is how you chroot into your newly installed system:
 #
 arch-chroot /mnt
+```
+
+---
+
+### OPTIONAL: CachyOS packages, Skip If Unwanted
+
+```bash
+# If you want CachyOS repos and kernel like I do, then this is how you do it
+# Import and locally sign the CachyOS repo key
+# Grab the CachyOS signing key from Ubuntu's keyserver
+pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
+# Locally sign the CachyOS key so pacman trusts it
+pacman-key --lsign-key F3B607488DB35A47
+```
+
+```bash
+# Install keyring and mirrorlists
+pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-keyring-20240331-1-any.pkg.tar.zst'
+pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-mirrorlist-22-1-any.pkg.tar.zst'
+pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-v4-mirrorlist-22-1-any.pkg.tar.zst'
+```
+
+```bash
+# Edit /etc/pacman.conf
+nano /etc/pacman.conf
+```
+
+```bash
+# Find out what your CPU architecture is. For me its znver4.
+# if unsure leave out -znver4 and simply do cachyos, cachyos-core etc
+# Above core add the znver4 repos:
+# CachyOS znver4 repos for AMD Zen 4 and Zen 5
+#
+# Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
+# Add them on top in this direction:
+
+[cachyos-znver4]
+Include = /etc/pacman.d/cachyos-v4-mirrorlist
+
+[cachyos-core-znver4]
+Include = /etc/pacman.d/cachyos-v4-mirrorlist
+
+[cachyos-extra-znver4]
+Include = /etc/pacman.d/cachyos-v4-mirrorlist
+```
+
+### 6.1 Update mirrors and run reflector to new Cachy mirrors
+```bash
+# Update package database
+pacman -Syu
+
+# Update reflector
+reflector -c NO,SE,DK,DE,NL -a 12 -p https \
+--sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
+```
+
+FOR NVIDIA, look up AMDGPU if used:
+```bash
+pacman -S --needed linux-cachyos linux-cachyos-headers linux-cachyos-nvidia-open \
+scx-scheds scx-tools 
+```
+
+---
+
+
+### 6.5 Install Packages
+```bash
+# If not CachyOS:
+pacman -S --needed linux linux-headers
+
+# Install firmware and some core packages:
+# For AMD CPUs:
+pacman -S --needed linux-firmware amd-ucode nano sudo zsh
+
+# For INTEL CPUs:
+pacman -S --needed linux-firmware intel-ucode nano sudo zsh 
 ```
 
 ### 4.2 Set Timezone
@@ -426,6 +497,12 @@ passwd lars
 # Set zsh as default shell for user
 chsh -s /usr/bin/zsh lars
 
+# OPTIONAL: Point /bin/sh to dash for much faster sh
+# Be advised it can lead to problems with "bashisms"
+# but it's not a super huge problem, if unsure skip.
+pacman -S --needed dash
+ln -sfT dash /usr/bin/sh
+
 # Enable sudo for wheel group
 EDITOR=nano visudo
 # Uncomment: %wheel ALL=(ALL:ALL) ALL
@@ -491,8 +568,7 @@ pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty kio-admin sddm sddm-kcm kdegraphics-thumbnailers ffmpegthumbs \
-  linux-zen-headers linux-lts-headers \
-  nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda \
+  nvidia-open nvidia-utils libva-nvidia-driver libva-utils cuda \
   pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
   ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols \
@@ -505,7 +581,7 @@ pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty kio-admin \
-  sddm sddm-kcm linux-zen-headers linux-lts-headers kdegraphics-thumbnailers ffmpegthumbs \
+  sddm sddm-kcm kdegraphics-thumbnailers ffmpegthumbs \
   mesa vulkan-radeon \
   libva libva-utils \
   quota-tools hunspell hunspell-en_us usbutils \
@@ -521,7 +597,7 @@ pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty kio-admin \
-  sddm sddm-kcm linux-zen-headers linux-lts-headers kdegraphics-thumbnailers ffmpegthumbs \
+  sddm sddm-kcm kdegraphics-thumbnailers ffmpegthumbs \
   mesa vulkan-intel \
   libva libva-utils intel-media-driver \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
@@ -633,26 +709,30 @@ mkdir -p /efi/EFI/Linux
 
 #### Edit the mkinitcpio presets so they write UKIs to the ESP
 
+#### Non-CachyOS:
 ```bash
-nano /etc/mkinitcpio.d/linux-zen.preset
+nano /etc/mkinitcpio.d/linux.preset
 
-# Content:
-ALL_kver="/boot/vmlinuz-linux-zen"
+# Ensure ONLY these are uncommented, comment everything else:
+# Comment means "#" in front.
+ALL_kver="/boot/vmlinuz-linux"
 PRESETS=('default')
 
-default_uki="/efi/EFI/Linux/arch-linux-zen.efi"
+default_uki="/efi/EFI/Linux/arch-linux.efi"
 ```
 
-#### Repeat for LTS:
+#### CachyOS:
 
 ```bash
-nano /etc/mkinitcpio.d/linux-lts.preset
+# Don't do this one if you didn't enable CachyOS and install the kernel from them.
+nano /etc/mkinitcpio.d/linux-cachyos.preset
 
-# Content:
-ALL_kver="/boot/vmlinuz-linux-lts"
+# Ensure ONLY these are uncommented, comment everything else:
+# Comment means "#" in front.
+ALL_kver="/boot/vmlinuz-linux-cachyos"
 PRESETS=('default')
 
-default_uki="/efi/EFI/Linux/arch-linux-lts.efi"
+default_uki="/efi/EFI/Linux/arch-linux-cachyos.efi"
 
 ```
 
