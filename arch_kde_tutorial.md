@@ -350,6 +350,7 @@ systemd-nspawn -bD /mnt
 # OPTIONAL: CachyOS packages and Kernel
 
 ```bash
+# NOTE: Only if you have a specific CPU architecture that has a separate repository like -znver4
 # If you want CachyOS repos and kernel like I do, then this is how you do it
 # My reasoning for including is that the CachyOS kernel and packages are very good
 
@@ -381,9 +382,9 @@ nano /etc/pacman.conf
 
 ```bash
 # Find out what your CPU architecture is. For me its znver4.
-# if unsure leave out -znver4 and simply do cachyos, cachyos-core etc
-# Above core add the znver4 repos:
-# CachyOS znver4 repos for AMD Zen 4 and Zen 5
+#
+# Above core add the repos:
+# I willa add the CachyOS znver4 repos for AMD Zen 4 and Zen 5
 #
 # Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
 # Add them on top in this direction:
@@ -408,7 +409,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
 ```
 
-##### Install CachyOS Kernel + Headers + SCX Tools:
+##### Install CachyOS Kernel + Headers + SCX Tools + ananicy-cpp:
 
 ```bash
 pacman -S --needed linux-cachyos linux-cachyos-headers linux-cachyos-nvidia-open \
