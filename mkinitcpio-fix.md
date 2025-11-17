@@ -18,7 +18,9 @@
 sudo mkinitcpio -P
 ```
 
-### OPTION A) Install all the firmware from the AUR
+Now you have two bad options:
+
+## OPTION A) Install all the firmware from the AUR
 
 This may seem like a nobrainer compared to Option B, but it really isn't. It is maintained by a third party which is by definition unsafe and it will populate your hardware with a bunch of outdated firmware which will take up space and introduce a wildcard element. It **should** be fine but it might not be one day. It is overkill for a bunch of terminal noise anyways, but that terminal noise has a real effect of harm which I wish the mkinitcpio maintainers could understand.
 
@@ -26,11 +28,11 @@ This may seem like a nobrainer compared to Option B, but it really isn't. It is 
 yay -S --needed --noconfirm mkinitcpio-firmware
 ```
 
-### OPTION B) OR Copy a script that silences them by making dummy firmware
+## OPTION B) OR Copy a script that silences them by making dummy firmware
 
 ---
 
-### **Disclaimer:**  
+## **Disclaimer:**  
 ##### There is no guarantee that what the scripts write dummies for is one of these ancient modules.
 ##### PLEASE confirm that the errors you see are irrelevant by checking the wiki list of firmware FIRST, before running this script:
 
