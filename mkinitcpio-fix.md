@@ -2,9 +2,9 @@
 
 ### Preamble:
 
-TBH: This is more than just an annoyance, it is a huge problem. Due to this issue people either become complacant to seeing firmware errors and become unaware of which ones are real and which ones are a problem. If a firmware issue occurs in the future it might go unnoticed, leading to system failure and potential data loss. Ideally the firmware would only give such errors based on a query of the system of some kind, but that is not the case.
+So this is more than just an annoyance, it is actually a huge problem. Due to this issue people become complacant to seeing firmware errors and are thus unaware of which ones are real and which ones are a problem. If a firmware issue occurs in the future it might go unnoticed, leading to system failure and potential data loss. Ideally the firmware would only give such errors based on a query of the system of some kind, but that is not the case.
 
-This is one of the few things I would say is a geniune a criticism of mkinitcpio/Arch Linux, an otherwise sane and excellent project (both of them). There is just no justification for mkinitcpio spamming this type of completely outdated nonsense every initramfs generation. Whatever reason upstream has for this, it will never be justified because end users are confused and it leads to a less secure environment when complacancy sets in. "RTFM" is not a magic bullet against spreading harm, and that is what this ends up doing. This is why I found it vital to include this separate tutorial despite deciding to remove fallback from my opinionated tutorial.
+This is one of the few things I would say is a geniune a criticism of mkinitcpio/Arch Linux, an otherwise sane and excellent project (both of them). There is just no justification for mkinitcpio spamming this type of completely outdated nonsense every initramfs generation. Whatever reason upstream has for this, it will never be justified because end users are confused and it leads to a less secure environment when complacancy sets in. "RTFM" is not some magic bullet against spreading harm, and that is what this ends up doing. This is why I found it vital to include this separate tutorial despite deciding to remove fallback from my opinionated tutorial.
 
 ---
 
@@ -38,9 +38,8 @@ yay -S --needed --noconfirm mkinitcpio-firmware
 
 ## OPTION B) OR Copy a script that silences them by making dummy firmware
 
-**Please Note:**
-##### There is no guarantee that what the scripts write dummies for is one of these ancient modules.
-##### PLEASE confirm that the errors you see are irrelevant by checking the wiki list of firmware FIRST, before running this script:
+### There is NO guarantee in the script that what it write dummies for is one of these ancient modules.
+### PLEASE confirm that the errors you see are irrelevant by checking the wiki list of firmware FIRST, before running this script:
 
 [Arch Wiki | Mkinitcpio/Possibly_missing_firmware_for_module_XXXX
 ](https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX
