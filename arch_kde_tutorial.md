@@ -867,7 +867,6 @@ systemd-dissect --mount /dev/nvme0n1 /mnt  # or sda, check with lsblk -l
 systemd-nspawn -bD /mnt
 # Perform whatever maintenance you need to do
 poweroff
-# Unmount it cleanly
 systemd-dissect --umount /dev/nvme0n1
 ```
 
