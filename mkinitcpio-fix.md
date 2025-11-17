@@ -51,17 +51,16 @@ sudo nano /usr/local/sbin/mkinitcpio-silence-missing-fw
 
 #### 1.5) Then paste ALL of this underneath into it with CTRL + **SHIFT** + V
 ```bash
-# MIT License
-# Copyright (c) 2025 Lars Slettan Øydneskleiv
+#!/usr/bin/env bash
+# mkinitcpio-silence-missing-fw
 #
-# Permission is hereby granted to use, copy, modify, and distribute the software
-# and associated documentation for free, under certain conditions:
-# - Include this copyright and permission notice in all copies/substantial portions.
+# Copyright (c) 2025 Lars
+# SPDX-License-Identifier: MIT
 #
-# The software is provided "as is", with no warranty of any kind.
+# Permission is granted to use, copy, modify, and distribute this script
+# under the terms of the MIT License. See the LICENSE file distributed
+# in this repository or <https://opensource.org/license/mit> for details.
 #
-# ----- /usr/local/sbin/mkinitcpio-silence-missing-fw -----
-##!/usr/bin/env bash
 set -euo pipefail
 
 FWROOT="/usr/lib/firmware"
