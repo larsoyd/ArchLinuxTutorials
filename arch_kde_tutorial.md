@@ -417,7 +417,8 @@ scx-scheds scx-tools ananicy-cpp
 
 # AMDGPU and Intel can skip the NVIDIA package.
 
-# Enable SCX and ananicy ccp
+# Enable SCX and ananicy ccp - We will install the cachyos ananicy rules
+# from AUR after install
 systemctl enable ananicy-cpp scx.service
 ```
 
@@ -431,10 +432,10 @@ pacman -S --needed linux linux-headers
 
 # Install firmware and some core packages:
 # For AMD CPUs:
-pacman -S --needed linux-firmware amd-ucode nano sudo zsh
+pacman -S --needed linux-firmware amd-ucode nano sudo zsh systemd-ukify
 
 # For INTEL CPUs:
-pacman -S --needed linux-firmware intel-ucode nano sudo zsh 
+pacman -S --needed linux-firmware intel-ucode nano sudo zsh systemd-ukify
 ```
 
 ### 4.2 Set Timezone
@@ -722,39 +723,22 @@ rw rootflags=noatime nowatchdog loglevel=3 zswap.compressor=lz4
 mkdir -p /efi/EFI/Linux
 ```
 
-#### Edit the mkinitcpio presets so they write UKIs to the ESP
+#### Edit kernel-install config so it installs UKIs to the ESP
 
-#### Non-CachyOS:
 ```bash
-nano /etc/mkinitcpio.d/linux.preset
-
-# Ensure ONLY these are uncommented, comment everything else:
-# Comment means "#" in front.
-ALL_kver="/boot/vmlinuz-linux"
-PRESETS=('default')
-
-default_uki="/efi/EFI/Linux/arch-linux.efi"
+# Edit:
+nano /etc/kernel/install.conf
 ```
 
-#### CachyOS:
-
 ```bash
-# Don't do this one if you didn't enable CachyOS and install the kernel from them.
-nano /etc/mkinitcpio.d/linux-cachyos.preset
-
-# Ensure ONLY these are uncommented, comment everything else:
-# Comment means "#" in front.
-ALL_kver="/boot/vmlinuz-linux-cachyos"
-PRESETS=('default')
-
-default_uki="/efi/EFI/Linux/arch-linux-cachyos.efi"
-
+# Add only:
+layout=uki
 ```
 
-#### Build the UKIs / This writes both kernel *.efi's into ESP/EFI/Linux/:
-
+### Now install kernel UKIs
 ```bash
-mkinitcpio -P
+# Simply run
+kernel-install
 ```
 
 #### Configure bootloader
@@ -819,9 +803,9 @@ sysctl --system
 
 #### Force GTK to use Portals
 ```bash
-# This is important for file pickers etc
-# Sometimes programs insist on using the wrong one
-# instead of Dolphin (Your File Manager)
+# This is important for file pickers and GTK windows on KDE
+# This may mean nothing to you now, but basically its the
+# difference between having a maximize button on Firefox and not.
 #
 mkdir -p /etc/environment.d
 nano /etc/environment.d/99-portal.conf 
