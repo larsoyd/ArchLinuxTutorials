@@ -420,8 +420,6 @@ pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
 linux-cachyos-lts-headers \
 scx-scheds scx-tools ananicy-cpp
 
-# AMDGPU and Intel can skip the NVIDIA package.
-
 # Enable SCX and ananicy-ccp - We will install the cachyos rules for ananicy-ccp
 # from AUR after install
 systemctl enable ananicy-cpp scx.service
