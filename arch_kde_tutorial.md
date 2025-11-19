@@ -323,10 +323,6 @@ reflector \ # this is a line, press enter
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 -l 10 --sort rate --save /etc/pacman.d/mirrorlist
 
-# or if you want to test the mirrors by speed do:
-reflector -c NO,SE,DK,DE,NL -a 12 -p https \
---sort rate --fastest 10 --download-timeout 10 --save /etc/pacman.d/mirrorlist
-
 # and then **Install the base of Arch Linux!** :
 pacstrap /mnt base
 ```
