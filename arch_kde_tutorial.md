@@ -358,7 +358,7 @@ arch-chroot /mnt
 ```bash
 # Import and locally sign the CachyOS repo key
 # Automatically fetch and sign the keys:
-curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos.sh | bash
+curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos-keys.sh | bash
 
 # Manually fetch and sign the keys:
 # Grab the CachyOS signing key from Ubuntu's keyserver
