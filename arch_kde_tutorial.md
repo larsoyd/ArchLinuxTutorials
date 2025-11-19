@@ -365,15 +365,20 @@ curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/mai
 # OPTION B) Or do it manually, have fun!
 #
 # Import and locally sign the CachyOS repo key
+# Automatically fetch and sign the keys:
+curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos.sh | bash
+
+# Manually fetch and sign the keys:
 # Grab the CachyOS signing key from Ubuntu's keyserver
 pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
 # Locally sign the CachyOS key so pacman trusts it
 pacman-key --lsign-key F3B607488DB35A47
 
-# Install keyring and mirrorlists
-pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-keyring-20240331-1-any.pkg.tar.zst'
-pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-mirrorlist-22-1-any.pkg.tar.zst'
-pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-v4-mirrorlist-22-1-any.pkg.tar.zst'
+# Then after keys you install mirrorlists for your hardware automatically
+curl https://mirror.cachyos.org/cachyos-repo.tar.xz -o cachyos-repo.tar.xz
+tar xvf cachyos-repo.tar.xz
+cd cachyos-repo
+./cachyos-repo.sh
 ```
 
 ```bash
