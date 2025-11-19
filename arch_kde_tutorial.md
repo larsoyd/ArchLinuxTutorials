@@ -346,10 +346,9 @@ arch-chroot /mnt
 
 # OPTIONAL: CachyOS packages and Kernel
 
+If you want CachyOS repos and kernel like I do, then this is how you do it:
+
 ```bash
-# NOTE: This is only if you have a specific CPU architecture that has a separate repository like -znver4
-#
-# If you want CachyOS repos and kernel like I do, then this is how you do it
 # My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
 # It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
 # their kernel, which is already tuned for you. First you need to add their keyring and mirrorfiles.
@@ -383,9 +382,8 @@ nano /etc/pacman.conf
 ```
 
 ```bash
-# Find out what your CPU architecture is. For me its znver4.
-#
-# I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5
+# I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5 which the script
+# automatically detects, if it isnt znver4 on your box then it will be '-v4'
 #
 # IMPORTANT: Remove the regular [cachyos] added by the script, it pulls in
 # a forked `pacman` which can lead to issues on an Arch system
