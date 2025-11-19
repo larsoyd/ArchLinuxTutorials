@@ -427,7 +427,29 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 ```bash
 pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
 linux-cachyos-lts-headers scx-scheds scx-tools ananicy-cpp
+```
 
+#### Tune SCX
+
+```bash
+mkdir -p /etc/scx_loader 
+nano /etc/scx_loader/config.toml
+```
+
+```bash
+# /etc/scx_loader/config.toml
+default_sched = "scx_lavd"
+default_mode = "Auto"
+
+[scheds.scx_lavd]
+auto_mode = []
+gaming_mode = ["--performance"]
+lowlatency_mode = ["--performance"]
+powersave_mode = ["--powersave"]
+server_mode = []
+```
+
+```bash
 # Enable SCX and ananicy-ccp - We will install the cachyos rules for ananicy-ccp
 # from AUR after install
 systemctl enable ananicy-cpp scx.service
