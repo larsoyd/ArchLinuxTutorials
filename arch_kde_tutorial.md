@@ -521,8 +521,13 @@ chsh -s /usr/bin/zsh lars
 
 # OPTIONAL: Point /bin/sh to dash for much faster sh
 # Be advised it can lead to problems with "bashisms"
-# but it's not a super huge problem, if unsure skip.
-pacman -S --needed dash
+# but it's not a super huge problem, as it's default on Debian & Ubuntu
+# Because of that most shell scripts now come with a header
+# that explicitly defines a bash script necessary.
+#
+# If you are unsure about a script run "checkbashisms" on it via terminal.
+#
+pacman -S --needed dash checkbashisms
 ln -sfT dash /usr/bin/sh
 
 # Enable sudo for wheel group
