@@ -522,11 +522,11 @@ chsh -s /usr/bin/zsh lars
 # OPTIONAL: Point /bin/sh to dash for much faster sh
 # Be advised it can lead to problems with "bashisms"
 # but it's not a super huge problem, as it's default on Debian & Ubuntu
-# Because of that most shell scripts now come with a header
-# that explicitly defines a bash script necessary.
+# Because of that it is de facto a standard in Linux for most  shell scripts to
+# come with a header that explicitly defines a bash script whenever necessary.
 #
-# If you are unsure about a script run "checkbashisms" on it via terminal.
-#
+# You will mostly be fine, but if you are ever unsure
+# run "checkbashisms" on the *.sh file via the terminal.
 pacman -S --needed dash checkbashisms
 ln -sfT dash /usr/bin/sh
 
