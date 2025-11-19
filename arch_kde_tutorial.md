@@ -519,7 +519,10 @@ passwd lars
 # Set zsh as default shell for user
 chsh -s /usr/bin/zsh lars
 
-# OPTIONAL: Point /bin/sh to dash for much faster sh
+
+```bash
+# OPTIONAL: Point /bin/sh to dash for 4x faster sh scripts
+#
 # Be advised it can lead to problems with "bashisms"
 # but it's not a super huge problem, as it's default on Debian & Ubuntu
 # Because of that it is de facto a standard in Linux for most  shell scripts to
@@ -528,9 +531,13 @@ chsh -s /usr/bin/zsh lars
 # You will mostly be fine, but if you are ever unsure
 # run "checkbashisms" on the *.sh file via the terminal.
 pacman -S --needed dash checkbashisms
-ln -sfT dash /usr/bin/sh
 
-# Enable sudo for wheel group
+# Then do this to symlink dash to /usr/bin/sh
+ln -sfT dash /usr/bin/sh
+```
+
+```bash
+# Finally enable sudo for wheel group
 EDITOR=nano visudo
 # Uncomment: %wheel ALL=(ALL:ALL) ALL
 ```
