@@ -362,12 +362,18 @@ If you want CachyOS repos and kernel like I do, then this is how you do it:
 curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos.sh | bash
 
 # Option B) Manually fetch and sign the keys:
-# Grab the CachyOS signing key from Ubuntu's keyserver
+
+# Initialize keys
 pacman-key --init
+
+# Populate keys
+pacman-key --populate
+
+# Grab the CachyOS signing key from Ubuntu's keyserver
 pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
+
 # Locally sign the CachyOS key so pacman trusts it
 pacman-key --lsign-key F3B607488DB35A47
-
 
 # Clone my keyring sync helper
 cd /tmp/
