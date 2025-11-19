@@ -877,11 +877,30 @@ sysctl --system
 mkdir -p /etc/environment.d
 nano /etc/environment.d/99-portal.conf 
 ```
+
 ```ini
 # 99-portal.conf 
 GTK_USE_PORTAL=1
 GDK_DEBUG=portals
 ```
+
+#### Optional: Set SDDM Theme Before Reboot
+
+```bash
+# This will set your SDDM theme so you aren't
+# met with an old login screen first boot
+#
+# If you want to do this later that's okay
+mkdir -p /etc/sddm.conf.d
+nano /etc/sddm.conf.d/10-breeze.conf
+```
+
+```ini
+# 10-breeze.conf
+[Theme]
+Current=breeze
+```
+
 
 ### 4.10 Enable Essential Services
 
@@ -909,17 +928,14 @@ umount -R /mnt
 shutdown now
 
 # Remove ArchISO USB from computer then boot back into it
-
-# If you see a very generic type of screen, dont worry. That happens to me on every install.
 #
-# To fix, log in to the system and launch "System Settings" from the Start Menu (Application launcher)
-# 
+# Howto change SDDM Theme if you didn't manually and were met with a "Classic" Theme:
 # Navigate to Colors & Themes -> Login Screen (SDDM) -> then select "Breeze" and hit Apply
 # It will then have applied it and on next reboot and others after it will persist
 # 
-# This is also the way to fix if the taskbar (panel) appears on the wrong monitor, simply go to Global Theme
+# This is also the way to fix if the taskbar (panel) appears on the wrong monitor: Simply go to Global Theme
 # Press Breeze or Breeze-Dark, select BOTH checkboxes and hit apply. Wait and then it will correctly apply
-# This will also persist on reboots as well. Two odd bugs I've ran into but not something that persists afterwards.
+# This will also persist on reboots as well. 
 ```
 
 ---
