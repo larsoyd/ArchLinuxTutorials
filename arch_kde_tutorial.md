@@ -378,12 +378,17 @@ systemctl enable cachyos-keyring-sync.timer
 
 # Clone repo for mirrorlist
 cd /tmp/
-git clone https://github.com/larsoyd/ArchLinuxTutorials
-cd ArchLinuxTutorials
+git clone https://github.com/larsoyd/cachyos-mirror-sync.git
+cd cachyos-mirror-sync
 
-# Install mirrorlists
-chmod +x mirror.sh
-bash mirror.sh
+# Ensure all script files are executable
+find . -type f -name '*.sh' -exec chmod +x {} +
+
+# Install the helper + units
+./setup.sh
+
+# Enable weekly automatic key refresh
+systemctl enable cachyos-mirror-sync.timer
 
 # Leave /tmp/
 cd
