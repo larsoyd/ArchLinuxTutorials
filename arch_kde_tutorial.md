@@ -579,11 +579,6 @@ If you need printer support. You will also need to enable `cups.service` at the 
 
 # 4.6 Install the System
 
-```bash
-# Update package database
-pacman -Syu
-```
-
 **EITHER**
 
 NVIDIA: 
