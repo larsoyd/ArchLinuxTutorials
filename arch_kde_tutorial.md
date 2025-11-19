@@ -409,7 +409,7 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 ### 6.1 Update mirrors and run reflector to new Cachy mirrors
 ```bash
 # Update package database
-pacman -Syu
+pacman -Syy
 
 # Update reflector
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
