@@ -356,12 +356,16 @@ arch-chroot /mnt
 # If you want CachyOS repos and kernel like I do, then this is how you do it
 # My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
 # It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
-# their kernel, which is already tuned for you.
+# their kernel, which is already tuned for you. First you need to add their keyring and mirrorfiles.
+```
 
+```bash
 # OPTION A) Use my script. Read it first as you always should (its in the repo),
 # but all it does is automate those steps from hell under there that you do not want to write out by hand
 curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos.sh | bash
+```
 
+```bash
 # OPTION B) Or do it manually, have fun!
 #
 # Import and locally sign the CachyOS repo key
@@ -379,8 +383,8 @@ pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-v4-mirrorlist-
 ```
 
 ```bash
-# Now that you have (hopefully) used the script you need to edit
-# /etc/pacman.conf
+# Now that you have (hopefully) used the script and added the mirrors + keys
+# You need to edit /etc/pacman.conf
 nano /etc/pacman.conf
 ```
 
