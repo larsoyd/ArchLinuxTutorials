@@ -326,11 +326,8 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 # or if you want to test the mirrors by speed do:
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 10 --save /etc/pacman.d/mirrorlist
-```
 
 and then **Install the base of Arch Linux!** :
-
-```bash
 pacstrap /mnt base
 ```
 
@@ -390,9 +387,7 @@ nano /etc/pacman.conf
 ```bash
 # Find out what your CPU architecture is. For me its znver4.
 #
-# Above core add the repos:
-# I willa add the CachyOS znver4 repos for AMD Zen 4 and Zen 5
-#
+# I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5
 # Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
 # Add them on top in this direction:
 
@@ -424,7 +419,7 @@ scx-scheds scx-tools ananicy-cpp
 
 # AMDGPU and Intel can skip the NVIDIA package.
 
-# Enable SCX and ananicy ccp - We will install the cachyos ananicy rules
+# Enable SCX and ananicy-ccp - We will install the cachyos rules for ananicy-ccp
 # from AUR after install
 systemctl enable ananicy-cpp scx.service
 ```
