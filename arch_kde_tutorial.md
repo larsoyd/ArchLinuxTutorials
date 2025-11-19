@@ -391,7 +391,7 @@ nano /etc/pacman.conf
 #
 # I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5
 # Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
-# Add them on top in this direction:
+# Add them above the other repos in the same section & in this direction:
 
 [cachyos-znver4]
 Include = /etc/pacman.d/cachyos-v4-mirrorlist
