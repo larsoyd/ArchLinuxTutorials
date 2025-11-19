@@ -373,9 +373,7 @@ curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/mai
 pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
 # Locally sign the CachyOS key so pacman trusts it
 pacman-key --lsign-key F3B607488DB35A47
-```
 
-```bash
 # Install keyring and mirrorlists
 pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-keyring-20240331-1-any.pkg.tar.zst'
 pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-mirrorlist-22-1-any.pkg.tar.zst'
