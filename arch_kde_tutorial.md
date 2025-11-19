@@ -757,7 +757,7 @@ layout=uki
 ### Now install kernel UKIs
 ```bash
 # Simply run
-kernel-install
+sudo kernel-install add-all
 ```
 
 #### Configure bootloader
