@@ -442,7 +442,11 @@ default_sched = "scx_lavd"
 default_mode = "Auto"
 
 [scheds.scx_lavd]
-auto_mode = ["--performance"]
+auto_mode       = []
+gaming_mode     = ["--performance"]
+lowlatency_mode = ["--performance"]
+powersave_mode  = ["--powersave"]
+server_mode     = []
 ```
 
 ```bash
