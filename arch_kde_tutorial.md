@@ -518,7 +518,7 @@ passwd lars
 
 # Set zsh as default shell for user
 chsh -s /usr/bin/zsh lars
-
+```
 
 ```bash
 # OPTIONAL: Point /bin/sh to dash for 4x faster sh scripts
