@@ -327,7 +327,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 10 --save /etc/pacman.d/mirrorlist
 
-and then **Install the base of Arch Linux!** :
+# and then **Install the base of Arch Linux!** :
 pacstrap /mnt base
 ```
 
