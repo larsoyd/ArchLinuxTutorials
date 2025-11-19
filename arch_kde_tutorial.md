@@ -414,7 +414,7 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 
 ### 6.1 Update mirrors and run reflector to new Cachy mirrors
 ```bash
-# Revert the pacman pull & Update package database
+# Update package database
 pacman -Syu
 
 # Update reflector
@@ -426,8 +426,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 
 ```bash
 pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
-linux-cachyos-lts-headers \
-scx-scheds scx-tools ananicy-cpp
+linux-cachyos-lts-headers scx-scheds scx-tools ananicy-cpp
 
 # Enable SCX and ananicy-ccp - We will install the cachyos rules for ananicy-ccp
 # from AUR after install
