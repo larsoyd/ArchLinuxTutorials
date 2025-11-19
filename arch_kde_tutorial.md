@@ -363,22 +363,6 @@ pacman-key --init
 # Populate keys
 pacman-key --populate
 
-cd /tmp/
-git clone https://github.com/larsoyd/ArchLinuxTutorials
-cd ArchLinuxTutorials
-
-# Automatically fetch and sign the keys + mirrors via my script.
-# Always read any script you run online before you run them:
-chmod +x cachyos-keysign.sh
-bash cachyos-keysign.sh
-
-# Install mirrorlists
-chmod +x mirror.sh
-bash mirror.sh
-
-Go back out to tmp/
-cd /tmp/
-
 # Clone my keyring sync helper (read and confirm this one too)
 git clone https://github.com/larsoyd/cachyos-keyring-sync.git
 cd cachyos-keyring-sync
@@ -391,6 +375,15 @@ find . -type f -name '*.sh' -exec chmod +x {} +
 
 # Enable weekly automatic key refresh
 systemctl enable cachyos-keyring-sync.timer
+
+# Clone repo for mirrorlist
+cd /tmp/
+git clone https://github.com/larsoyd/ArchLinuxTutorials
+cd ArchLinuxTutorials
+
+# Install mirrorlists
+chmod +x mirror.sh
+bash mirror.sh
 
 # Leave /tmp/
 cd
