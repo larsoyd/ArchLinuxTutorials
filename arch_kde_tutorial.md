@@ -340,9 +340,13 @@ pacstrap /mnt base
 
 ```bash
 # However before you can say you've installed arch you need to configure the system
-# This is how you chroot into your newly installed system:
+# This is my way of chrooting into a newly installed system:
 #
 systemd-nspawn -bD /mnt
+
+# If you prefer a more traditional chrooting which does not come with systemd management
+# which systemd-nspawn does, then do this instead:
+arch-chroot /mnt
 ```
 
 ---
@@ -352,7 +356,9 @@ systemd-nspawn -bD /mnt
 ```bash
 # NOTE: Only if you have a specific CPU architecture that has a separate repository like -znver4
 # If you want CachyOS repos and kernel like I do, then this is how you do it
-# My reasoning for including is that the CachyOS kernel and packages are very good
+# My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
+# It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
+# their kernel, which is already tuned for you.
 
 # OPTION A) Use my script. Read it first as you always should (its in the repo),
 # but all it does is automate those steps from hell under there that you do not want to write out by hand
