@@ -442,17 +442,13 @@ default_sched = "scx_lavd"
 default_mode = "Auto"
 
 [scheds.scx_lavd]
-auto_mode = []
-gaming_mode = ["--performance"]
-lowlatency_mode = ["--performance"]
-powersave_mode = ["--powersave"]
-server_mode = []
+auto_mode = ["--performance"]
 ```
 
 ```bash
 # Enable SCX and ananicy-ccp - We will install the cachyos rules for ananicy-ccp
 # from AUR after install
-systemctl enable ananicy-cpp scx.service
+systemctl enable ananicy-cpp scx_loader.service
 ```
 
 ---
