@@ -65,7 +65,7 @@ Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random update
 
 - systemd-automount for GPT partitions 
 - KDE Plasma on Wayland
-- `linux` default kernel, optional `linux-cachyos` for optimized kernel.
+- `linux-zen` default kernel, `linux-lts` backup. Optional `linux-cachyos` and `linux-cachyos-lts` for optimized kernel.
 - zsh default shell for users, optional dash shell for /usr/bin/sh 
 - systemd-boot with UKIs
 - zswap with a 16 GiB swap file
