@@ -385,6 +385,10 @@ nano /etc/pacman.conf
 # Find out what your CPU architecture is. For me its znver4.
 #
 # I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5
+#
+# IMPORTANT: Remove the regular [cachyos] added by the script, it pulls in
+# a forked `pacman` which can lead to issues on an Arch system
+#
 # Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
 # Add them above the other repos in the same section & in this direction:
 
@@ -396,6 +400,10 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 
 [cachyos-extra-znver4]
 Include = /etc/pacman.d/cachyos-v4-mirrorlist
+
+# REMOVE or comment out:
+# [cachyos]
+# Include = /etc/pacman.d/cachyos-mirrorlist
 ```
 
 ### 6.1 Update mirrors and run reflector to new Cachy mirrors
