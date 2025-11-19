@@ -368,14 +368,31 @@ pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
 # Locally sign the CachyOS key so pacman trusts it
 pacman-key --lsign-key F3B607488DB35A47
 
-# Then add mirrors
-pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-keyring-20240331-1-any.pkg.tar.zst'
+
+# Clone my keyring sync helper
+cd /tmp/
+git clone https://github.com/larsoyd/cachyos-keyring-sync.git
+cd cachyos-keyring-sync
+
+# Ensure all script files are executable
+find . -type f -name '*.sh' -exec chmod +x {} +
+
+# Install the helper + units
+./setup.sh
+
+# Enable weekly automatic key refresh
+systemctl enable cachyos-keyring-sync.timer
+
+# Leave /tmp/
+cd
+
+# Install mirrorlists
 pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-mirrorlist-22-1-any.pkg.tar.zst'
 pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-v4-mirrorlist-22-1-any.pkg.tar.zst'
 ```
 
 ```bash
-# Now that you have (hopefully) used the script and added the mirrors + keys
+# Now that you have added the mirrors + keys
 # You need to edit /etc/pacman.conf
 nano /etc/pacman.conf
 ```
