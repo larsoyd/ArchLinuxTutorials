@@ -521,15 +521,16 @@ chsh -s /usr/bin/zsh lars
 ```
 
 ```bash
-# OPTIONAL: Point /bin/sh to dash for 4x faster sh scripts
+# OPTIONAL: Point /bin/sh to dash for 4x faster sh scripts which can make up a lot
+# of daily operation in Linux
 #
-# Be advised it can lead to problems with "bashisms"
+# BE ADVISED it can lead to problems with "bashisms"
 # but it's not a super huge problem, as it's default on Debian & Ubuntu
-# Because of that it is de facto a standard in Linux for most  shell scripts to
+# Because of that it is de facto a standard in Linux for most shell scripts to
 # come with a header that explicitly defines a bash script whenever necessary.
 #
-# You will mostly be fine, but if you are ever unsure
-# run "checkbashisms" on the *.sh file via the terminal.
+# You will be fine, but if you are ever unsure then you can
+# run "checkbashisms" on the *.sh file via the terminal or skip this step entirely.
 pacman -S --needed dash checkbashisms
 
 # Then do this to symlink dash to /usr/bin/sh
