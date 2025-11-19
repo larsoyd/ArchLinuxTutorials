@@ -870,7 +870,10 @@ fstrim.timer reflector.timer pkgstats.timer
 # Exit systemd-nspawn environment
 poweroff
 
-# Unmount all partitions
+# or if you used arch-chroot
+exit
+
+# Then unmount all partitions
 umount -R /mnt
 
 # Reboot into new system
