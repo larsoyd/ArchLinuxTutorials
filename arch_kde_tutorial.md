@@ -354,7 +354,8 @@ arch-chroot /mnt
 # OPTIONAL: CachyOS packages and Kernel
 
 ```bash
-# NOTE: Only if you have a specific CPU architecture that has a separate repository like -znver4
+# NOTE: This is only if you have a specific CPU architecture that has a separate repository like -znver4
+#
 # If you want CachyOS repos and kernel like I do, then this is how you do it
 # My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
 # It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
