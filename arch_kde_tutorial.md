@@ -369,10 +369,12 @@ cd ArchLinuxTutorials
 
 # Automatically fetch and sign the keys + mirrors via my script.
 # Always read any script you run online before you run them:
-curl cachyos-keysign.sh | bash
+chmod +x cachyos-keysign.sh
+bash cachyos-keysign.sh
 
 # Install mirrorlists
-curl mirror.sh | bash
+chmod +x mirror.sh
+bash mirror.sh
 
 Go back out to tmp/
 cd /tmp/
