@@ -356,14 +356,6 @@ arch-chroot /mnt
 ```
 
 ```bash
-# OPTION A) Use my script. Read it first as you always should (its in the repo),
-# but all it does is automate those steps from hell under there that you do not want to write out by hand
-curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos.sh | bash
-```
-
-```bash
-# OPTION B) Or do it manually, have fun!
-#
 # Import and locally sign the CachyOS repo key
 # Automatically fetch and sign the keys:
 curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos.sh | bash
