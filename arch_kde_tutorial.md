@@ -368,6 +368,9 @@ pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
 pacman-key --lsign-key F3B607488DB35A47
 
 # Then after keys you install mirrorlists for your hardware automatically
+# It will run pacman -Syu automatically which means it pulls in a forked
+# version of pacman, so after we modify the repos afterwards we must
+# run pacman -Syu again to revert just that one bit
 cd /tmp/
 curl https://mirror.cachyos.org/cachyos-repo.tar.xz -o cachyos-repo.tar.xz
 tar xvf cachyos-repo.tar.xz
@@ -407,8 +410,8 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 
 ### 6.1 Update mirrors and run reflector to new Cachy mirrors
 ```bash
-# Update package database
-pacman -Syy
+# Revert the pacman pull & Update package database
+pacman -Syu
 
 # Update reflector
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
