@@ -416,7 +416,8 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 ##### Install CachyOS Kernel + Headers + SCX Tools + ananicy-cpp:
 
 ```bash
-pacman -S --needed linux-cachyos linux-cachyos-headers linux-cachyos-nvidia-open \
+pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
+linux-cachyos-lts-headers \
 scx-scheds scx-tools ananicy-cpp
 
 # AMDGPU and Intel can skip the NVIDIA package.
@@ -431,8 +432,9 @@ systemctl enable ananicy-cpp scx.service
 
 ### 6.5 Install Packages
 ```bash
-# If you didn't get the CachyOS kernel:
-pacman -S --needed linux linux-headers
+# If you didn't get the CachyOS kernel get linux-zen and linux-lts instead.
+# linux-zen is a tuned kernel, it has nothing to do with the Zen architecture by AMD FYI.
+pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
 
 # Install firmware and some core packages:
 # For AMD CPUs:
@@ -601,7 +603,7 @@ pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty kio-admin sddm sddm-kcm kdegraphics-thumbnailers ffmpegthumbs \
-  nvidia-open nvidia-utils libva-nvidia-driver libva-utils cuda \
+  nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda \
   pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
   ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols \
