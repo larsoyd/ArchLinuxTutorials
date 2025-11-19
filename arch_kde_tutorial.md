@@ -363,6 +363,7 @@ curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/mai
 
 # Option B) Manually fetch and sign the keys:
 # Grab the CachyOS signing key from Ubuntu's keyserver
+pacman-key --init
 pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
 # Locally sign the CachyOS key so pacman trusts it
 pacman-key --lsign-key F3B607488DB35A47
