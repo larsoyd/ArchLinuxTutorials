@@ -761,8 +761,10 @@ kernel-install add-all
 #### Prevent Stale UKIs
 ```bash
 # To prevent stale UKIs you need a hook to run after every update
-# Or do it manually, but automatic is better. To do it first login
-# to your account in the chroot you made before like so:
+# Or do it manually, but automatic is better.
+#
+# To do it, first login to your account in the chroot you made
+# before like so:
 su - lars
 
 # Clone the AUR repo of the pacman hooks and build the package
@@ -770,16 +772,13 @@ cd /tmp/
 git clone https://aur.archlinux.org/pacman-hook-kernel-install.git
 cd pacman-hook-kernel-install
 
-# Always good practice to inspect PKGBUILD before building:
-#   less PKGBUILD
-
 # Build and install the package
 makepkg -si
 
 # Drop back to root in the chroot when done
 exit
 
-# And finally remove mkinitcpio hooks so you don't create duplicates
+# And finally deactivate the mkinitcpio hooks so you don't create duplicates
 ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
 ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ```
