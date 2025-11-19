@@ -357,9 +357,9 @@ If you want CachyOS repos and kernel like I do, then this is how you do it:
 ```bash
 # Import and locally sign the CachyOS repo key
 #
-# Option A) Automatically fetch and sign the keys via my script, all it does is the commands down there
+# Option A) Automatically fetch and sign the keys + mirrors via my script, all it does is the commands down there
 # but you should always read any script you run online. So read it in my repository first:
-curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos-keys.sh | bash
+curl https://raw.githubusercontent.com/larsoyd/ArchLinuxTutorials/refs/heads/main/cachyos.sh | bash
 
 # Option B) Manually fetch and sign the keys:
 # Grab the CachyOS signing key from Ubuntu's keyserver
@@ -367,15 +367,10 @@ pacman-key --recv-keys F3B607488DB35A47 --keyserver keyserver.ubuntu.com
 # Locally sign the CachyOS key so pacman trusts it
 pacman-key --lsign-key F3B607488DB35A47
 
-# Then after keys you install mirrorlists for your hardware automatically
-# It will run pacman -Syu automatically which means it pulls in a forked
-# version of pacman, so after we modify the repos afterwards we must
-# run pacman -Syu again to revert just that one bit
-cd /tmp/
-curl https://mirror.cachyos.org/cachyos-repo.tar.xz -o cachyos-repo.tar.xz
-tar xvf cachyos-repo.tar.xz
-cd cachyos-repo
-./cachyos-repo.sh
+# Then add mirrors
+pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-keyring-20240331-1-any.pkg.tar.zst'
+pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-mirrorlist-22-1-any.pkg.tar.zst'
+pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-v4-mirrorlist-22-1-any.pkg.tar.zst'
 ```
 
 ```bash
@@ -385,11 +380,8 @@ nano /etc/pacman.conf
 ```
 
 ```bash
-# I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5 which the script
-# automatically detects, if it isnt znver4 on your box then it will be '-v4'
-#
-# IMPORTANT: Remove the regular [cachyos] added by the script, it pulls in
-# a forked `pacman` which can lead to issues on an Arch system
+# I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5.
+# If your CPU don't support znver4 add 'cachyos-v4' and equivalents instead
 #
 # Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
 # Add them above the other repos in the same section & in this direction:
@@ -402,10 +394,6 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 
 [cachyos-extra-znver4]
 Include = /etc/pacman.d/cachyos-v4-mirrorlist
-
-# REMOVE or comment out:
-# [cachyos]
-# Include = /etc/pacman.d/cachyos-mirrorlist
 ```
 
 ### 6.1 Update mirrors and run reflector to new Cachy mirrors
