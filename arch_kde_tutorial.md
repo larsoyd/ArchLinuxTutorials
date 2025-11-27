@@ -372,33 +372,8 @@ cd ArchLinuxTutorials
 chmod +x setup.sh
 ./setup.sh
 
-# Clone my keyring sync helper (read and confirm this one too)
-cd /tmp/
-git clone https://github.com/larsoyd/cachyos-keyring-sync.git
-cd cachyos-keyring-sync
-
-# Ensure all script files are executable
-find . -type f -name '*.sh' -exec chmod +x {} +
-
-# Install the helper + units
-./setup.sh
-
 # Enable weekly automatic key refresh
-systemctl enable cachyos-keyring-sync.timer
-
-# Clone repo for mirrorlist
-cd /tmp/
-git clone https://github.com/larsoyd/cachyos-mirror-sync.git
-cd cachyos-mirror-sync
-
-# Ensure all script files are executable
-find . -type f -name '*.sh' -exec chmod +x {} +
-
-# Install the helper + units
-./setup.sh
-
-# Enable weekly automatic key refresh
-systemctl enable cachyos-mirror-sync.timer
+systemctl enable cachyos-rate-mirrors.timer
 
 # Leave /tmp/
 cd
