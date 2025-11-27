@@ -891,7 +891,7 @@ vm.dirty_bytes = 268435456
 # This is the swap counterpart to page cache readahead. The mentioned consecutivity is not in terms of virtual/physical addresses,
 # but consecutive on swap space - that means they were swapped out together. (Default is 3)
 # increase this value to 1 or 2 if you are using physical swap (1 if ssd, 2 if hdd)
-vm.page-cluster = 1
+vm.page-cluster = 0
 
 # Contains, as bytes, the number of pages at which the background kernel
 # flusher threads will start writing out dirty data.
