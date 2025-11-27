@@ -68,8 +68,8 @@ ccache --set-config=sloppiness=locale,time_macros
 
 ### 1.1 Build Optimization
 ```bash
-# Open /etc/makepkg.conf to tune build flags
-nano /etc/makepkg.conf
+# Create a makepkg.conf to tune build flags
+sudo nano ~/.makepkg.conf
 ```
 
 ### 1.2 Optimize builds
