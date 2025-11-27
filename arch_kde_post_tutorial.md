@@ -60,7 +60,7 @@ What you are looking out for are malicious links or anything else out of the ord
 ### 1.0 Install ccache and config ccache
 ```bash
 # Install ccache so rebuilds go faster
-pacman -S --needed ccache
+sudo pacman -S --needed ccache
 
 # Allow ccache to ignore locale/time macros for reproducible hits
 ccache --set-config=sloppiness=locale,time_macros
