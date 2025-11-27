@@ -372,7 +372,7 @@ cd ArchLinuxTutorials
 chmod +x setup.sh
 ./setup.sh
 
-# Enable weekly automatic key refresh
+# Enable mirror rate timer
 systemctl enable cachyos-rate-mirrors.timer
 
 # Leave /tmp/
