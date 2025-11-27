@@ -363,7 +363,17 @@ pacman-key --init
 # Populate keys
 pacman-key --populate
 
+# Clone this repo
+cd /tmp/
+git clone https://github.com/larsoyd/ArchLinuxTutorials.git
+cd ArchLinuxTutorials
+
+# Install + sign keys & mirrors
+chmod +x setup.sh
+./setup.sh
+
 # Clone my keyring sync helper (read and confirm this one too)
+cd /tmp/
 git clone https://github.com/larsoyd/cachyos-keyring-sync.git
 cd cachyos-keyring-sync
 
