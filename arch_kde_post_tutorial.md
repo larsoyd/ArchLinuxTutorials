@@ -75,7 +75,7 @@ nano /etc/makepkg.conf
 ### 1.2 Optimize builds
 ```bash
 # Add these flags for optimized builds
-CFLAGS="-march=znver4 -O3 -pipe -fno-plt -fexceptions \
+CFLAGS="-march=native -O3 -pipe -fno-plt -fexceptions \
         -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security \
         -fstack-clash-protection -fcf-protection -mpclmul"
 CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS"
