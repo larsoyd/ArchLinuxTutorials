@@ -407,7 +407,10 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 # Update package database
 pacman -Syu
 
-# Update reflector
+# Rate CachyOS Mirrors, run:
+cachyos-rate-mirrors
+
+# Then update reflector for fastest and longer timeout
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
 ```
