@@ -74,7 +74,8 @@ nano ~/.makepkg.conf
 
 ### 1.2 Optimize builds
 ```bash
-# Add these flags for optimized builds
+# Copy and paste these flags for optimized builds
+# CTRL + SHIFT + V
 CFLAGS="-march=native -O3 -pipe -fno-plt -fexceptions \
         -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security \
         -fstack-clash-protection -fcf-protection -mpclmul"
@@ -93,19 +94,6 @@ LTOFLAGS="-flto=auto"
 BUILDENV=(!distcc color ccache check !sign)
 
 OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge !debug lto !autodeps)
-```
-
-
-#### 1.8 Update BUILDENV and OPTIONS
-```sh
-# So you just remove the ! in front of ccache and lto.
-# The man page explicitly says that ccache in BUILDENV tells
-# makepkg to use ccache for compilation.
-BUILDENV=(!distcc color ccache check !sign)
-
-# Tells makepkg to inject those LTO flags when
-# building packages that do not explicitly disable lto.
-OPTIONS=(... lto ...)
 ```
 
 ### 2.2 Build and install yay
