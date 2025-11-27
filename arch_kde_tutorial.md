@@ -429,9 +429,13 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 ```
 
 ```bash
-# If your CPU only supports x86-64, then add the [cachyos] repositories
+# If your CPU only supports x86-64, then add the [cachyos], [cachyos-core], and [cachyos-extra] repositories
 # cachyos repos
 [cachyos]
+Include = /etc/pacman.d/cachyos-mirrorlist
+[cachyos-core]
+Include = /etc/pacman.d/cachyos-mirrorlist
+[cachyos-extra]
 Include = /etc/pacman.d/cachyos-mirrorlist
 ```
 
