@@ -89,16 +89,10 @@ LDFLAGS="-Wl,-O1 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now \
 GOAMD64=v4
 
 LTOFLAGS="-flto=auto"
-```
 
-#### 1.3 Find the BUILDENV= line (note the !ccache)
+BUILDENV=(!distcc color ccache check !sign)
 
-```sh
-# Find this ... :
-BUILDENV=(!distcc color !ccache check !sign)
-
-# ... and this line:
-OPTIONS=(... !lto ...)
+OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge !debug lto !autodeps)
 ```
 
 
