@@ -57,6 +57,63 @@ LLMs can help in parsing them if you are new, but *try* to learn how to read the
 What you are looking out for are malicious links or anything else out of the ordinary.
 ```
 
+### 1.0 Install ccache and config ccache
+```bash
+# Install ccache so rebuilds go faster
+pacman -S --needed ccache
+
+# Allow ccache to ignore locale/time macros for reproducible hits
+ccache --set-config=sloppiness=locale,time_macros
+```
+
+### 1.1 Build Optimization
+```bash
+# Open /etc/makepkg.conf to tune build flags
+nano /etc/makepkg.conf
+```
+
+### 1.2 Optimize builds
+```bash
+# Add these flags for optimized builds
+CFLAGS="-march=znver4 -O3 -pipe -fno-plt -fexceptions \
+        -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security \
+        -fstack-clash-protection -fcf-protection -mpclmul"
+CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS"
+
+MAKEFLAGS="-j$(nproc)"
+NINJAFLAGS="-j$(nproc)"
+
+LDFLAGS="-Wl,-O1 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now \
+         -Wl,-z,pack-relative-relocs"
+
+GOAMD64=v4
+
+LTOFLAGS="-flto=auto"
+```
+
+#### 1.3 Find the BUILDENV= line (note the !ccache)
+
+```sh
+# Find this ... :
+BUILDENV=(!distcc color !ccache check !sign)
+
+# ... and this line:
+OPTIONS=(... !lto ...)
+```
+
+
+#### 1.8 Update BUILDENV and OPTIONS
+```sh
+# So you just remove the ! in front of ccache and lto.
+# The man page explicitly says that ccache in BUILDENV tells
+# makepkg to use ccache for compilation.
+BUILDENV=(!distcc color ccache check !sign)
+
+# Tells makepkg to inject those LTO flags when
+# building packages that do not explicitly disable lto.
+OPTIONS=(... lto ...)
+```
+
 ### 2.2 Build and install yay
 ```bash
 cd /tmp                                      # go to the temporary directory
