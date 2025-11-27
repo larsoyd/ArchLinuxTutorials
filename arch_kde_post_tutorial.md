@@ -361,29 +361,7 @@ sudo nano /etc/sysctl.d/80-gaming.conf
 vm.max_map_count = 2147483642
 ```
 
-### 3.6 Install and configure cpupower
-```bash
-# cpupower sets cpu scheduler and is configurable
-yay -S --noconfirm --needed cpupower 
-```
-
-```bash
-# open in editor
-sudo nano /etc/default/cpupower
-```
-
-```ini
-# then set:
-governor='performance'
-```
-
-```bash
-# finally enable & verify
-sudo systemctl enable --now cpupower.service
-cpupower frequency-info
-```
-
-### 3.7 Apply all sysctl changes
+### 3.5 Apply all sysctl changes
 ```bash
 sudo sysctl --system
 ```
