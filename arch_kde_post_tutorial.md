@@ -93,7 +93,7 @@ LTOFLAGS="-flto=auto"
 
 BUILDENV=(!distcc color ccache check !sign)
 
-OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge !debug lto autodeps)
+OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge !debug lto !autodeps)
 ```
 
 ### 2.2 Build and install yay
