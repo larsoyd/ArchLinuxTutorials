@@ -387,10 +387,16 @@ nano /etc/pacman.conf
 
 ```bash
 # I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5.
-# If your CPU don't support znver4 add 'cachyos-v4' and equivalents instead
+# If your CPU don't support znver4 add any of the others that fit.
 #
 # Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
-# Add them above the other repos in the same section & in this direction:
+# Add one of the 3 mirrorlists under that fit your CPU above the other repos
+# in the same section & in this direction:
+```
+
+```bash
+# If your CPU is based on Zen 4 or Zen 5, add [cachyos-znver4],
+# [cachyos-core-znver4], and [cachyos-extra-znver4]:
 
 [cachyos-znver4]
 Include = /etc/pacman.d/cachyos-v4-mirrorlist
@@ -400,6 +406,33 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 
 [cachyos-extra-znver4]
 Include = /etc/pacman.d/cachyos-v4-mirrorlist
+```
+
+```bash
+# If your CPU supports x86-64-v3, then add [cachyos-v3],[cachyos-core-v3],[cachyos-extra-v3]
+[cachyos-v3]
+Include = /etc/pacman.d/cachyos-v3-mirrorlist
+[cachyos-core-v3]
+Include = /etc/pacman.d/cachyos-v3-mirrorlist
+[cachyos-extra-v3]
+Include = /etc/pacman.d/cachyos-v3-mirrorlist
+```
+
+```bash
+# If your CPU supports x86-64-v4, then add [cachyos-v4], [cachyos-core-v4], and [cachyos-extra-v4]
+[cachyos-v4]
+Include = /etc/pacman.d/cachyos-v4-mirrorlist
+[cachyos-core-v4]
+Include = /etc/pacman.d/cachyos-v4-mirrorlist
+[cachyos-extra-v4]
+Include = /etc/pacman.d/cachyos-v4-mirrorlist
+```
+
+```bash
+# If your CPU only supports x86-64, then add the [cachyos] repositories
+# cachyos repos
+[cachyos]
+Include = /etc/pacman.d/cachyos-mirrorlist
 ```
 
 ### 6.1 Update mirrors and run reflector to new Cachy mirrors
