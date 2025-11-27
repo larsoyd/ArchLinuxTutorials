@@ -792,12 +792,6 @@ nano /etc/kernel/install.conf
 layout=uki
 ```
 
-### Now install kernel UKIs
-```bash
-# Simply run
-kernel-install add-all
-```
-
 #### Prevent Stale UKIs
 ```bash
 # To prevent stale UKIs you need a hook to run after every update
@@ -821,6 +815,12 @@ exit
 # And finally deactivate the mkinitcpio hooks so you don't create duplicates
 ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
 ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
+```
+
+### Now install kernel UKIs
+```bash
+# Simply run
+kernel-install add-all
 ```
 
 #### Configure bootloader
