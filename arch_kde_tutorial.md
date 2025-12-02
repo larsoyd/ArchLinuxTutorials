@@ -356,7 +356,7 @@ If you want CachyOS repos and kernel like I do, then this is how you do it:
 # If you aren't going to get the CachyOS kernel get linux-zen and linux-lts instead then skip this step
 # to `Install Packages`.
 # linux-zen is a tuned kernel, it has nothing to do with the Zen architecture by AMD FYI:
-# OPTIONAL:
+# REQUIRED IF YOU DONT GET CACHYOS KERNEL:
 pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
 
 ```
