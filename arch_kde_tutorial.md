@@ -323,6 +323,12 @@ reflector \ # this is a line, press enter
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 -l 10 --sort rate --save /etc/pacman.d/mirrorlist
 
+# Or update reflector for fastest and longer timeout
+reflector -c NO,SE,DK,DE,NL -a 12 -p https \
+--sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
+```
+
+```
 # and then **Install the base of Arch Linux!** :
 pacstrap /mnt base
 ```
@@ -371,7 +377,7 @@ pacman-key --init
 pacman-key --populate
 
 # Clone this repo
-cd /tmp/
+cd /tmp
 git clone https://github.com/larsoyd/ArchLinuxTutorials.git
 cd ArchLinuxTutorials
 
@@ -382,7 +388,7 @@ chmod +x setup.sh
 # Enable mirror rate timer
 systemctl enable cachyos-rate-mirrors.timer
 
-# Leave /tmp/
+# Leave /tmp
 cd
 ```
 
@@ -451,12 +457,23 @@ Include = /etc/pacman.d/cachyos-mirrorlist
 # Update package database
 pacman -Syu
 
+su - $USER
+
+# Clone the AUR repo and build the package
+cd /tmp
+git clone https://aur.archlinux.org/rate-mirrors.git
+cd rate-mirrors
+
+# Build and install the package
+makepkg -si
+
+sudo pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-17-1-any.pkg.tar.zst'
+
+# Drop back to root in the chroot when done
+exit
+
 # Rate CachyOS Mirrors, run:
 cachyos-rate-mirrors
-
-# Then update reflector for fastest and longer timeout
-reflector -c NO,SE,DK,DE,NL -a 12 -p https \
---sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
 ```
 
 ##### Install CachyOS Kernel + Headers + SCX Tools + ananicy-cpp:
@@ -820,7 +837,7 @@ layout=uki
 su - lars
 
 # Clone the AUR repo of the pacman hooks and build the package
-cd /tmp/
+cd /tmp
 git clone https://aur.archlinux.org/pacman-hook-kernel-install.git
 cd pacman-hook-kernel-install
 
