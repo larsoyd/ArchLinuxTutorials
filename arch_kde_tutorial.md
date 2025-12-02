@@ -348,6 +348,45 @@ systemd-nspawn -bD /mnt
 arch-chroot /mnt
 ```
 
+
+
+### 4.5 Create User Account
+
+```bash
+# Set root password
+passwd
+
+# Create user with necessary groups
+useradd -m -G wheel lars
+passwd lars
+
+# Set zsh as default shell for user
+chsh -s /usr/bin/zsh lars
+```
+
+```bash
+# OPTIONAL: Point /bin/sh to dash for 4x faster sh scripts which can make up a lot
+# of daily operation in Linux
+#
+# BE ADVISED it can lead to problems with "bashisms"
+# but it's not a super huge problem, as it's default on Debian & Ubuntu
+# Because of that it is de facto a standard in Linux for most shell scripts to
+# come with a header that explicitly defines a bash script whenever necessary.
+#
+# You will be fine, but if you are ever unsure then you can
+# run "checkbashisms" on the *.sh file via the terminal or skip this step entirely.
+pacman -S --needed dash checkbashisms
+
+# Then do this to symlink dash to /usr/bin/sh
+ln -sfT dash /usr/bin/sh
+```
+
+```bash
+# Finally enable sudo for wheel group
+EDITOR=nano visudo
+# Uncomment: %wheel ALL=(ALL:ALL) ALL
+```
+
 ---
 
 # OPTIONAL: CachyOS packages and Kernel
@@ -582,43 +621,6 @@ nano /etc/hosts
 ## add to /etc/hosts:
 127.0.0.1 localhost BigBlue
 ::1       localhost
-```
-
-### 4.5 Create User Account
-
-```bash
-# Set root password
-passwd
-
-# Create user with necessary groups
-useradd -m -G wheel lars
-passwd lars
-
-# Set zsh as default shell for user
-chsh -s /usr/bin/zsh lars
-```
-
-```bash
-# OPTIONAL: Point /bin/sh to dash for 4x faster sh scripts which can make up a lot
-# of daily operation in Linux
-#
-# BE ADVISED it can lead to problems with "bashisms"
-# but it's not a super huge problem, as it's default on Debian & Ubuntu
-# Because of that it is de facto a standard in Linux for most shell scripts to
-# come with a header that explicitly defines a bash script whenever necessary.
-#
-# You will be fine, but if you are ever unsure then you can
-# run "checkbashisms" on the *.sh file via the terminal or skip this step entirely.
-pacman -S --needed dash checkbashisms
-
-# Then do this to symlink dash to /usr/bin/sh
-ln -sfT dash /usr/bin/sh
-```
-
-```bash
-# Finally enable sudo for wheel group
-EDITOR=nano visudo
-# Uncomment: %wheel ALL=(ALL:ALL) ALL
 ```
 
 ## 4.5.5 Package Choice
