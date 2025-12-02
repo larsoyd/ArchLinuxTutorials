@@ -352,8 +352,11 @@ If you want CachyOS repos and kernel like I do, then this is how you do it:
 # My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
 # It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
 # their kernel, which is already tuned for you. First you need to add their keyring and mirrorfiles.
-# If you aren't going to get the CachyOS kernel get linux-zen and linux-lts instead then skip this step to `Install Packages`.
-# linux-zen is a tuned kernel, it has nothing to do with the Zen architecture by AMD FYI.
+#
+# If you aren't going to get the CachyOS kernel get linux-zen and linux-lts instead then skip this step
+# to `Install Packages`.
+# linux-zen is a tuned kernel, it has nothing to do with the Zen architecture by AMD FYI:
+# OPTIONAL:
 pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
 
 ```
