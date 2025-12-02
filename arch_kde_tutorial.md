@@ -424,9 +424,6 @@ cd ArchLinuxTutorials
 chmod +x setup.sh
 ./setup.sh
 
-# Enable mirror rate timer
-systemctl enable cachyos-rate-mirrors.timer
-
 # Leave /tmp
 cd
 ```
@@ -513,6 +510,9 @@ exit
 
 # Rate CachyOS Mirrors, run:
 cachyos-rate-mirrors
+
+# Enable mirror rate timer
+systemctl enable cachyos-rate-mirrors.timer
 ```
 
 ##### Install CachyOS Kernel + Headers + SCX Tools + ananicy-cpp:
