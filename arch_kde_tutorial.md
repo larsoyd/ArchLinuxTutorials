@@ -339,12 +339,6 @@ pacstrap /mnt base
 
 ```bash
 # However before you can say you've installed arch you need to configure the system
-# This is my way of chrooting into a newly installed system:
-#
-systemd-nspawn -bD /mnt
-
-# If you prefer a more traditional chrooting which does not come with systemd management
-# which systemd-nspawn does, then do this instead:
 arch-chroot /mnt
 ```
 
@@ -1023,10 +1017,7 @@ fstrim.timer reflector.timer pkgstats.timer
 ## Step 5: Complete Installation
 
 ```bash
-# Exit systemd-nspawn environment
-poweroff
-
-# or if you used arch-chroot
+# Exit environment
 exit
 
 # Then unmount all partitions
