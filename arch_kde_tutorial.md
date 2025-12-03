@@ -487,8 +487,8 @@ Include = /etc/pacman.d/cachyos-mirrorlist
 # Update package database
 pacman -Syu
 
-# Install sudo
-pacman -S --needed sudo
+# Install sudo & base-devel
+pacman -S --needed sudo base-devel
 
 # Login to user
 su - lars
