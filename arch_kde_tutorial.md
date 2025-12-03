@@ -515,11 +515,11 @@ cachyos-rate-mirrors
 systemctl enable cachyos-rate-mirrors.timer
 ```
 
-##### Install CachyOS Kernel + Headers + SCX Tools + ananicy-cpp:
+##### Install CachyOS Kernel + Headers + SCX & Tools:
 
 ```bash
 pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
-linux-cachyos-lts-headers scx-scheds scx-tools ananicy-cpp
+linux-cachyos-lts-headers scx-scheds scx-tools
 ```
 
 #### Tune SCX
@@ -543,9 +543,8 @@ server_mode     = []
 ```
 
 ```bash
-# Enable SCX and ananicy-ccp - We will install the cachyos rules for ananicy-ccp
-# from AUR after install
-systemctl enable ananicy-cpp scx_loader.service
+# Enable SCX
+systemctl enable scx_loader.service
 ```
 
 ---
@@ -1048,16 +1047,6 @@ shutdown now
 ```
 
 ---
-
-# PROTIP:
-If you have problems booting or if you did something wrong you can automatically mount, enter and troubleshoot your system by booting from ArchISO and then when the shell comes up write:
-```bash
-systemd-dissect --mount /dev/nvme0n1 /mnt  # or sda, check with lsblk -l
-systemd-nspawn -bD /mnt
-# Perform whatever maintenance you need to do
-poweroff
-systemd-dissect --umount /dev/nvme0n1
-```
 
 # 1) OPTIONAL: Post-Install Tutorial
 Head to `arch_kde_post_tutorial.md` to do the post-install tutorial.
