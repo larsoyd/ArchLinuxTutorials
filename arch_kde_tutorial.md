@@ -487,7 +487,11 @@ Include = /etc/pacman.d/cachyos-mirrorlist
 # Update package database
 pacman -Syu
 
-su - $USER
+# Install sudo
+pacman -S --needed sudo
+
+# Login to user
+su - lars
 
 # Clone the AUR repo and build the package
 cd /tmp
