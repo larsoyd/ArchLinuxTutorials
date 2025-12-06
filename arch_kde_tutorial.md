@@ -488,7 +488,7 @@ Include = /etc/pacman.d/cachyos-mirrorlist
 pacman -Syu
 
 # Install sudo & base-devel
-pacman -S --needed sudo base-devel
+pacman -S --needed base-devel
 
 # Login to user
 su - lars
@@ -501,10 +501,11 @@ cd rate-mirrors
 # Build and install the package
 makepkg -si
 
-sudo pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-17-1-any.pkg.tar.zst'
-
 # Drop back to root in the chroot when done
 exit
+
+# Install cachyos-rate-mirrors
+pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-17-1-any.pkg.tar.zst'
 
 # Rate CachyOS Mirrors, run:
 cachyos-rate-mirrors
