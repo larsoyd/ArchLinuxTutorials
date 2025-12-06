@@ -488,7 +488,7 @@ Include = /etc/pacman.d/cachyos-mirrorlist
 pacman -Syu
 
 # Install sudo & base-devel
-pacman -S --needed base-devel
+pacman -S --needed sudo base-devel
 
 # Login to user
 su - lars
