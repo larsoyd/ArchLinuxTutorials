@@ -40,8 +40,8 @@ sudo pacman -S --needed git base-devel gnome-tweaks extension-manager
 Install an AUR helper (yay in this example):
 
 ```sh
-mkdir -p ~/.git
-cd ~/.git
+mkdir -p ~/git
+cd ~/git
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
@@ -206,8 +206,8 @@ Install it:
 
 ```sh
 yay -S --needed gimp
-mkdir -p ~/.git
-cd ~/.git
+mkdir -p ~/git
+cd ~/git
 git clone https://github.com/dp0sk/adw-gimp3
 cd adw-gimp3
 
@@ -236,8 +236,8 @@ Grab it:
 
 ```sh
 yay -S --needed firefox
-mkdir -p ~/.git
-cd ~/.git
+mkdir -p ~/git
+cd ~/git
 git clone https://github.com/rafaelmardojai/firefox-gnome-theme
 cd firefox-gnome-theme
 ./scripts/auto-install.sh
@@ -258,8 +258,8 @@ Install:
 
 ```sh
 yay -S --needed steam
-mkdir -p ~/.git
-cd ~/.git
+mkdir -p ~/git
+cd ~/git
 git clone https://github.com/tkashkin/Adwaita-for-Steam
 cd Adwaita-for-Steam
 ./install.py
@@ -267,7 +267,7 @@ cd
 ```
 
 The author notes that Steam updates can reset patched files so you may sometimes need to reinstall the skin.
-Simply go back into `cd ~/.git` and `cd Adwaita-for-Steam` then run `./install.py` again.
+Simply go back into `cd ~/git` and `cd Adwaita-for-Steam` then run `./install.py` again.
 
 Together with QAdwaitaDecorations and rounded corners, Steam will look far less out of place.
 
