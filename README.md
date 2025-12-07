@@ -1,4 +1,4 @@
-# Complete Arch Linux Tutorial (KDE Plasma + Wayland w/ Automounting Partitions)
+# Complete Arch Linux Tutorial w/ Automounting Partitions
 
 This is a OPINIONATED Arch installation guide for people that just want a working system to game on. Choose either KDE (Reccomended) or GNOME
 
