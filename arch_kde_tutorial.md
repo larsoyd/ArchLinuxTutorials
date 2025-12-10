@@ -347,6 +347,9 @@ arch-chroot /mnt
 ### 4.5 Create User Account
 
 ```bash
+# Install zsh
+pacman -S --needed zsh
+
 # Set root password
 passwd
 
