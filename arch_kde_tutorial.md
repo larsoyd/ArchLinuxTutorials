@@ -488,11 +488,61 @@ Include = /etc/pacman.d/cachyos-mirrorlist
 pacman -Syu
 
 # Install sudo & base-devel
-pacman -S --needed sudo base-devel
+pacman -S --needed sudo base-devel ccache mold
 
 # Login to user
 su - lars
 
+# Configure ccache
+mkdir -p ~/.config/ccache/
+nano ~/.config/ccache/ccache.conf
+```
+
+```sh
+# ~/.config/ccache/ccache.conf
+cache_dir = $HOME/.cache/ccache
+max_size  = 30G
+```
+
+EITHER:
+
+1) Copy it from repo cloned before
+```bash
+cp /tmp/ArchLinuxTutorials/makepkg.conf ~/.makepkg.conf
+```
+
+2. Write it manually if you don't have znver4 (or skip entirely)
+```bash
+nano ~/.makepkg.conf
+```
+
+```sh
+# ~/.makepkg.conf
+
+# Retarget both C and C++ to znver4 while keeping Arch's hardening flags
+# If you dont have a znver4 supported CPU just put "native" here instead
+CFLAGS="${CFLAGS/-march=x86-64-v3/-march=znver4}"
+CFLAGS="${CFLAGS/-march=x86-64-v2/-march=znver4}"
+CFLAGS="${CFLAGS/-march=x86-64/-march=znver4}"
+
+CXXFLAGS="${CXXFLAGS/-march=x86-64-v3/-march=znver4}"
+CXXFLAGS="${CXXFLAGS/-march=x86-64-v2/-march=znver4}"
+CXXFLAGS="${CXXFLAGS/-march=x86-64/-march=znver4}"
+
+# LTO default if system config had !lto
+OPTIONS=("${OPTIONS[@]/!lto/lto}")
+
+# Enable ccache in the build environment
+BUILDENV=("${BUILDENV[@]/!ccache/ccache}")
+
+# mold default linker
+LDFLAGS+=" -fuse-ld=mold"
+
+# parallel builds
+MAKEFLAGS="-j$(nproc)"
+```
+
+```bash
 # Clone the AUR repo and build the package
 cd /tmp
 git clone https://aur.archlinux.org/rate-mirrors.git
