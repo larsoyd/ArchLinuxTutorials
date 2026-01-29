@@ -378,11 +378,9 @@ If you want CachyOS repos and kernel like I do, then this is how you do it:
 # It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
 # their kernel, which is already tuned for you. First you need to add their keyring and mirrorfiles.
 #
-# If you aren't going to get the CachyOS kernel get linux-zen and linux-lts instead then skip this step
-# to `Install Packages`.
-# linux-zen is a tuned kernel, it has nothing to do with the Zen architecture by AMD FYI:
-# REQUIRED IF YOU DONT GET CACHYOS KERNEL:
-pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
+#
+# NOTE: If you aren't going to get the CachyOS kernel SKIP this step
+# to `Install Packages` and get the linux-zen and linux-lts kernels instead.
 
 ```
 
@@ -587,6 +585,13 @@ systemctl enable scx_loader.service
 
 ### 6.5 Install Packages
 ```bash
+# linux-zen is a tuned kernel, should work on any CPU.
+# it has nothing to do with the Zen architecture by AMD FYI.
+# Optional if you got the cachyos kernels already
+#
+# THIS IS REQUIRED IF YOU DONT GET CACHYOS KERNEL:
+pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
+
 # Install firmware and some core packages:
 # For AMD CPUs:
 pacman -S --needed linux-firmware amd-ucode nano sudo zsh systemd-ukify
