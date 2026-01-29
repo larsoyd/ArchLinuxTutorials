@@ -40,7 +40,8 @@ sudo pacman -Syu
 ### Essential build tools, you already installed these during install but just to be sure
 ```bash
 sudo pacman -S --needed base-devel git  # when you run pacman with the --needed flag it will skip
-                                        # any package that is already on the system. Try it.
+                                        # any package that is already on the system.
+                                        # If you don't do this it will reinstall packages you already have.
 ```
 
 ### DISCLAIMER FOR THE AUR:
