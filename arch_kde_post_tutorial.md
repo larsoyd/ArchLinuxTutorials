@@ -301,18 +301,6 @@ media.hardware-video-decoding.force-enabled → true
 media.hardwaremediakeys.enabled → false
 ```
 
-### 3.4 Raise vm.max_map_count (gaming)
-```bash
-# This is what Valve uses for the SteamDeck.
-sudo nano /etc/sysctl.d/80-gaming.conf
-vm.max_map_count = 2147483642
-```
-
-### 3.5 Apply all sysctl changes
-```bash
-sudo sysctl --system
-```
-
 ---
 
 ## 4 · Essential security and quality of life
@@ -324,7 +312,11 @@ sudo sysctl --system
 sudo pacman -S ---needed --noconfirm fwupd
 sudo systemctl start --now fwupd.service
 
-# To display all devices detected by fwupd:
+# Sidenote: topgrade which I will talk about later can do all the get updates and install steps for you
+# If you are going to use it, you can skip the manual steps below.
+#
+# If you wish to do it manually:
+# First display all devices detected by fwupd
 $ fwupdmgr get-devices
 
 # To download the latest metadata from the Linux Vendor firmware Service (LVFS): 
@@ -336,7 +328,6 @@ $ fwupdmgr get-updates
 # To install updates:
 $ fwupdmgr update
 
-# Sidenote: topgrade which I will talk about later can do all the get updates and install steps for you
 ```
 
 ### 4.1 Firewall
@@ -359,7 +350,7 @@ Option 1) Topgrade - Update everything on your system with one command! :
 ```bash
 # Topgrade is an optional but super quality of life package
 # With one command of `topgrade` you can upgrade all your packages of any type on your entire system...
-# That is *all* your packages, including flatpaks, sys packages like the kernel, git, AUR, Rust crate, etc.
+# That is *all* your packages, including flatpaks, sys packages like the kernel, AUR, Rust crate, etc.
 # It also shows available firmware to upgrade. It is so helpful that even though its a bit out there...
 # ... I still think it's essential for QoL on any Arch system.
 # If you think this sounds neat then I strongly reccomend it.
@@ -413,6 +404,24 @@ locate -b '\steamapps'   # instant results
 sudo systemctl start --now plocate-updatedb.timer
 ```
 
+### ProtonUp-Qt:
+```bash
+# install protonup qt (ProtonGE)
+yay -S --needed --noconfirm protonup-qt
+```
+
+### Configure Proton GE as the default in Steam after installing Proton GE from ProtonUp-Qt:
+
+0. Open up ProtonUp-Qt and install the latest version of Proton GE
+1. Launch Steam and open **Settings → Compatibility**.  
+2. In the dropdown, choose **Proton GE**.  
+3. Click OK and restart Steam.
+
+ProtonGE is a good default for a lot of games, works just as well as regular Proton for most games and for other games include 
+propietary codecs and such that Valve cannot package themselves, this helps with video files and music with odd formats.
+
+
+
 ---
 
 ## 5 · Maintenance hooks
@@ -453,10 +462,16 @@ SystemMaxUse=50M
 
 ### USB autosuspend
 The Linux kernel automatically suspend USB devices when they are not in use. 
-This can sometimes save quite a bit of power, however some USB devices are not compatible with USB power saving and start to misbehave (common for USB mice/keyboards). 
+This can sometimes save quite a bit of power, however some USB devices are not compatible with USB power saving and start to misbehave (common for USB mice/keyboards). Some keyboards and mice
+will "fall asleep" and there will be some latency after idle. This is enough to drive you crazy if you don't know what's going on.
+
 udev rules based on whitelist or blacklist filtering can help to mitigate the problem. ATTR{power/control}="on" disables runtime autosuspend for the matched devices; "auto" enables it for all others.  
 
-#### OPTION A) The example is enabling autosuspend for all USB devices except for keyboards and mice: 
+#### RECCOMENDED OPTION A) The example is enabling autosuspend for all USB devices except for keyboards and mice: 
+
+Try this before you do Option B, it's simpler
+and it is the reccomended way to do it on the ArchWiki:
+
 ```bash
 sudo nano /etc/udev/rules.d/50-usb_power_save.rules
 ```
@@ -464,7 +479,19 @@ sudo nano /etc/udev/rules.d/50-usb_power_save.rules
 ACTION=="add", SUBSYSTEM=="usb", ATTR{product}!="*Mouse", ATTR{product}!="*Keyboard", TEST=="power/control", ATTR{power/control}="auto"
 ```
 
-#### OPTION B) For USB HID “boot” keyboards and mice:
+#### ADVANCED OPTION B) More specific exemptions based on Base Classes:
+
+You can make it more specific like so if you know what you are doing and Option A did not work.
+Often the reason why Option A don't work is due to the mouse and keyboard having a name without
+advertising their function ("Keyboard" and "Mouse").
+
+The HEX codes should be correct according to the Official USB-IF Class Code Specifications. 
+They represent a specific hierarchy of device identification: 
+
+03: The Base Class for HID (Human Interface Device).
+01: The Subclass code for Boot Interface, indicating the device supports the simplified "boot" communication mode.
+01 or 02: The Protocol code, where 01 is for Keyboard and 02 is for Mouse.
+
 ```bash
 sudo nano /etc/udev/rules.d/50-usb_power_save.rules
 ```
@@ -481,6 +508,8 @@ Apply and retrigger, then recheck:
 ```bash
 sudo udevadm control --reload-rules
 sudo udevadm trigger --subsystem-match=usb --action=add
+
+# Check to see if either approach worked:
 grep -H . /sys/bus/usb/devices/*/power/{control,runtime_status}
 ```
 
@@ -653,23 +682,6 @@ yay -S --needed --noconfirm phonon-qt6-mpv
 mkdir -p ~/.config/mpv
 echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 ```
-
-### ProtonUp-Qt:
-```bash
-# install protonup qt (ProtonGE)
-yay -S --needed --noconfirm protonup-qt
-```
-
-### Configure Proton GE as the default in Steam after installing Proton GE from ProtonUp-Qt:
-
-0. Open up ProtonUp-Qt and install the latest version of Proton GE
-1. Launch Steam and open **Settings → Compatibility**.  
-2. In the dropdown, choose **Proton GE**.  
-3. Click OK and restart Steam.
-
-ProtonGE is a good default for a lot of games, works just as well as regular Proton for most games and for other games include 
-propietary codecs and such that Valve cannot package themselves, this helps with video files and music with odd formats.
-
 
 ## Final Reboot
 
