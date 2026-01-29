@@ -142,7 +142,11 @@ then replace the package name with something else.
 Edit `/etc/pacman.conf`:
 ```ini
 # Color adds color (duh),
-# ILoveCandy is a fun setting that adds animations to when you update pacman. 
+# To add it you need to "Uncomment" the setting,
+# what this means is removing the #'s in front of it.
+# whenever I say to uncomment in the future that is what that means btw.
+#
+# ILoveCandy is a fun setting that adds animations to when you update pacman.
 Color                      # uncomment
 ILoveCandy                 # write this manually under Color
 ```
@@ -339,6 +343,13 @@ sudo firewall-cmd --reload
 ```
 
 ### 4.2 Enable multilib for 32-bit support (pre-Steam)
+
+```bash
+# to enable 32-bit support you need to uncomment
+# a new repository, essentially add it and then update system.
+sudo nano /etc/pacman.conf
+```
+
 Uncomment in `/etc/pacman.conf`:
 ```ini
 [multilib]
