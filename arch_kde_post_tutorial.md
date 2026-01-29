@@ -140,6 +140,9 @@ then replace the package name with something else.
 
 ### 3.1 Pacman candy
 Edit `/etc/pacman.conf`:
+```bash
+sudo nano /etc/pacman.conf
+```
 ```ini
 # Color adds color (duh),
 # To add it you need to "Uncomment" the setting,
