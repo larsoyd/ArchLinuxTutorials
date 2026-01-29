@@ -66,7 +66,7 @@ makepkg -si                                  # build the package, then install i
 cd ~ && rm -rf /tmp/yay                      # go home, remove the temporary build folder
 
 yay --version  # quick test | NOTE: Whenever you run any 'yay' command, do not use 'sudo' before it.
-yay -S --needed --noconfirm fastfetch   # The --noconfirm flag makes it auto confirms the endless
+yay -S --needed  fastfetch   # The  flag makes it auto confirms the endless
                                         # questions if you want to install something or not.
 ```
 
@@ -74,7 +74,7 @@ yay -S --needed --noconfirm fastfetch   # The --noconfirm flag makes it auto con
 ```bash
 # Oh-my-zsh makes your terminal nicer, zsh-autosuggestions and the other are plugins
 # More on them later.
-yay -S --needed --noconfirm oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
+yay -S --needed  oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
 ```
 
 ### Copy .zshrc default template config
@@ -112,11 +112,10 @@ PROMPT='%F{white}%B[%F{#1793d1}Arch%F{white}Lars%F{white}] %F{cyan}%~ %f%(!.#.$)
 # Also optionally add any aliases here
 #
 # Here is one for installing packages:
-alias pacin='yay -S --needed --noconfirm'
+alias pacin='yay -S --needed'
 #
 # with this you can just write 'pacin' and then package to install anything
 # Example: pacin firefox
-# NOTE: Reason why this is optional is because some might consider it risky
 ```
 
 ### Reload & Guide
@@ -156,7 +155,7 @@ ILoveCandy                 # write this manually under Color
 mkdir -p ~/.config/nano
 
 # package with enhanced rules
-yay -S --needed --noconfirm nano-syntax-highlighting
+yay -S --needed nano-syntax-highlighting
 
 # enable all bundled syntaxes
 # paste into terminal with CTRL + SHIFT + V:
@@ -228,7 +227,7 @@ EOF
 
 ```bash
 # essential stuff to have.
-yay -S --needed --noconfirm informant \
+yay -S --needed informant \
 gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly \
 systemd-timer-notify rebuild-detector aurutils \
 python-pip kdeconnect journalctl-desktop-notification
@@ -240,10 +239,10 @@ sudo usermod -aG informant $USER
 groups
 
 # browser
-yay -S --needed --noconfirm firefox
+yay -S --needed firefox
 
 # or anything else
-yay -S --needed --noconfirm chromium   # example of "anything else"
+yay -S --needed chromium   # example of "anything else"
 ```
 
 ### Fixing Firefox:
@@ -269,7 +268,7 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'icon:minimize,maxi
 # Then log out and back in
 
 # If that still doesn't work, then try:
-yay -S --needed --noconfirm xdg-desktop-portal-gtk
+yay -S --needed xdg-desktop-portal-gtk
 ```
 
 ### Configuring Firefox:
@@ -309,7 +308,7 @@ media.hardwaremediakeys.enabled → false
 ```bash
 # You are going to need to update your firmware
 # To do this install fwupd and start the service
-sudo pacman -S ---needed --noconfirm fwupd
+sudo pacman -S ---needed fwupd
 sudo systemctl start --now fwupd.service
 
 # Sidenote: topgrade which I will talk about later can do all the get updates and install steps for you
@@ -332,7 +331,7 @@ $ fwupdmgr update
 
 ### 4.1 Firewall
 ```bash
-sudo pacman -S --needed --noconfirm firewalld python-pyqt6
+sudo pacman -S --needed firewalld python-pyqt6
 sudo systemctl enable --now firewalld
 sudo firewall-cmd --permanent --zone=public --add-service=kdeconnect
 sudo firewall-cmd --reload
@@ -355,7 +354,7 @@ Option 1) Topgrade - Update everything on your system with one command! :
 # ... I still think it's essential for QoL on any Arch system.
 # If you think this sounds neat then I strongly reccomend it.
 #
-yay -S --needed --noconfirm topgrade-bin
+yay -S --needed  topgrade-bin
 
 # when done run it with:
 topgrade
@@ -393,7 +392,7 @@ yay -S --needed steam
 # NOTE: lib32-gst-plugins-ugly & lib32-gst-plugins-bad are from the AUR which means they are packaged by a third party.
 # Check the PKGBUILD of both before installing or leave them out. But if you do be aware
 # that lib32-*-ugly is required for MP3 on 32-bit apps.
-yay -S --needed --noconfirm lib32-gst-plugins-base lib32-gst-plugins-good lib32-gst-plugins-ugly lib32-gst-plugins-bad
+yay -S --needed  lib32-gst-plugins-base lib32-gst-plugins-good lib32-gst-plugins-ugly lib32-gst-plugins-bad
 
 # Run Steam in terminal to install it:
 steam
@@ -418,7 +417,7 @@ sudo systemctl start --now plocate-updatedb.timer
 ### ProtonUp-Qt:
 ```bash
 # install protonup qt (ProtonGE)
-yay -S --needed --noconfirm protonup-qt
+yay -S --needed  protonup-qt
 ```
 
 ### Configure Proton GE as the default in Steam after installing Proton GE from ProtonUp-Qt:
@@ -444,7 +443,7 @@ propietary codecs and such that Valve cannot package themselves, this helps with
 # reflector will run reflector any time mirrorlist updates
 #
 # paccache-hook is the GOAT. it cleans your cache after using pacman.
-yay -S --needed --noconfirm \
+yay -S --needed  \
   pacdiff-pacman-hook-git \
   reflector-pacman-hook-git \
   paccache-hook
@@ -453,7 +452,7 @@ yay -S --needed --noconfirm \
 ### Install & Enable Nohang:
 ```bash
 # This is an OOM killer. It's VITAL.
-yay -S --needed --noconfirm nohang-git 
+yay -S --needed  nohang-git 
 
 # If your system fills up it's swap and RAM then this will terminate offending processes before your system freeze up.
 sudo systemctl enable --now nohang-desktop.service
@@ -530,7 +529,7 @@ YT-DLP is a downloader for online media hosted on sites. It's very good.
 
 Install:
 ```bash
-yay -S --needed --noconfirm yt-dlp
+yay -S --needed  yt-dlp
 ```
 
 #### OPTIONAL QoL FOR YT-DLP:
@@ -662,7 +661,7 @@ My advice is pick one here, you can do both but it's best to not clutter your sy
 # It's more fully featured than MPV, MPV requires more manual config to look better.
 #
 # install vlc (video)
-yay -S --needed --noconfirm vlc vlc-plugins-all
+yay -S --needed  vlc vlc-plugins-all
 
 # Hardware Acceleration:
 ## VLC automatically tries to use an available API
@@ -684,10 +683,10 @@ yay -S --needed vlc-pause-click-plugin
 # If you care about manual configs and stuff use MPV, otherwise use VLC
 #
 # install mpv (video)
-yay -S --needed --noconfirm mpv  
+yay -S --needed  mpv  
 
 # (Third-party) Phonon Support for mpv
-yay -S --needed --noconfirm phonon-qt6-mpv
+yay -S --needed  phonon-qt6-mpv
 
 # You have to do this if you want GPU acceleration for your wholesome entertainment
 mkdir -p ~/.config/mpv
