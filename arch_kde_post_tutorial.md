@@ -66,15 +66,13 @@ makepkg -si                                  # build the package, then install i
 cd ~ && rm -rf /tmp/yay                      # go home, remove the temporary build folder
 
 yay --version  # quick test | NOTE: Whenever you run any 'yay' command, do not use 'sudo' before it.
-yay -S --needed  fastfetch   # The  flag makes it auto confirms the endless
-                                        # questions if you want to install something or not.
 ```
 
 ### Shell and terminal bliss
 ```bash
 # Oh-my-zsh makes your terminal nicer, zsh-autosuggestions and the other are plugins
 # More on them later.
-yay -S --needed  oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
+yay -S --needed oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
 ```
 
 ### Copy .zshrc default template config
@@ -354,7 +352,7 @@ Option 1) Topgrade - Update everything on your system with one command! :
 # ... I still think it's essential for QoL on any Arch system.
 # If you think this sounds neat then I strongly reccomend it.
 #
-yay -S --needed  topgrade-bin
+yay -S --needed topgrade-bin
 
 # when done run it with:
 topgrade
@@ -392,7 +390,7 @@ yay -S --needed steam
 # NOTE: lib32-gst-plugins-ugly & lib32-gst-plugins-bad are from the AUR which means they are packaged by a third party.
 # Check the PKGBUILD of both before installing or leave them out. But if you do be aware
 # that lib32-*-ugly is required for MP3 on 32-bit apps.
-yay -S --needed  lib32-gst-plugins-base lib32-gst-plugins-good lib32-gst-plugins-ugly lib32-gst-plugins-bad
+yay -S --needed lib32-gst-plugins-base lib32-gst-plugins-good lib32-gst-plugins-ugly lib32-gst-plugins-bad
 
 # Run Steam in terminal to install it:
 steam
@@ -402,7 +400,7 @@ steam
 ```bash
 # To quickly learn how to find steamapps for example without googling you can use plocate
 # It's the fastest way to find any file or folder on your system, first install plocate:
-sudo pacman -S plocate
+yay -S --needed plocate
 
 # Then build the database:
 sudo updatedb
@@ -417,7 +415,7 @@ sudo systemctl start --now plocate-updatedb.timer
 ### ProtonUp-Qt:
 ```bash
 # install protonup qt (ProtonGE)
-yay -S --needed  protonup-qt
+yay -S --needed protonup-qt
 ```
 
 ### Configure Proton GE as the default in Steam after installing Proton GE from ProtonUp-Qt:
@@ -443,7 +441,7 @@ propietary codecs and such that Valve cannot package themselves, this helps with
 # reflector will run reflector any time mirrorlist updates
 #
 # paccache-hook is the GOAT. it cleans your cache after using pacman.
-yay -S --needed  \
+yay -S --needed \
   pacdiff-pacman-hook-git \
   reflector-pacman-hook-git \
   paccache-hook
@@ -451,16 +449,18 @@ yay -S --needed  \
 
 ### Install & Enable Nohang:
 ```bash
-# This is an OOM killer. It's VITAL.
-yay -S --needed  nohang-git 
+# This is an OOM killer. DON'T SKIP. It's VITAL.
+yay -S --needed nohang-git 
 
+# Reason why it's vital is this:
 # If your system fills up it's swap and RAM then this will terminate offending processes before your system freeze up.
+# So if you don't have this your computer will just freeze if you are unlucky and this happens to you for w/e reason.
 sudo systemctl enable --now nohang-desktop.service
 ```
 
 ### Set Journalctl limit:
 ```bash
-# SUPER important, journal on desktop use fills up very quickly which takes space
+# SUPER important, DO NOT SKIP. The journal on desktop use fills up very quickly which takes space
 # a large one can slow down boot times after a while.
 sudo mkdir -p /etc/systemd/journald.conf.d
 sudo nano /etc/systemd/journald.conf.d/00-journal-size.conf
@@ -529,7 +529,7 @@ YT-DLP is a downloader for online media hosted on sites. It's very good.
 
 Install:
 ```bash
-yay -S --needed  yt-dlp
+yay -S --needed yt-dlp
 ```
 
 #### OPTIONAL QoL FOR YT-DLP:
@@ -661,7 +661,7 @@ My advice is pick one here, you can do both but it's best to not clutter your sy
 # It's more fully featured than MPV, MPV requires more manual config to look better.
 #
 # install vlc (video)
-yay -S --needed  vlc vlc-plugins-all
+yay -S --needed vlc vlc-plugins-all
 
 # Hardware Acceleration:
 ## VLC automatically tries to use an available API
@@ -683,10 +683,10 @@ yay -S --needed vlc-pause-click-plugin
 # If you care about manual configs and stuff use MPV, otherwise use VLC
 #
 # install mpv (video)
-yay -S --needed  mpv  
+yay -S --needed mpv  
 
 # (Third-party) Phonon Support for mpv
-yay -S --needed  phonon-qt6-mpv
+yay -S --needed phonon-qt6-mpv
 
 # You have to do this if you want GPU acceleration for your wholesome entertainment
 mkdir -p ~/.config/mpv
@@ -709,6 +709,9 @@ sudo pacman -Rns $(pacman -Qtdq)
 reboot
 
 # after reboot open kitty (CTRL + ALT + T)
+yay -S --needed fastfetch
+
+# Then run it to see your glorious fetch
 fastfetch
 
 # press prt scr to take a desktop photo
