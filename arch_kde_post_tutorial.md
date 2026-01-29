@@ -371,7 +371,22 @@ Option 1) Topgrade - Update everything on your system with one command! :
 #
 yay -S --needed topgrade-bin
 
-# when done run it with:
+# If you want you can add an alias to topgrade
+# so that you better remember it and it fits more
+# in line with the other commands that start with "pac".
+# First edit:
+nano ~/.zshrc
+
+# Then add this to the bottom:
+alias pacup='topgrade'
+
+# Save and exit, then reload zshrc like so:
+source ~/.zshrc
+
+# Then either write + press enter:
+pacup
+
+# or if you didn't add the alias:
 topgrade
 ```
 
