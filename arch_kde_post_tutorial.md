@@ -253,32 +253,6 @@ yay -S --needed firefox
 yay -S --needed chromium   # example of "anything else"
 ```
 
-### Fixing Firefox:
-
-These optional knobs are only if the GDK portal we set up in the install itself didn't work.
-Sometimes after install Firefox looks odd, some buttons are off and incorrect. 
-The technical reason is a bit out of scope for this tutorial, but essentially it thinks that it is
-in another desktop environment. Portals are supposed to fix that, but if they don't you can try these
-fixes:
-
-#### (Optional) - Force Firefox to use Dolphin
-```bash
-# Optional if needed. GDK_DEBUG=portals set earlier should have done it.
-# If not, force Firefox to do it, open about:config and set:
-widget.use-xdg-desktop-portal.file-picker → 1 (always)
-```
-
-#### (Optional) - Add all buttons to Firefox
-```bash
-# Sometimes Firefox does not have the minimize and maximize buttons
-# You can try this remedy:
-gsettings set org.gnome.desktop.wm.preferences button-layout 'icon:minimize,maximize,close'
-# Then log out and back in
-
-# If that still doesn't work, then try:
-yay -S --needed xdg-desktop-portal-gtk
-```
-
 ### Configuring Firefox:
 
 #### Make Firefox follow your KDE default apps via mimeapps.list on Arch.
@@ -306,6 +280,34 @@ media.hardware-video-decoding.force-enabled → true
 ```bash
 # open about:config and set
 media.hardwaremediakeys.enabled → false
+```
+
+
+### OPTIONAL: Fixing Firefox:
+
+Sometimes after install Firefox looks odd, some buttons are off and incorrect. 
+These optional knobs are only if the GDK portal we set up in the install itself didn't work.
+Skip if whatever entry does not apply to Firefox on your system.
+The technical reason is a bit out of scope for this tutorial, but essentially it thinks that it is
+in another desktop environment. Portals are supposed to fix that, but if they don't you can try these
+fixes:
+
+#### (Optional) - Force Firefox to use Dolphin
+```bash
+# Optional if needed. GDK_DEBUG=portals set earlier should have done it.
+# If not, force Firefox to do it, open about:config and set:
+widget.use-xdg-desktop-portal.file-picker → 1 (always)
+```
+
+#### (Optional) - Add all buttons to Firefox
+```bash
+# Sometimes Firefox does not have the minimize and maximize buttons
+# You can try this remedy:
+gsettings set org.gnome.desktop.wm.preferences button-layout 'icon:minimize,maximize,close'
+# Then log out and back in
+
+# If that still doesn't work, then try:
+yay -S --needed xdg-desktop-portal-gtk
 ```
 
 ---
