@@ -407,10 +407,13 @@ checkrebuild
 # yay  -S <pkg> --rebuild
 ```
 
-### 4.2.5 Steam
+### 4.2.5 Steam & 32-bit Libraries
 ```bash
 # then after enabling multilib DL Steam 
 yay -S --needed steam
+
+# Run Steam in terminal to install it:
+steam
 
 # OPTIONAL: Consider also getting the 32-bit versions of GStreamer plugins.
 # This gives you support for a number of audio & video formats on 32-bit software.
@@ -419,13 +422,11 @@ yay -S --needed steam
 # for any other 32-bit application like say if you want to run WINE yourself for stuff
 # then they are vital to not get issues with playback with MP3 for example through Windows software.
 #
-# NOTE: lib32-gst-plugins-ugly, lib32-gst-libav & lib32-gst-plugins-bad are from the AUR which means they are packaged by a third party.
+# NOTE: lib32-gst-plugins-ugly, lib32-gst-libav & lib32-gst-plugins-bad are from the AUR
+# which means they are packaged by a third party.
 # Check the PKGBUILD of both before installing or leave them out. But if you do be aware
 # that lib32-*-ugly is required for MP3 on 32-bit apps. WINE generally reccomends you get *-bad and *-libav.
 yay -S --needed lib32-gst-plugins-base lib32-gst-plugins-good lib32-gst-plugins-ugly lib32-gst-plugins-bad lib32-gst-libav
-
-# Run Steam in terminal to install it:
-steam
 ```
 
 ### 4.2.6 plocate - Quickly find any file or folder on your Arch Linux system
