@@ -57,46 +57,7 @@ LLMs can help in parsing them if you are new, but *try* to learn how to read the
 What you are looking out for are malicious links or anything else out of the ordinary.
 ```
 
-### 1.0 Install ccache and config ccache
-```bash
-# Install ccache so rebuilds go faster
-sudo pacman -S --needed ccache
-
-# Allow ccache to ignore locale/time macros for reproducible hits
-ccache --set-config=sloppiness=locale,time_macros
-```
-
-### 1.1 Build Optimization
-```bash
-# Create a makepkg.conf to tune build flags
-nano ~/.makepkg.conf
-```
-
-### 1.2 Optimize builds
-```bash
-# Copy and paste these flags for optimized builds
-# CTRL + SHIFT + V
-CFLAGS="-march=native -O3 -pipe -fno-plt -fexceptions \
-        -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security \
-        -fstack-clash-protection -fcf-protection -mpclmul"
-CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS"
-
-MAKEFLAGS="-j$(nproc)"
-NINJAFLAGS="-j$(nproc)"
-
-LDFLAGS="-Wl,-O1 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now \
-         -Wl,-z,pack-relative-relocs"
-
-GOAMD64=v4
-
-LTOFLAGS="-flto=auto"
-
-BUILDENV=(!distcc color ccache check !sign)
-
-OPTIONS=(strip docs !libtool !staticlibs emptydirs zipman purge !debug lto !autodeps)
-```
-
-### 2.2 Build and install yay
+### Build and install yay
 ```bash
 cd /tmp                                      # go to the temporary directory
 git clone https://aur.archlinux.org/yay.git  # clone the yay pkgbuild from the aur
@@ -109,7 +70,7 @@ yay -S --needed --noconfirm fastfetch   # The --noconfirm flag makes it auto con
                                         # questions if you want to install something or not.
 ```
 
-### 2.5 Shell and terminal bliss
+### Shell and terminal bliss
 ```bash
 # Oh-my-zsh makes your terminal nicer, zsh-autosuggestions and the other are plugins
 # More on them later.
