@@ -41,7 +41,9 @@ sudo pacman -Syu
 ```bash
 sudo pacman -S --needed base-devel git  # when you run pacman with the --needed flag it will skip
                                         # any package that is already on the system.
-                                        # If you don't do this it will reinstall packages you already have.
+                                        #
+                                        # If you don't do this it will reinstall packages you already have,
+                                        # so it's good to just do it by default to be sure.
 ```
 
 ### DISCLAIMER FOR THE AUR:
