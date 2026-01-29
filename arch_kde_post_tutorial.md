@@ -359,14 +359,13 @@ Option 1) Topgrade - Update everything on your system with one command! :
 ```bash
 # Topgrade is an optional but super quality of life package
 # With one command of `topgrade` you can upgrade all your packages of any type on your entire system...
-# That is *all* your packages, including flatpaks, git, appimages, AUR, Rust crate, etc.
+# That is *all* your packages, including flatpaks, sys packages like the kernel, git, AUR, Rust crate, etc.
 # It also shows available firmware to upgrade. It is so helpful that even though its a bit out there...
 # ... I still think it's essential for QoL on any Arch system.
-# If you think this sounds neat and are fine with having Rust and crates on your system then I strongly reccomend it.
+# If you think this sounds neat then I strongly reccomend it.
 #
-yay -S --needed --noconfirm topgrade
+yay -S --needed --noconfirm topgrade-bin
 
-# The build process may seem like it's doing a lot, don't worry it's not a huge package.
 # when done run it with:
 topgrade
 ```
