@@ -380,9 +380,20 @@ checkrebuild
 
 ### 4.2.5 Steam
 ```bash
-# then after enabling multilib DL Steam & 32-bit versions of GStreamer plugins,
-# which are necessary for audio/video playback in 32-bit software like Steam
-yay -S --needed --noconfirm steam lib32-gst-plugins-base lib32-gst-plugins-good
+# then after enabling multilib DL Steam 
+yay -S --needed steam
+
+# OPTIONAL: Consider also getting the 32-bit versions of GStreamer plugins.
+# This gives you support for a number of audio & video formats on 32-bit software.
+#
+# For gaming on Proton it is NOT vital, Proton and ProtonGE bundle their own GStreamer, but
+# for any other 32-bit application like say if you want to run WINE yourself for stuff
+# then they are vital to not get issues with playback with MP3 for example through Windows software.
+#
+# NOTE: lib32-gst-plugins-ugly & lib32-gst-plugins-bad are from the AUR which means they are packaged by a third party.
+# Check the PKGBUILD of both before installing or leave them out. But if you do be aware
+# that lib32-*-ugly is required for MP3 on 32-bit apps.
+yay -S --needed --noconfirm lib32-gst-plugins-base lib32-gst-plugins-good lib32-gst-plugins-ugly lib32-gst-plugins-bad
 
 # Run Steam in terminal to install it:
 steam
