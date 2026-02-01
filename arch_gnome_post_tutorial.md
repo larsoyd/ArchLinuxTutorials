@@ -281,6 +281,3 @@ At the end of this, on a fresh Arch GNOME:
 * Any Optional App have a GNOME consistent style
 * Icons are Adwaita plus MoreWaita extras
 * All windows have rounded corners
-
-[13]: https://github.com/tkashkin/Adwaita-for-Steam?utm_source=chatgpt.com "tkashkin/Adwaita-for-Steam: A skin to make ..."
-[14]: https://github.com/somepaulo/MoreWaita?utm_source=chatgpt.com "somepaulo/MoreWaita"
