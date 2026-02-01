@@ -308,6 +308,11 @@ Result: Firefox chrome (tabs, headerbar, menus) looks like a native libadwaita w
 Install:
 
 ```sh
+# AUR
+yay -S --needed steam
+yay -S --needed adwsteamgtk
+
+# Manual
 yay -S --needed steam
 mkdir -p ~/git
 cd ~/git
