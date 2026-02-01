@@ -249,6 +249,24 @@ Result:
 
 # Optional Apps:
 
+## notwaita Cursor
+
+As name suggests it's an unofficial cursor theme inspired by GNOME's Adwaita.
+Download latest tar file from: https://github.com/ful1e5/notwaita-cursor
+
+Install:
+```sh
+tar -xvf Notwaita-Black.tar.gz                 # extract `.tar.gz`
+mv Notwaita-* ~/.icons/                        # Install to local users
+sudo mv Notwaita-* /usr/share/icons/           # Install to all users
+```
+
+Uninstallation:
+```sh
+rm ~/.icons/Notwaita-*                         # Remove from local users
+sudo rm /usr/share/icons/Notwaita-*            # Remove from all users
+```
+
 ## GIMP 3: adw-gimp3
 
 `adw-gimp3` is an external theme that makes GIMP 3 look like a GNOME Adwaita style app. There are previews of it in the GNOME community that show a much more native looking GIMP UI. 
