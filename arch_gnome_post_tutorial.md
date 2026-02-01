@@ -286,6 +286,11 @@ Now GIMP looks much closer to a modern GNOME app instead of an old cross platfor
 Grab it:
 
 ```sh
+AUR:
+yay -S --needed firefox
+yay -S --needed addwater
+
+Manual:
 yay -S --needed firefox
 mkdir -p ~/git
 cd ~/git
