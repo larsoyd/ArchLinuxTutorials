@@ -193,7 +193,58 @@ Enable it:
 
 This will round corners even on apps that do not use GNOME client side decorations, which helps unify Qt, Electron and older apps with your libadwaita look. 
 
+# 9. Fonts
 
+First check the result of each command:
+
+```sh
+fc-match sans-serif
+fc-match sans
+fc-match monospace
+```
+
+If those already return “Adwaita Sans” and “Adwaita Mono”, then this is redundant. 
+If not, make a directory for fontconfig customization in user folder and then add defaults:
+
+
+```sh
+mkdir -p  ~/.config/fontconfig/conf.d/
+nano ~/.config/fontconfig/conf.d/99-adwaita-defaults.conf
+```
+
+Add:
+
+```sh
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <match target="pattern">
+    <test name="family" qual="any"><string>sans-serif</string></test>
+    <edit name="family" mode="prepend" binding="strong">
+      <string>Adwaita Sans</string>
+    </edit>
+  </match>
+
+  <match target="pattern">
+    <test name="family" qual="any"><string>sans</string></test>
+    <edit name="family" mode="prepend" binding="strong">
+      <string>Adwaita Sans</string>
+    </edit>
+  </match>
+
+  <match target="pattern">
+    <test name="family" qual="any"><string>monospace</string></test>
+    <edit name="family" mode="prepend" binding="strong">
+      <string>Adwaita Mono</string>
+    </edit>
+  </match>
+</fontconfig>
+```
+
+
+Result:
+
+* Any app that asks for generic sans, sans-serif and monospace fonts will now be styled correctly with Adwaita.
 ---
 
 # Optional Apps:
