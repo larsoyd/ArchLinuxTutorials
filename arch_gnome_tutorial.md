@@ -194,7 +194,8 @@ timedatectl status | sed -n '1,12p'  # look for "System clock synchronized: yes"
 lsblk -l
 
 # Set the device you want to operate on
-d=/dev/nvme0n1   # change if lsblk shows a different path
+d=/dev/nvme0n1   # change if lsblk shows a different path:
+d=/dev/sda   # if sd# or sda specifically it's this instead.
 
 # Define the desired partitions for systemd-repart using nano
 mkdir -p /tmp/repart.d
@@ -326,7 +327,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 
 ```bash
 # and then **Install the base of Arch Linux!** :
-pacstrap /mnt base
+pacstrap /mnt base nano sudo
 ```
 
 ## Step 4: System Configuration
