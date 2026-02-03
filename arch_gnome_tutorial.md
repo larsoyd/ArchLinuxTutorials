@@ -533,7 +533,7 @@ cd rate-mirrors
 makepkg -si
 
 # Install cachyos-rate-mirrors
-sudo pacman -S cachyos-rate-mirrors
+sudo pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-18-1-any.pkg.tar.zst'
 
 # Rate CachyOS Mirrors, run:
 sudo cachyos-rate-mirrors
