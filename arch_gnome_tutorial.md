@@ -453,13 +453,13 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 ```
 
 ```bash
-# If your CPU only supports x86-64, then add the [cachyos], [cachyos-core], and [cachyos-extra] repositories
-# cachyos repos
+# If your CPU only supports x86-64, then only add the [cachyos] repository
+# Warning: This replaces your pacman with cachyos's pacman. There's reportedly some
+# issues with this however. There is no good way to prevent this, so unless you want
+# to risk it I would avoid doing the cachyos route altogether.
+#
+# cachyos repo
 [cachyos]
-Include = /etc/pacman.d/cachyos-mirrorlist
-[cachyos-core]
-Include = /etc/pacman.d/cachyos-mirrorlist
-[cachyos-extra]
 Include = /etc/pacman.d/cachyos-mirrorlist
 ```
 
@@ -532,17 +532,17 @@ cd rate-mirrors
 # Build and install the package
 makepkg -si
 
-# Drop back to root in the chroot when done
-exit
-
 # Install cachyos-rate-mirrors
-pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-17-1-any.pkg.tar.zst'
+sudo pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-17-1-any.pkg.tar.zst'
 
 # Rate CachyOS Mirrors, run:
-cachyos-rate-mirrors
+sudo cachyos-rate-mirrors
 
 # Enable mirror rate timer
-systemctl enable cachyos-rate-mirrors.timer
+sudo systemctl enable cachyos-rate-mirrors.timer
+
+# Drop back to root in the chroot when done
+exit
 ```
 
 ##### Install CachyOS Kernel + Headers + SCX & Tools:
