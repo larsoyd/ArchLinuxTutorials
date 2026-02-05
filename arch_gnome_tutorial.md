@@ -527,16 +527,13 @@ MAKEFLAGS="-j$(nproc)"
 ```
 
 ```bash
-# Clone the AUR repo and build the package
-cd /tmp
-git clone https://aur.archlinux.org/rate-mirrors.git
-cd rate-mirrors
-
-# Build and install the package
-makepkg -si
+# Install rate-mirrors
+# Go to https://packages.cachyos.org/package/cachyos/x86_64/rate-mirrors to see what numbers to replace x's with
+sudo pacman -U 'https://cdn77.cachyos.org/repo/x86_64/cachyos/rate-mirrors-x.xx.x-x-x86_64.pkg.tar.zst'
 
 # Install cachyos-rate-mirrors
-sudo pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-18-1-any.pkg.tar.zst'
+# Go to https://packages.cachyos.org/package/cachyos/any/cachyos-rate-mirrors to see what numbers to replace x's with
+sudo pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-xx-x-any.pkg.tar.zst'
 
 # Rate CachyOS Mirrors, run:
 sudo cachyos-rate-mirrors
@@ -550,13 +547,15 @@ exit
 
 ##### Install CachyOS Kernel + Headers + SCX & Tools:
 
-```bash
-## CHOOSE ONE OF THESE TWO:
+CHOOSE ONE OF THESE TWO:
 
+```bash
 ## 1) If you added any of the repos:
 pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
 linux-cachyos-lts-headers scx-scheds scx-tools
+```
 
+```bash
 ## 2) OPTIONAL AUR METHOD INSTEAD:
 su - lars                                    # login to your user
 
@@ -722,11 +721,8 @@ konsole is included as a backup. If you want to use another terminal as your mai
 ### wireless-regdb
 If you use wireless then an **essential package** is also `wireless-regdb`. It installs regulatory.db, a machine-readable table of Wi-Fi rules per country  that allows you to connect properly. If regulatory.db is missing or cannot be read, Linux falls back to the “world” regdomain 00. That profile is **intentionally conservative,** which means fewer channels and more restrictions. For example, world 00 marks many 5 GHz channels as passive-scan only and limits parts of 2.4 GHz (12–13 passive, 14 effectively off).
 
-### audiocd-kio
-This adds the audiocd:/ KIO worker so Dolphin and other gnome apps can read and rip audio CDs. Not needed on non-GNOME systems, but gnome has their own thing with this for some reason. If you are on a laptop with a CD player then you are going to want this.
-
 ### libdvdread, libdvdnav, and libdvdcss
-This is the same as above but for DVD playback. This is needed on any DE.
+This is for DVD playback. This is needed on any DE.
 
 ### libbluray and libaacs
 Same for Blu-Rays. After you have installed the system and configured an AUR helper you may also wish to install **libbdplus** from the AUR if you want for BD+ playback. From there you will have to set it up with KEYS which is shown on the Arch Wiki about Blu-Ray.
@@ -789,10 +785,10 @@ MODULES=(amdgpu radeon)
 HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block filesystems fsck)
 
 # Key changes:
-# - MUST use 'systemd' instead of 'udev' 
-# - Use 'sd-vconsole' instead of 'keymap' and 'consolefont'
-# - Remove 'kms' from HOOKS=() also if you use nvidia, AMDGPU can ignore this however
-# - Ensure microcode is in HOOKS=()
+# - MUST use 'systemd' instead of 'udev' - UPDATE: This should now be default on Arch, it wasnt when I originally wrote this.
+# - Use 'sd-vconsole' instead of 'keymap' and 'consolefont' - UPDATE: I think this is also default now, but one of them remains. I would remove that one.
+# - REMOVE 'kms' from HOOKS=() if you use nvidia, AMDGPU can ignore this however
+# - Ensure 'microcode' is in HOOKS=()
 #
 # NOTE: IF you do not remove udev and if you do not replace it with systemd,
 # THEN YOUR SYSTEM WILL NOT BOOT.
@@ -886,10 +882,6 @@ makepkg -si
 
 # Drop back to root in the chroot when done
 exit
-
-# And finally deactivate the mkinitcpio hooks so you don't create duplicates
-ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
-ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ```
 
 ### Now install kernel UKIs
