@@ -453,12 +453,15 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 ```
 
 ```bash
-# If your CPU only supports x86-64, then only add the [cachyos] repository
-# Warning: This replaces your pacman with cachyos's pacman. There's reportedly some
+# If your CPU only supports x86-64, you cannot add any of the above repos
+# WARNING: This replaces your pacman with cachyos's pacman. There's reportedly some
 # issues with this however. There is no good way to prevent this, so unless you want
-# to risk it I would avoid doing the cachyos route altogether.
+# to risk it I would avoid doing this. If you want the cachyos kernel you can
+# install the one packaged on the AUR instead. You still do all the steps below and above,
+# but when you get to the "OPTIONAL AUR METHOD INSTEAD" do that INSTEAD.
 #
-# cachyos repo
+# It is packaged by the official maintainer of CachyOS so there is less risk.
+# If you still want to go the cachyos repo route, only add this:
 [cachyos]
 Include = /etc/pacman.d/cachyos-mirrorlist
 ```
@@ -548,7 +551,24 @@ exit
 ##### Install CachyOS Kernel + Headers + SCX & Tools:
 
 ```bash
+## CHOOSE ONE OF THESE TWO:
+
+## 1) If you added any of the repos:
 pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
+linux-cachyos-lts-headers scx-scheds scx-tools
+
+## 2) OPTIONAL AUR METHOD INSTEAD:
+su - lars                                    # login to your user
+
+# Install yay, AUR helper
+cd /tmp                                      # go to the temporary directory
+git clone https://aur.archlinux.org/yay.git  # clone the yay pkgbuild from the aur
+cd yay                                       # enter the cloned folder
+makepkg -si                                  # build the package, then install it and deps
+cd ~ && rm -rf /tmp/yay
+
+# Install from the AUR:
+yay -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
 linux-cachyos-lts-headers scx-scheds scx-tools
 ```
 
