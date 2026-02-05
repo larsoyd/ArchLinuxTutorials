@@ -545,9 +545,9 @@ sudo systemctl enable cachyos-rate-mirrors.timer
 exit
 ```
 
-##### Install CachyOS Kernel + Headers + SCX & Tools:
+### Install CachyOS Kernel + Headers + SCX & Tools:
 
-CHOOSE ONE OF THESE TWO:
+**CHOOSE ONE OF THESE TWO:**
 
 ```bash
 ## 1) If you added any of the repos:
@@ -569,6 +569,9 @@ cd ~ && rm -rf /tmp/yay
 # Install from the AUR:
 yay -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
 linux-cachyos-lts-headers scx-scheds scx-tools
+
+# exit out of ur user login
+exit
 ```
 
 #### Tune SCX
