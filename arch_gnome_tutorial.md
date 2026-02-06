@@ -527,6 +527,7 @@ MAKEFLAGS="-j$(nproc)"
 ```
 
 ```bash
+# # SKIP THIS if you are doing the OPTIONAL AUR METHOD INSTEAD.
 # Install rate-mirrors
 # Go to https://packages.cachyos.org/package/cachyos/x86_64/rate-mirrors to see what numbers to replace x's with
 sudo pacman -U 'https://cdn77.cachyos.org/repo/x86_64/cachyos/rate-mirrors-x.xx.x-x-x86_64.pkg.tar.zst'
