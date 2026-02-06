@@ -95,7 +95,7 @@ nano ~/.config/environment.d/10-qt-gnome.conf
 Put only these lines inside (no `export` keyword):
 
 ```ini
-QT_WAYLAND_DECORATION=adwaita
+QT_WAYLAND_DECORATION=qadwaitadecorations
 QT_STYLE_OVERRIDE=Darkly
 ```
 
