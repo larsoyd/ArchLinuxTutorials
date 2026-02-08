@@ -552,8 +552,8 @@ exit
 
 ```bash
 ## 1) If you added any of the repos:
-pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
-linux-cachyos-lts-headers scx-scheds scx-tools
+pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
+linux-cachyos-lts-headers
 ```
 
 ```bash
@@ -568,36 +568,11 @@ makepkg -si                                  # build the package, then install i
 cd ~ && rm -rf /tmp/yay
 
 # Install from the AUR:
-yay -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
-linux-cachyos-lts-headers scx-scheds scx-tools
+yay -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
+linux-cachyos-lts-headers
 
 # exit out of ur user login
 exit
-```
-
-#### Tune SCX
-
-```bash
-mkdir -p /etc/scx_loader 
-nano /etc/scx_loader/config.toml
-```
-
-```bash
-# /etc/scx_loader/config.toml
-default_sched = "scx_lavd"
-default_mode = "Auto"
-
-[scheds.scx_lavd]
-auto_mode       = []
-gaming_mode     = ["--performance"]
-lowlatency_mode = ["--performance"]
-powersave_mode  = ["--powersave"]
-server_mode     = []
-```
-
-```bash
-# Enable SCX
-systemctl enable scx_loader.service
 ```
 
 ---
