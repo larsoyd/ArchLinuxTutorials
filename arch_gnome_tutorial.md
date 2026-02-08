@@ -766,7 +766,7 @@ nano /etc/mkinitcpio.conf
 ---
 
 # Example for MODULES if you use nvidia:
-MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm lz4)
 
 ---
 
@@ -777,11 +777,11 @@ MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 # The amdgpu kernel driver needs to be loaded before the radeon one.
 # You can check which kernel driver is loaded by running lspci -k.
 #
-MODULES=(amdgpu)
+MODULES=(amdgpu lz4)
 
 # or if you have radeon as well
 # do this so amdgpu loads first:
-MODULES=(amdgpu radeon)
+MODULES=(amdgpu radeon lz4)
 
 ---
 
@@ -846,7 +846,7 @@ nano /etc/kernel/cmdline
 # Sea Islands (CIK): radeon.cik_support=0 amdgpu.cik_support=1
 #
 ## /etc/kernel/cmdline
-rw rootflags=noatime nowatchdog loglevel=3 zswap.compressor=lz4
+rw rootflags=noatime nowatchdog loglevel=3 zswap.compressor=lz4 zswap.shrinker_enabled=1 zswap.max_pool_percent=30
 ```
 
 #### Make the ESP directory
