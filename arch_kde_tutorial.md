@@ -966,14 +966,18 @@ sysctl Optimizations:
 # Ignore the comments and only write the stuff under
 # The comments are there for context
 nano /etc/sysctl.d/70-settings.conf
+```
 
+```bash
 # The sysctl swappiness parameter determines the kernel's preference for pushing anonymous pages or page cache to disk in memory-starved situations.
-# A low value causes the kernel to prefer freeing up open files (page cache), a high value causes the kernel to try to use swap space,
-# and a value of 100 means IO cost is assumed to be equal.
+# A low value causes the kernel to prefer freeing up open files (page cache).
+# A high value causes the kernel to try to use swap space.
 vm.swappiness = 100
 
-# The value controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects (VFS cache).
-# Lowering it from the default value of 100 makes the kernel less inclined to reclaim VFS cache (do not set it to 0, this may produce out-of-memory conditions)
+# The value controls the tendency of the kernel to reclaim the memory.
+# It's used for caching of directory and inode objects (VFS cache).
+# Lowering it from the default value of 100 makes the kernel less inclined -
+# - to reclaim VFS cache (do not set it to 0, this may produce out-of-memory conditions)
 vm.vfs_cache_pressure = 50
 
 # Contains, as bytes, the number of pages at which a process which is
@@ -984,7 +988,7 @@ vm.dirty_bytes = 268435456
 # This is the swap counterpart to page cache readahead. The mentioned consecutivity is not in terms of virtual/physical addresses,
 # but consecutive on swap space - that means they were swapped out together. (Default is 3)
 # increase this value to 1 or 2 if you are using physical swap (1 if ssd, 2 if hdd)
-vm.page-cluster = 0
+vm.page-cluster = 1
 
 # Contains, as bytes, the number of pages at which the background kernel
 # flusher threads will start writing out dirty data.
@@ -994,7 +998,8 @@ vm.dirty_background_bytes = 67108864
 # tunable expresses the interval between those wakeups, in 100'ths of a second (Default is 500).
 vm.dirty_writeback_centisecs = 1500
 
-# This action will speed up your boot and shutdown, because one less module is loaded. Additionally disabling watchdog timers increases performance and lowers power consumption
+# This action will speed up your boot and shutdown, because one less module is loaded.
+# Additionally disabling watchdog timers increases performance and lowers power consumption
 # Disable NMI watchdog
 kernel.nmi_watchdog = 0
 
@@ -1006,6 +1011,13 @@ kernel.printk = 3 3 3 3
 
 # Restricting access to kernel pointers in the proc filesystem
 kernel.kptr_restrict = 2
+
+# Disable kexec as a security measure
+kernel.kexec_load_disabled=1
+
+# Many Windows games need this disabled to run properly.
+# They abuse split locks
+kernel.split_lock_mitigate = 0
 
 # Increase netdev receive queue
 # May help prevent losing packets
@@ -1029,6 +1041,18 @@ vm.watermark_boost_factor = 0
 # responsiveness when the system is under memory pressure.
 vm.watermark_scale_factor = 125
 
+# Use 'bbr' to achieve higher throughput when sending to high-latency destinations.
+# Also 'fq' to prevent one greedy app from causing lag (bufferbloat) for everything else.
+# `bbr` relies on pacing, and thus performs better with the `fq` qdisc.
+net.ipv4.tcp_congestion_control = bbr
+net.core.default_qdisc = fq
+
+# Ensure that applications don't break/complain from hitting the limit
+fs.inotify.max_user_instances = 8192
+fs.inotify.max_user_watches = 524288
+```
+
+```bash
 # update the sysctl
 sysctl --system
 ```
