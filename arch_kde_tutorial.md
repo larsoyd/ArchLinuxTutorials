@@ -733,7 +733,7 @@ NVIDIA:
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
-  plasma-meta dolphin dolphin-plugins konsole kitty kio-admin sddm sddm-kcm kdegraphics-thumbnailers ffmpegthumbs \
+  plasma-meta dolphin dolphin-plugins konsole kitty kio-admin plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs \
   nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda \
   pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
@@ -747,7 +747,7 @@ pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty kio-admin \
-  sddm sddm-kcm kdegraphics-thumbnailers ffmpegthumbs \
+  plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs \
   mesa vulkan-radeon \
   libva libva-utils \
   quota-tools hunspell hunspell-en_us usbutils \
@@ -763,7 +763,7 @@ pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty kio-admin \
-  sddm sddm-kcm kdegraphics-thumbnailers ffmpegthumbs \
+  plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs \
   mesa vulkan-intel \
   libva libva-utils intel-media-driver \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
@@ -1073,15 +1073,15 @@ GTK_USE_PORTAL=1
 GDK_DEBUG=portals
 ```
 
-#### Optional: Set SDDM Theme Before Reboot
+#### Optional: Set Login Theme Before Reboot
 
 ```bash
-# This will set your SDDM theme so you aren't
+# This will set your Login theme so you aren't
 # met with an old login screen first boot
 #
 # If you want to do this later that's okay
-mkdir -p /etc/sddm.conf.d
-nano /etc/sddm.conf.d/10-breeze.conf
+mkdir -p /etc/plasmalogin.conf.d
+nano /etc/plasmalogin.conf.d/10-breeze.conf
 ```
 
 ```ini
@@ -1090,14 +1090,13 @@ nano /etc/sddm.conf.d/10-breeze.conf
 Current=breeze
 ```
 
-
 ### 4.10 Enable Essential Services
 
 ```bash
 # Enable network, display manager, and timesyncd
 # Include cups.service if you are using printer
 # Include bluetooth.service for Bluetooth if you installed bluez and bluez-utils
-systemctl enable NetworkManager sddm systemd-timesyncd systemd-boot-update.service \
+systemctl enable NetworkManager plasma-login-manager systemd-timesyncd systemd-boot-update.service \
 fstrim.timer reflector.timer pkgstats.timer
 ```
 
@@ -1115,10 +1114,6 @@ shutdown now
 
 # Remove ArchISO USB from computer then boot back into it
 #
-# Howto change SDDM Theme if you didn't manually and were met with a "Classic" Theme:
-# Navigate to Colors & Themes -> Login Screen (SDDM) -> then select "Breeze" and hit Apply
-# It will then have applied it and on next reboot and others after it will persist
-# 
 # This is also the way to fix if the taskbar (panel) appears on the wrong monitor: Simply go to Global Theme
 # Press Breeze or Breeze-Dark, select BOTH checkboxes and hit apply. Wait and then it will correctly apply
 # This will also persist on reboots as well. 
