@@ -198,7 +198,8 @@ timedatectl status | sed -n '1,12p'  # look for "System clock synchronized: yes"
 lsblk -l
 
 # Set the device you want to operate on
-d=/dev/nvme0n1   # change if lsblk shows a different path
+d=/dev/nvme0n1   # change if lsblk shows a different path:
+d=/dev/sda   # if sd# or sda specifically it's this instead.
 
 # Define the desired partitions for systemd-repart using nano
 mkdir -p /tmp/repart.d
@@ -330,7 +331,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 
 ```bash
 # and then **Install the base of Arch Linux!** :
-pacstrap /mnt base
+pacstrap /mnt base nano sudo
 ```
 
 ## Step 4: System Configuration
@@ -347,8 +348,8 @@ arch-chroot /mnt
 ### 4.5 Create User Account
 
 ```bash
-# Install zsh
-pacman -S --needed zsh
+# Install zsh & git
+pacman -S --needed zsh git
 
 # Set root password
 passwd
@@ -456,13 +457,16 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 ```
 
 ```bash
-# If your CPU only supports x86-64, then add the [cachyos], [cachyos-core], and [cachyos-extra] repositories
-# cachyos repos
+# If your CPU only supports x86-64, you cannot add any of the above repos
+# WARNING: This replaces your pacman with cachyos's pacman. There's reportedly some
+# issues with this however. There is no good way to prevent this, so unless you want
+# to risk it I would avoid doing this. If you want the cachyos kernel you can
+# install the one packaged on the AUR instead. You still do all the steps below and above,
+# but when you get to the "OPTIONAL AUR METHOD INSTEAD" do that INSTEAD.
+#
+# It is packaged by the official maintainer of CachyOS so there is less risk.
+# If you still want to go the cachyos repo route, only add this:
 [cachyos]
-Include = /etc/pacman.d/cachyos-mirrorlist
-[cachyos-core]
-Include = /etc/pacman.d/cachyos-mirrorlist
-[cachyos-extra]
 Include = /etc/pacman.d/cachyos-mirrorlist
 ```
 
@@ -527,57 +531,52 @@ MAKEFLAGS="-j$(nproc)"
 ```
 
 ```bash
-# Clone the AUR repo and build the package
-cd /tmp
-git clone https://aur.archlinux.org/rate-mirrors.git
-cd rate-mirrors
+# # SKIP THIS if you are doing the OPTIONAL AUR METHOD INSTEAD.
+# Install rate-mirrors
+# Go to https://packages.cachyos.org/package/cachyos/x86_64/rate-mirrors to see what numbers to replace x's with
+sudo pacman -U 'https://cdn77.cachyos.org/repo/x86_64/cachyos/rate-mirrors-x.xx.x-x-x86_64.pkg.tar.zst'
 
-# Build and install the package
-makepkg -si
+# Install cachyos-rate-mirrors
+# Go to https://packages.cachyos.org/package/cachyos/any/cachyos-rate-mirrors to see what numbers to replace x's with
+sudo pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-xx-x-any.pkg.tar.zst'
+
+# Rate CachyOS Mirrors, run:
+sudo cachyos-rate-mirrors
+
+# Enable mirror rate timer
+sudo systemctl enable cachyos-rate-mirrors.timer
 
 # Drop back to root in the chroot when done
 exit
-
-# Install cachyos-rate-mirrors
-pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-17-1-any.pkg.tar.zst'
-
-# Rate CachyOS Mirrors, run:
-cachyos-rate-mirrors
-
-# Enable mirror rate timer
-systemctl enable cachyos-rate-mirrors.timer
 ```
 
-##### Install CachyOS Kernel + Headers + SCX & Tools:
+### Install CachyOS Kernel + Headers + SCX & Tools:
+
+**CHOOSE ONE OF THESE TWO:**
 
 ```bash
-pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
-linux-cachyos-lts-headers scx-scheds scx-tools
-```
-
-#### Tune SCX
-
-```bash
-mkdir -p /etc/scx_loader 
-nano /etc/scx_loader/config.toml
+## 1) If you added any of the repos:
+pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
+linux-cachyos-lts-headers
 ```
 
 ```bash
-# /etc/scx_loader/config.toml
-default_sched = "scx_lavd"
-default_mode = "Auto"
+## 2) OPTIONAL AUR METHOD INSTEAD:
+su - lars                                    # login to your user
 
-[scheds.scx_lavd]
-auto_mode       = []
-gaming_mode     = ["--performance"]
-lowlatency_mode = ["--performance"]
-powersave_mode  = ["--powersave"]
-server_mode     = []
-```
+# Install yay, AUR helper
+cd /tmp                                      # go to the temporary directory
+git clone https://aur.archlinux.org/yay.git  # clone the yay pkgbuild from the aur
+cd yay                                       # enter the cloned folder
+makepkg -si                                  # build the package, then install it and deps
+cd ~ && rm -rf /tmp/yay
 
-```bash
-# Enable SCX
-systemctl enable scx_loader.service
+# Install from the AUR:
+yay -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
+linux-cachyos-lts-headers
+
+# exit out of ur user login
+exit
 ```
 
 ---
