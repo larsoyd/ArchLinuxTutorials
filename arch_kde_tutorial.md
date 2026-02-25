@@ -476,20 +476,36 @@ Include = /etc/pacman.d/cachyos-mirrorlist
 pacman -Syu
 
 # Install sudo & base-devel
-pacman -S --needed sudo base-devel ccache mold
+pacman -S --needed sudo base-devel ccache mold rustup
+
+# setup rustup
+rustup default stable
 
 # Login to user
 su - lars
 
 # Configure ccache
 mkdir -p ~/.config/ccache/
-nano ~/.config/ccache/ccache.conf
+mkdir -p ~/.cargo
 ```
 
 ```sh
+nano ~/.config/ccache/ccache.conf
+
 # ~/.config/ccache/ccache.conf
 cache_dir = $HOME/.cache/ccache
 max_size  = 30G
+```
+
+```sh
+nano ~/.cargo/config.toml
+
+# ~/.cargo/config.toml
+[build]
+rustc-wrapper = "sccache"
+
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "target-cpu=native"]
 ```
 
 EITHER:
