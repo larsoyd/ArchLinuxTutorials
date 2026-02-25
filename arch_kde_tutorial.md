@@ -504,8 +504,9 @@ nano ~/.cargo/config.toml
 [build]
 rustc-wrapper = "sccache"
 
+# change znver4 to native if u dont have that supported
 [target.x86_64-unknown-linux-gnu]
-rustflags = ["-C", "target-cpu=native"]
+rustflags = ["-C", "target-cpu=znver4", "-C", "link-arg=-fuse-ld=mold"]
 ```
 
 EITHER:
@@ -822,7 +823,9 @@ MODULES=(amdgpu radeon)
 HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block filesystems fsck)
 
 # Key changes:
-# - MUST use 'systemd' instead of 'udev' 
+# - MUST use 'systemd' instead of 'udev' - UPDATE: Arch now defaults to systemd instead of udev now,
+#   so now you just need to check if it's right.
+#
 # - Use 'sd-vconsole' instead of 'keymap' and 'consolefont'
 # - Remove 'kms' from HOOKS=() also if you use nvidia, AMDGPU can ignore this however
 # - Ensure microcode is in HOOKS=()
@@ -919,10 +922,6 @@ makepkg -si
 
 # Drop back to root in the chroot when done
 exit
-
-# And finally deactivate the mkinitcpio hooks so you don't create duplicates
-ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
-ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ```
 
 ### Now install kernel UKIs
