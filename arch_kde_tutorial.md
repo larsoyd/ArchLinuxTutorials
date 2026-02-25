@@ -977,6 +977,9 @@ systemctl enable swapfile.swap
 sysctl Optimizations:
 
 ```bash
+# copy from tmp
+cp /tmp/ArchLinuxTutorials/70-settings.conf /etc/sysctl.d/70-settings.conf
+
 # These are optimizations taken from CachyOS
 # Ignore the comments and only write the stuff under
 # The comments are there for context
