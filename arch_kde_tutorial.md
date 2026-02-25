@@ -823,8 +823,8 @@ MODULES=(amdgpu radeon)
 HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block filesystems fsck)
 
 # Key changes:
-# - MUST use 'systemd' instead of 'udev' - UPDATE: Arch now defaults to systemd instead of udev now,
-#   so now you just need to check if it's right.
+# - MUST use 'systemd' instead of 'udev' - UPDATE: Arch now defaults to systemd instead of udev,
+#   so here you just need to check if it's right.
 #
 # - Use 'sd-vconsole' instead of 'keymap' and 'consolefont'
 # - Remove 'kms' from HOOKS=() also if you use nvidia, AMDGPU can ignore this however
