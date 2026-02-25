@@ -741,10 +741,26 @@ echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 # I prefer it, but YMMV
 yay -S --needed lucidglyph
 
-# KDE specific options for lucidglyph
-1. Open the System Settings
-2. Go to the "Appearance & Style" - "Text & Fonts"
-3. Ensure that "Sub-pixel rendering" is set to "None"
+# Set the fonts in KDE Plasma 6
+   a) Open: System Settings
+   b) Go to: Appearance -> Fonts
+   c) Check/Set these entries:
+      - General: Noto Sans
+      - Fixed width: DejaVu Sans Mono
+      - Small: Noto Sans
+      - Toolbar: Noto Sans
+      - Menu: Noto Sans
+      - Window title: Noto Sans
+
+   d) Click: Apply
+
+3) Set Font Hinting to “Slight” (and confirm)
+   a) In the same screen: System Settings -> Appearance -> Fonts
+   b) Click: Font Management (or “Configure…” button for anti-aliasing, wording varies)
+   c) In “Anti-Aliasing” / “Sub-pixel rendering” section:
+      - Hinting: Slight
+      - Ensure that "Sub-pixel rendering" is set to "None"
+   d) Click: Apply
 
 # Kitty Terminal
 # add to ~/.config/kitty/kitty.conf
