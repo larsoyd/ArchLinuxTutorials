@@ -728,6 +728,29 @@ mkdir -p ~/.config/mpv
 echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 ```
 
+#### Optional: Improve Font Rendering
+```bash
+# some people have criticized the font rendering on Linux
+# there is a good thread on this here:
+# https://old.reddit.com/r/linuxquestions/comments/1qzah2h/the_font_rendering_on_linux_is_just_bad_has/
+#
+# I installed this and in my opinion it looks better, albeit a bit bold.
+# The only caveat is that it does not work on Chromium browsers.
+# If you use those then you wont see a difference on the internet,
+# but the rest of the system will look better.
+# I prefer it, but YMMV
+yay -S --needed lucidglyph
+
+# KDE specific options for lucidglyph
+1. Open the System Settings
+2. Go to the "Appearance & Style" - "Text & Fonts"
+3. Ensure that "Sub-pixel rendering" is set to "None"
+
+# Kitty Terminal
+# add to ~/.config/kitty/kitty.conf
+text_composition_strategy 1.7 0
+```
+
 ## Final Reboot
 
 #### Reboot again into new system and you can finally sit back, relax, and use arch btw
