@@ -372,15 +372,15 @@ EDITOR=nano visudo
 
 # OPTIONAL: CachyOS packages and Kernel
 
-If you want CachyOS repos and kernel like I do, then this is how you do it:
+My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
+It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
+their kernel, which is already tuned for you. First you need to add their keyring and mirrorfiles.
 
-```bash
-# My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
-# It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
-# their kernel, which is already tuned for you. First you need to add their keyring and mirrorfiles.
+If you don't want it you skip this + the ChaoticAUR method to the 6.5 Install Packages step showing what kernels to install
+if you aren't, like linux-zen and linux-lts.
 
-```
-## Add CachyOS Repos to Arch Linux
+
+## Add CachyOS Repos to Arch Linux:
 
 **NOTE: SKIP THIS IF YOUR CPU DONT SUPPORT
 znver4, x86_64_v3, or x86_64_v4, FIGURE OUT YOURSELF IF YOU DO BASED
@@ -489,10 +489,18 @@ sudo systemctl enable cachyos-rate-mirrors.timer
 
 # Drop back to root in the chroot when done
 exit
+
 ```
+### Install CachyOS Kernel + Headers:
+
+```bash
+pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
+linux-cachyos-lts-headers
+```
+
 ---
 
-## ALTERNATIVE CHAOTIC AUR METHOD
+## ALTERNATIVE CHAOTIC AUR METHOD:
 
 ```bash
 # Import and locally sign the Chaotic-AUR repo key
@@ -537,8 +545,6 @@ Include = /etc/pacman.d/chaotic-mirrorlist
 # Update package database
 pacman -Syu
 ```
-
----
 
 ### Install CachyOS Kernel + Headers:
 
