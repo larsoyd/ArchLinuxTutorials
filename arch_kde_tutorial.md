@@ -1113,7 +1113,7 @@ Current=breeze
 # Enable network, display manager, and timesyncd
 # Include cups.service if you are using printer
 # Include bluetooth.service for Bluetooth if you installed bluez and bluez-utils
-systemctl enable NetworkManager plasma-login-manager systemd-timesyncd systemd-boot-update.service \
+systemctl enable NetworkManager plasmalogin systemd-timesyncd systemd-boot-update.service \
 fstrim.timer reflector.timer pkgstats.timer
 ```
 
