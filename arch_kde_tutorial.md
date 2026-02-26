@@ -378,12 +378,16 @@ If you want CachyOS repos and kernel like I do, then this is how you do it:
 # My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
 # It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
 # their kernel, which is already tuned for you. First you need to add their keyring and mirrorfiles.
-#
-#
-# NOTE: If you aren't going to get the CachyOS kernel SKIP this step
-# to `Install Packages` and get the linux-zen and linux-lts kernels instead.
 
 ```
+## Add CachyOS Repos to Arch Linux
+
+**NOTE: SKIP THIS IF YOUR CPU DONT SUPPORT
+znver4, x86_64_v3, or x86_64_v4, FIGURE OUT YOURSELF IF YOU DO BASED
+ON YOUR CPU.**
+
+A separate Chaotic-AUR method to get the kernels will be provided if your 
+CPU dont support any of those instructions. Skip all stwps under until you see it.
 
 ```bash
 # Import and locally sign the CachyOS repo key
@@ -456,99 +460,19 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 Include = /etc/pacman.d/cachyos-v4-mirrorlist
 ```
 
-```bash
-# If your CPU only supports x86-64, you cannot add any of the above repos
-# WARNING: This replaces your pacman with cachyos's pacman. There's reportedly some
-# issues with this however. There is no good way to prevent this, so unless you want
-# to risk it I would avoid doing this. If you want the cachyos kernel you can
-# install the one packaged on the AUR instead. You still do all the steps below and above,
-# but when you get to the "OPTIONAL AUR METHOD INSTEAD" do that INSTEAD.
-#
-# It is packaged by the official maintainer of CachyOS so there is less risk.
-# If you still want to go the cachyos repo route, only add this:
-[cachyos]
-Include = /etc/pacman.d/cachyos-mirrorlist
-```
-
 ### 6.1 Update mirrors and run reflector to new Cachy mirrors
 ```bash
 # Update package database
 pacman -Syu
 
-# Install sudo & base-devel
-pacman -S --needed sudo base-devel ccache mold rustup
-
-# setup rustup
-rustup default stable
+# Install base-devel
+pacman -S --needed base-devel
 
 # Login to user
 su - lars
-
-# Configure ccache
-mkdir -p ~/.config/ccache/
-mkdir -p ~/.cargo
-```
-
-```sh
-nano ~/.config/ccache/ccache.conf
-
-# ~/.config/ccache/ccache.conf
-cache_dir = $HOME/.cache/ccache
-max_size  = 30G
-```
-
-```sh
-nano ~/.cargo/config.toml
-
-# ~/.cargo/config.toml
-[build]
-rustc-wrapper = "sccache"
-
-# change znver4 to native if u dont have that supported
-[target.x86_64-unknown-linux-gnu]
-rustflags = ["-C", "target-cpu=znver4", "-C", "link-arg=-fuse-ld=mold"]
-```
-
-EITHER:
-
-1) Copy it from repo cloned before
-```bash
-cp /tmp/ArchLinuxTutorials/makepkg.conf ~/.makepkg.conf
-```
-
-2. Write it manually if you don't have znver4 (or skip entirely)
-```bash
-nano ~/.makepkg.conf
-```
-
-```sh
-# ~/.makepkg.conf
-
-# Retarget both C and C++ to znver4 while keeping Arch's hardening flags
-# If you dont have a znver4 supported CPU just put "native" here instead
-CFLAGS="${CFLAGS/-march=x86-64-v3/-march=znver4}"
-CFLAGS="${CFLAGS/-march=x86-64-v2/-march=znver4}"
-CFLAGS="${CFLAGS/-march=x86-64/-march=znver4}"
-
-CXXFLAGS="${CXXFLAGS/-march=x86-64-v3/-march=znver4}"
-CXXFLAGS="${CXXFLAGS/-march=x86-64-v2/-march=znver4}"
-CXXFLAGS="${CXXFLAGS/-march=x86-64/-march=znver4}"
-
-# LTO default if system config had !lto
-OPTIONS=("${OPTIONS[@]/!lto/lto}")
-
-# Enable ccache in the build environment
-BUILDENV=("${BUILDENV[@]/!ccache/ccache}")
-
-# mold default linker
-LDFLAGS+=" -fuse-ld=mold"
-
-# parallel builds
-MAKEFLAGS="-j$(nproc)"
 ```
 
 ```bash
-# # SKIP THIS if you are doing the OPTIONAL AUR METHOD INSTEAD.
 # Install rate-mirrors
 # Go to https://packages.cachyos.org/package/cachyos/x86_64/rate-mirrors to see what numbers to replace x's with
 sudo pacman -U 'https://cdn77.cachyos.org/repo/x86_64/cachyos/rate-mirrors-x.xx.x-x-x86_64.pkg.tar.zst'
@@ -566,34 +490,61 @@ sudo systemctl enable cachyos-rate-mirrors.timer
 # Drop back to root in the chroot when done
 exit
 ```
+---
 
-### Install CachyOS Kernel + Headers + SCX & Tools:
-
-**CHOOSE ONE OF THESE TWO:**
+## ALTERNATIVE CHAOTIC AUR METHOD
 
 ```bash
-## 1) If you added any of the repos:
-pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
-linux-cachyos-lts-headers
+# Import and locally sign the Chaotic-AUR repo key
+#
+# Initialize keys
+pacman-key --init
+
+# Populate keys
+pacman-key --populate
+
+# Clone this repo
+cd /tmp
+git clone https://github.com/larsoyd/ArchLinuxTutorials.git
+cd ArchLinuxTutorials
+
+# Install + sign keys & mirrors
+chmod +x chaotic-setup.sh
+./chaotic-setup.sh
+
+# Leave /tmp
+cd
 ```
 
 ```bash
-## 2) OPTIONAL AUR METHOD INSTEAD:
-su - lars                                    # login to your user
+# Now that you have added the mirrors + keys
+# You need to edit /etc/pacman.conf
+nano /etc/pacman.conf
+```
 
-# Install yay, AUR helper
-cd /tmp                                      # go to the temporary directory
-git clone https://aur.archlinux.org/yay.git  # clone the yay pkgbuild from the aur
-cd yay                                       # enter the cloned folder
-makepkg -si                                  # build the package, then install it and deps
-cd ~ && rm -rf /tmp/yay
+```bash
+# Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
+# Add Chaotic-AUR repo UNDER all the other ones existing.
+#
+# /etc/pacman.conf
+# under all the other repos:
 
-# Install from the AUR:
-yay -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
+[chaotic-aur]
+Include = /etc/pacman.d/chaotic-mirrorlist
+```
+
+```bash
+# Update package database
+pacman -Syu
+```
+
+---
+
+### Install CachyOS Kernel + Headers:
+
+```bash
+pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
 linux-cachyos-lts-headers
-
-# exit out of ur user login
-exit
 ```
 
 ---
