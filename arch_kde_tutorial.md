@@ -645,39 +645,16 @@ FONT=ter-118n  # But add this.
 ---
 
 # set system keymaps
+#
+localectl set-keymap no-latin1
+
 # FYI, x11 should be done even if you are only using wayland
 # as the default is still sourced from systemd-localed (locale1) 
 # and the generated /etc/X11/xorg.conf.d/00-keyboard.conf
-localectl set-keymap no-latin1
-# Note: pc105 is what I have and its the default in most countries
+#
+# Also note: pc105 is what I have and its the default in most countries
 # but in the US pc104 is the default. Check what model you use beforehand.
 localectl set-x11-keymap no pc105
-
----
-
-# Set KDE keymap
-nano /etc/skel/.config/kxkbrc
-
-# add
-[Layout]
-DisplayNames=
-# 'no' is the standard XKB identifier for Norwegian
-# replace with your own
-LayoutList=no
-LayoutLoopCount=-1
-# pc105 is what I have on Model.
-# 104 is for US standard ANSI keyboards,
-# 105 for most other countries ISO standard
-Model=pc105
-ResetOldOptions=false
-ShowFlag=true
-ShowLabel=true
-ShowLayoutIndicator=true
-ShowSingle=false
-SwitchMode=Global
-Use=true
-# replace with deadkeys if you have that
-VariantList=nodeadkeys
 
 ```
 
