@@ -606,7 +606,7 @@ ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 hwclock --systohc
 ```
 
-### 4.3 Configure Locale
+### 4.3 Configure Locale & Keyboard
 
 ```bash
 # Now we are going to configure our system language.
@@ -623,6 +623,8 @@ Uncomment: nb_NO.UTF-8 UTF-8 # Bokmål Norwegian (replace with your own or leave
 # Then generate locales
 locale-gen
 
+---
+
 # Set system locale
 nano /etc/locale.conf
 
@@ -630,6 +632,7 @@ nano /etc/locale.conf
 LANG=en_US.UTF-8    # LANG for system language
 LC_TIME=nb_NO.UTF-8 # LC_TIME for date & time to my specific LANG default
 
+---
 
 # Set console keymap & font
 nano /etc/vconsole.conf
@@ -639,6 +642,16 @@ KEYMAP=no-latin1 # Skip this if US keyboard
 FONT=ter-118n  # But add this.
                # This is a console font which makes it larger,
                # and more easily readable on boot
+---
+
+# set system keymaps
+# FYI, x11 should be done even if you are only using wayland
+# as the default is still sourced from systemd-localed (locale1) 
+# and the generated /etc/X11/xorg.conf.d/00-keyboard.conf
+localectl set-keymap no-latin1
+localectl set-x11-keymap no pc105
+
+---
 
 # Set KDE keymap
 nano /etc/skel/.config/kxkbrc
