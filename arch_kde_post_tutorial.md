@@ -649,6 +649,28 @@ YT-DLP is a downloader for online media hosted on sites. It's very good.
 
 Install:
 ```bash
+# From pipx.
+#
+# This is reccomended, though ensure you keep it up to date
+# Best way to do that is using Topgrade since it will automatically detect
+# pipx is on your system and then update that too when ran.
+#
+# Yes, topgrade is an amazing tool.
+yay -S --needed python-pipx
+
+# Run this to ensure its on your PATH
+pipx ensurepath
+
+# Install yt-dlp via pipx
+pipx install yt-dlp
+
+--
+
+# From official repository
+#
+# If not using topgrade / don't want pipx, you can also get it from the
+# repositories, reason why its not reccomended is it may lag behind
+# the official package
 yay -S --needed yt-dlp
 ```
 
