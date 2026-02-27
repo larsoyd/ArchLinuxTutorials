@@ -388,8 +388,9 @@ if you aren't, like linux-zen and linux-lts.
 
 ### Option A) Add CachyOS Repos to Arch Linux:
 
-YOU MUST SKIP THIS IF YOUR CPU DOES NOT SUPPORT: **znver4, x86_64_v3, or x86_64_v4,** FIGURE OUT YOURSELF IF THAT IS THE CASE. A separate Chaotic-AUR method to get the kernels will be provided if your 
-CPU dont support any of those instructions. Scroll until you see "Option B)" and start from there instead.
+* SKIP THIS IF YOUR CPU DOES NOT SUPPORT: **znver4, x86_64_v3, or x86_64_v4,**
+
+* A separate Chaotic-AUR method to get the kernels will be provided if your CPU dont support any of those instructions. Scroll until you see "Option B)" and start from there instead.
 
 ```bash
 # Import and locally sign the CachyOS repo key
@@ -551,7 +552,10 @@ pacman -Syu
 ### Install CachyOS Kernel + Headers:
 
 ```bash
-pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
+# As of writing the Chaotic-AUR does not have the CachyOS kernel I prefer to use
+# which is the BORE kernel. It only packages the lts, regular and rc versions.
+# Out of those I would pick both lts and regular, rc is more for realtime audio work.
+pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
 linux-cachyos-lts-headers
 ```
 
@@ -684,7 +688,7 @@ If you use wireless then an **essential package** is also `wireless-regdb`. It i
 # after install enable your region
 nano /etc/conf.d/wireless-regdom
 
-# For the United States look for the one that says "US",
+# For example, for the United States look for the one that says "US",
 # then uncomment the line by removing the # symbol at the beginning
 # so it looks exactly like this:
 WIRELESS_REGDOM="US"
