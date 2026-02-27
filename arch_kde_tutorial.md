@@ -1046,8 +1046,13 @@ sysctl --system
 ```
 
 ```bash
-# Add Arch Wiki optimizations
+# Add Arch Wiki  gaming optimizations
 mkdir -p /etc/tmpfiles.d/
+
+# copy from tmp
+cp /tmp/ArchLinuxTutorials/consistent-response-time-for-gaming.conf /etc/tmpfiles.d/consistent-response-time-for-gaming.conf
+
+# or manually add
 nano /etc/tmpfiles.d/consistent-response-time-for-gaming.conf
 ```
 
