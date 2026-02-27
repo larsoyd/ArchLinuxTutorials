@@ -650,7 +650,9 @@ DisplayNames=
 # replace with your own
 LayoutList=no
 LayoutLoopCount=-1
-# pc105 is standard keyboard, replace if different with yours
+# pc105 is what I have on Model.
+# 104 is for US standard ANSI keyboards,
+# 105 for most other countries ISO standard
 Model=pc105
 ResetOldOptions=false
 ShowFlag=false
