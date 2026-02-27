@@ -46,6 +46,89 @@ sudo pacman -S --needed base-devel git  # when you run pacman with the --needed 
                                         # so it's good to just do it by default to be sure.
 ```
 
+### Optimize Build Environment:
+
+```bash
+sudo pacman -S --needed ccache mold rustup
+
+# setup rustup
+rustup default stable
+
+# Configure ccache
+mkdir -p ~/.config/ccache/
+mkdir -p ~/.cargo
+```
+
+```sh
+nano ~/.config/ccache/ccache.conf
+
+# ~/.config/ccache/ccache.conf
+cache_dir = $HOME/.cache/ccache
+max_size  = 30G
+```
+
+```sh
+nano ~/.cargo/config.toml
+
+# ~/.cargo/config.toml
+[build]
+rustc-wrapper = "sccache"
+
+# change znver4 to native if u dont have that supported
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "target-cpu=native", "-C", "link-arg=-fuse-ld=mold"]
+```
+
+```sh
+sudo mkdir -p /etc/makepkg.conf.d
+sudo nano /etc/makepkg.conf.d/rust.conf
+```
+
+```bash
+# /etc/makepkg.conf.d/rust.conf
+RUSTFLAGS="-C link-arg=-fuse-ld=mold -C target-cpu=native"
+```
+
+EITHER:
+
+1) Copy it from my repo
+```bash
+cd /tmp
+git clone https://github.com/larsoyd/ArchLinuxTutorials
+cp /tmp/ArchLinuxTutorials/makepkg.conf ~/.makepkg.conf
+cd
+```
+
+2. Write it manually
+```bash
+nano ~/.makepkg.conf
+```
+
+```sh
+# ~/.makepkg.conf
+
+# Retarget both C and C++ to CPU while keeping Arch's hardening flags
+CFLAGS="${CFLAGS/-march=x86-64-v3/-march=native}"
+CFLAGS="${CFLAGS/-march=x86-64-v2/-march=native}"
+CFLAGS="${CFLAGS/-march=x86-64/-march=native}"
+
+CXXFLAGS="${CXXFLAGS/-march=x86-64-v3/-march=native}"
+CXXFLAGS="${CXXFLAGS/-march=x86-64-v2/-march=native}"
+CXXFLAGS="${CXXFLAGS/-march=x86-64/-march=native}"
+
+# LTO default if system config had !lto
+OPTIONS=("${OPTIONS[@]/!lto/lto}")
+
+# Enable ccache in the build environment
+BUILDENV=("${BUILDENV[@]/!ccache/ccache}")
+
+# mold default linker
+LDFLAGS+=" -fuse-ld=mold"
+
+# parallel builds
+MAKEFLAGS="-j$(nproc)"
+```
+
 ### DISCLAIMER FOR THE AUR:
 
 **NOTE:** Before installing anything other than what is in this tutorial from the AUR, 
