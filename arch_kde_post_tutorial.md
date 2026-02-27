@@ -516,9 +516,9 @@ steam
 yay -S --needed lib32-gst-plugins-base lib32-gst-plugins-good
 
 # From AUR
-# NOTE: You will have to compile these, and that will take a while. I recommend only doing this
-# if you need them, again you do NOT need them for Steam so if you are only planning to use WINE/Proton for Steam I say skip these
-# If not, I recommend you do these at the end of the tutorial instead since the build time is LONG.
+# NOTE: You will have to compile these, and that will take a while. I recommend only doing this if you need them,
+# again you do NOT need them for Steam so if you are only planning to use WINE/Proton for Steam, I say skip these.
+# If not, I recommend you do these at the end of the tutorial since the build time is LONG.
 yay -S --needed lib32-gst-plugins-ugly lib32-gst-plugins-bad lib32-gst-libav
 ```
 
