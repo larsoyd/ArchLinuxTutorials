@@ -964,99 +964,14 @@ then:
 systemctl enable swapfile.swap
 ```
 
-sysctl Optimizations:
+### Optimizations:
 
 ```bash
-# copy from tmp
-cp /tmp/ArchLinuxTutorials/70-settings.conf /etc/sysctl.d/70-settings.conf
-
-# These are optimizations taken from CachyOS
-# Ignore the comments and only write the stuff under
-# The comments are there for context
-nano /etc/sysctl.d/70-settings.conf
-```
-
-```bash
-# Having the vm.max_map_count set to a low value can affect the stability and performance of some games. 
-vm.max_map_count = 2147483642
-
-# The value controls the tendency of the kernel to reclaim the memory.
-# It's used for caching of directory and inode objects (VFS cache).
-# Lowering it from the default value of 100 makes the kernel less inclined -
-# - to reclaim VFS cache (do not set it to 0, this may produce out-of-memory conditions)
-vm.vfs_cache_pressure = 50
-
-# Contains, as bytes, the number of pages at which a process which is
-# generating disk writes will itself start writing out dirty data.
-vm.dirty_bytes = 268435456
-
-# page-cluster controls the number of pages up to which consecutive pages are read in from swap in a single attempt.
-# This is the swap counterpart to page cache readahead. The mentioned consecutivity is not in terms of virtual/physical addresses,
-# but consecutive on swap space - that means they were swapped out together. (Default is 3)
-# increase this value to 1 or 2 if you are using physical swap (1 if ssd, 2 if hdd)
-vm.page-cluster = 1
-
-# Contains, as bytes, the number of pages at which the background kernel
-# flusher threads will start writing out dirty data.
-vm.dirty_background_bytes = 67108864
-
-# The kernel flusher threads will periodically wake up and write old data out to disk.  This
-# tunable expresses the interval between those wakeups, in 100'ths of a second (Default is 500).
-vm.dirty_writeback_centisecs = 1500
-
-# This action will speed up your boot and shutdown, because one less module is loaded.
-# Additionally disabling watchdog timers increases performance and lowers power consumption
-# Disable NMI watchdog
-kernel.nmi_watchdog = 0
-
-# Enable the sysctl setting kernel.unprivileged_userns_clone to allow normal users to run unprivileged containers.
-kernel.unprivileged_userns_clone = 1
-
-# To hide any kernel messages from the console
-kernel.printk = 3 3 3 3
-
-# Restricting access to kernel pointers in the proc filesystem
-kernel.kptr_restrict = 2
-
-# Disable kexec as a security measure
-kernel.kexec_load_disabled=1
-
-# Many Windows games need this disabled to run properly.
-# They abuse split locks
-kernel.split_lock_mitigate = 0
-
-# Increase netdev receive queue
-# May help prevent losing packets
-net.core.netdev_max_backlog = 4096
-
-# Set size of file handles and inode cache
-fs.file-max = 2097152
-
-# Use 'bbr' to achieve higher throughput when sending to high-latency destinations.
-# Also 'fq' to prevent one greedy app from causing lag (bufferbloat) for everything else.
-# `bbr` relies on pacing, and thus performs better with the `fq` qdisc.
-net.ipv4.tcp_congestion_control = bbr
-net.core.default_qdisc = fq
-
-# Ensure that applications don't break/complain from hitting the limit
-fs.inotify.max_user_instances = 8192
-fs.inotify.max_user_watches = 524288
-```
-
-```bash
-# update the sysctl
-sysctl --system
-```
-
-```bash
-# Add Arch Wiki  gaming optimizations
+# Create systemd-tmpfiles folder
 mkdir -p /etc/tmpfiles.d/
 
 # copy from tmp
 cp /tmp/ArchLinuxTutorials/consistent-response-time-for-gaming.conf /etc/tmpfiles.d/consistent-response-time-for-gaming.conf
-
-# or manually add
-nano /etc/tmpfiles.d/consistent-response-time-for-gaming.conf
 ```
 
 ```conf
@@ -1075,9 +990,33 @@ w /proc/sys/vm/page_lock_unfairness - - - - 1
 w /proc/sys/kernel/sched_child_runs_first - - - - 0
 w /proc/sys/kernel/sched_autogroup_enabled - - - - 1
 w /proc/sys/kernel/sched_cfs_bandwidth_slice_us - - - - 3000
-w /sys/kernel/debug/sched/base_slice_ns  - - - - 3000000
+w /sys/kernel/debug/sched/base_slice_ns - - - - 3000000
 w /sys/kernel/debug/sched/migration_cost_ns - - - - 500000
 w /sys/kernel/debug/sched/nr_migrate - - - - 8
+
+# From sysctl snippet
+w /proc/sys/vm/max_map_count - - - - 2147483642
+w /proc/sys/vm/vfs_cache_pressure - - - - 50
+w /proc/sys/vm/dirty_bytes - - - - 268435456
+w /proc/sys/vm/page-cluster - - - - 1
+w /proc/sys/vm/dirty_background_bytes - - - - 67108864
+w /proc/sys/vm/dirty_writeback_centisecs - - - - 1500
+
+w /proc/sys/kernel/nmi_watchdog - - - - 0
+w /proc/sys/kernel/unprivileged_userns_clone - - - - 1
+w /proc/sys/kernel/printk - - - - 3 3 3 3
+w /proc/sys/kernel/kptr_restrict - - - - 2
+w /proc/sys/kernel/kexec_load_disabled - - - - 1
+w /proc/sys/kernel/split_lock_mitigate - - - - 0
+
+w /proc/sys/net/core/netdev_max_backlog - - - - 4096
+w /proc/sys/fs/file-max - - - - 2097152
+
+w /proc/sys/net/ipv4/tcp_congestion_control - - - - bbr
+w /proc/sys/net/core/default_qdisc - - - - fq
+
+w /proc/sys/fs/inotify/max_user_instances - - - - 8192
+w /proc/sys/fs/inotify/max_user_watches - - - - 524288
 ```
 
 #### Force GTK to use Portals
