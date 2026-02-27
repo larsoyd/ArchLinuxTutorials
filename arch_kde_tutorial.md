@@ -977,6 +977,9 @@ nano /etc/sysctl.d/70-settings.conf
 ```
 
 ```bash
+# Having the vm.max_map_count set to a low value can affect the stability and performance of some games. 
+vm.max_map_count = 2147483642
+
 # The value controls the tendency of the kernel to reclaim the memory.
 # It's used for caching of directory and inode objects (VFS cache).
 # Lowering it from the default value of 100 makes the kernel less inclined -
