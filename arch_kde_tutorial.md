@@ -655,7 +655,7 @@ LayoutLoopCount=-1
 # 105 for most other countries ISO standard
 Model=pc105
 ResetOldOptions=false
-ShowFlag=false
+ShowFlag=true
 ShowLabel=true
 ShowLayoutIndicator=true
 ShowSingle=false
