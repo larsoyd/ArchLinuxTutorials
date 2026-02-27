@@ -368,19 +368,24 @@ EDITOR=nano visudo
 # Uncomment: %wheel ALL=(ALL:ALL) ALL
 ```
 
----
-
-# OPTIONAL: CachyOS packages and Kernel
+# CachyOS packages and Kernel
 
 My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
-It is a no brainer to use both the repository recompiled for Zen architecture if you have it and
-their kernel, which is already tuned for you. First you need to add their keyring and mirrorfiles.
+There are two options to install the CachyOS kernels on Arch, either through adding CachyOS repos 
+or the AUR (via Chaotic-AUR so you dont have to compile it which takes ages)
 
-If you don't want it you skip this + the ChaoticAUR method to the 6.5 Install Packages step showing what kernels to install
-if you aren't, like linux-zen and linux-lts.
+**NOTE:** Combining repositories like this is officially unsupported by Arch Linux, if you suffer breakages, do not
+come running to the forums or whatever with your problems. Insert install medium again, chroot in and remove the kernels
+and the repos. Using unofficial kernels is also not officially supported. By using the CachyOS kernel and/or repos you 
+acknowledge this.
+
+If you don't want the Cachy kernels you skip this + the ChaoticAUR method to the 6.5 Install Packages step showing what kernels to install
+if you aren't, like linux-zen and linux-lts. 
+
+---
 
 
-## Add CachyOS Repos to Arch Linux:
+## Option A) Add CachyOS Repos to Arch Linux:
 
 **NOTE: SKIP THIS IF YOUR CPU DONT SUPPORT
 znver4, x86_64_v3, or x86_64_v4, FIGURE OUT YOURSELF IF YOU DO BASED
@@ -498,9 +503,7 @@ pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-heade
 linux-cachyos-lts-headers
 ```
 
----
-
-## ALTERNATIVE CHAOTIC AUR METHOD:
+## Option B) ALTERNATIVE CHAOTIC AUR METHOD:
 
 ```bash
 # Import and locally sign the Chaotic-AUR repo key
