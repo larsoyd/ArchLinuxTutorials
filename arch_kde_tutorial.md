@@ -873,7 +873,7 @@ nano /etc/kernel/cmdline
 # Sea Islands (CIK): radeon.cik_support=0 amdgpu.cik_support=1
 #
 ## /etc/kernel/cmdline
-rw rootflags=noatime nowatchdog loglevel=3 zswap.compressor=lz4
+rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
 ```
 
 #### Make the ESP directory
