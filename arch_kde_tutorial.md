@@ -649,6 +649,8 @@ FONT=ter-118n  # But add this.
 # as the default is still sourced from systemd-localed (locale1) 
 # and the generated /etc/X11/xorg.conf.d/00-keyboard.conf
 localectl set-keymap no-latin1
+# Note: pc105 is what I have and its the default in most countries
+# but in the US pc104 is the default. Check what model you use beforehand.
 localectl set-x11-keymap no pc105
 
 ---
