@@ -1,3 +1,4 @@
+This is if you have installed GNOME instead of KDE and you need GNOME specific post-install guidance. - You can install and do most of the things on the post-install for KDE on GNOME too, as every time I talk about KDE specific things like portals and stuff I usually mention it. Use your brain and your eyes. This post-install tutorial is oriented towards people who choose GNOME over KDE, and I am assuming those people **prefer GNOME's design decisions.** As such this post-tutorial is not going to be pushing for extensions and such that go against that goal. It will instead be based around forcing the parts of the desktop that does not adhere to Libadwaita to do so.
 
 Assumptions:
 
@@ -48,10 +49,6 @@ makepkg -si
 cd
 ```
 
-Install some AUR helpers for rebuilds:
-
-```sh
-yay -S aurutils rebuild-detector
 ```
 
 ---
@@ -122,7 +119,7 @@ Result now:
 
 Note: QAdwaitaDecorations uses private Qt headers and normally needs to be rebuilt for major Qt updates, the AUR package description mentions this. 
 You can manually run `checkrebuild` from `aurutils` after any update to check for rebuilds and if it lists any package, 
-like say `foobar`, you need to write: `yay -S --rebuild foobar`
+like say `foobar`, you need to write: `yay -S --rebuild foobar`. You should have this if you followed the KDE post-install btw if not go and re-read it.
 
 ---
 
