@@ -678,6 +678,18 @@ konsole is included as a backup. If you want to use another terminal as your mai
 ### wireless-regdb
 If you use wireless then an **essential package** is also `wireless-regdb`. It installs regulatory.db, a machine-readable table of Wi-Fi rules per country  that allows you to connect properly. If regulatory.db is missing or cannot be read, Linux falls back to the “world” regdomain 00. That profile is **intentionally conservative,** which means fewer channels and more restrictions. For example, world 00 marks many 5 GHz channels as passive-scan only and limits parts of 2.4 GHz (12–13 passive, 14 effectively off).
 
+```bash
+# after install enable your region
+nano /etc/conf.d/wireless-regdom
+
+# For the United States look for the one that says "US",
+# then uncomment the line by removing the # symbol at the beginning
+# so it looks exactly like this:
+WIRELESS_REGDOM="US"
+
+# then save
+```
+
 ### audiocd-kio
 This adds the audiocd:/ KIO worker so Dolphin and other KDE apps can read and rip audio CDs. Not needed on non-KDE Plasma systems, but KDE has their own thing with this for some reason. If you are on a laptop with a CD player then you are going to want this.
 
