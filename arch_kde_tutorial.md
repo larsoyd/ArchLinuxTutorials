@@ -899,8 +899,7 @@ layout=uki
 # To prevent stale UKIs you need a hook to run after every update
 # Or do it manually, but automatic is better.
 #
-# To do it, first login to your account in the chroot you made
-# before like so:
+# You can skip this if you are using post-install tutorial, but if not:
 su - lars
 
 # Clone the AUR repo of the pacman hooks and build the package
