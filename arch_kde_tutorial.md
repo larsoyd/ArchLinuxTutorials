@@ -375,8 +375,10 @@ There are two options to install the CachyOS kernels on Arch, either through add
 or the AUR (via Chaotic-AUR so you dont have to compile it which takes ages)
 
 **NOTE:** Combining repositories like this is officially unsupported by Arch Linux, if you suffer breakages, do not
-come running to the forums or whatever with your problems. Insert install medium again, chroot in and remove the kernels
-and the repos. Using unofficial kernels is also not officially supported. By using the CachyOS kernel and/or repos you 
+come running to me, the forums or whatever with your problems. If you can't fix it, then insert install USB again, chroot in 
+and remove the kernels and the repos. 
+
+Using unofficial kernels is also not officially supported. By using the CachyOS kernel and/or repos you 
 acknowledge this.
 
 If you don't want the Cachy kernels you skip this + the ChaoticAUR method to the **6.5 Install Packages** step showing what kernels to install
@@ -386,12 +388,8 @@ if you aren't, like linux-zen and linux-lts.
 
 ### Option A) Add CachyOS Repos to Arch Linux:
 
-**NOTE: SKIP THIS IF YOUR CPU DONT SUPPORT
-znver4, x86_64_v3, or x86_64_v4, FIGURE OUT YOURSELF IF YOU DO BASED
-ON YOUR CPU.**
-
-A separate Chaotic-AUR method to get the kernels will be provided if your 
-CPU dont support any of those instructions. Skip all stwps under until you see it.
+YOU MUST SKIP THIS IF YOUR CPU DOES NOT SUPPORT: **znver4, x86_64_v3, or x86_64_v4,** FIGURE OUT YOURSELF IF THAT IS THE CASE. A separate Chaotic-AUR method to get the kernels will be provided if your 
+CPU dont support any of those instructions. Scroll until you see "Option B)" and start from there instead.
 
 ```bash
 # Import and locally sign the CachyOS repo key
