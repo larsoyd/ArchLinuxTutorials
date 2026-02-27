@@ -640,6 +640,28 @@ FONT=ter-118n  # But add this.
                # This is a console font which makes it larger,
                # and more easily readable on boot
 
+# Set KDE keymap
+nano /etc/skel/.config/kxkbrc
+
+# add
+[Layout]
+DisplayNames=
+# 'no' is the standard XKB identifier for Norwegian
+# replace with your own
+LayoutList=no
+LayoutLoopCount=-1
+# pc105 is standard keyboard, replace if different with yours
+Model=pc105
+ResetOldOptions=false
+ShowFlag=false
+ShowLabel=true
+ShowLayoutIndicator=true
+ShowSingle=false
+SwitchMode=Global
+Use=true
+# replace with deadkeys if you have that
+VariantList=nodeadkeys
+
 ```
 
 ### 4.4 Set Hostname and Hosts
