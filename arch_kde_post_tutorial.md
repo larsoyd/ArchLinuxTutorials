@@ -452,7 +452,7 @@ Option 1) Topgrade - Update everything on your system with one command! :
 # That is *all* your packages, including flatpaks, sys packages like the kernel, AUR, Rust crate, etc.
 # It also shows available firmware to upgrade. It is so helpful that even though its a bit out there...
 # ... I still think it's essential for QoL on any Arch system.
-# If you think this sounds neat then I strongly reccomend it.
+# If you think this sounds neat then I strongly recommend it.
 #
 yay -S --needed topgrade-bin
 
@@ -510,8 +510,16 @@ steam
 # NOTE: lib32-gst-plugins-ugly, lib32-gst-libav & lib32-gst-plugins-bad are from the AUR
 # which means they are packaged by a third party.
 # Check the PKGBUILD of both before installing or leave them out. But if you do be aware
-# that lib32-*-ugly is required for MP3 on 32-bit apps. WINE generally reccomends you get *-bad and *-libav.
-yay -S --needed lib32-gst-plugins-base lib32-gst-plugins-good lib32-gst-plugins-ugly lib32-gst-plugins-bad lib32-gst-libav
+# that lib32-*-ugly is required for MP3 on 32-bit apps. WINE generally recommends you get *-bad and *-libav.
+
+# The ones from the official repos, no compiling required. No problem installing them, good to have regardless.
+yay -S --needed lib32-gst-plugins-base lib32-gst-plugins-good
+
+# From AUR
+# NOTE: You will have to compile these, and that will take a while. I recommend only doing this
+# if you need them, again you do NOT need them for Steam so if you are only planning to use WINE/Proton for Steam I say skip these
+# If not, I recommend you do these at the end of the tutorial instead since the build time is LONG.
+yay -S --needed lib32-gst-plugins-ugly lib32-gst-plugins-bad lib32-gst-libav
 ```
 
 ### 4.2.6 plocate - Quickly find any file or folder on your Arch Linux system
