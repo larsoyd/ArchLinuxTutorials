@@ -849,11 +849,14 @@ echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 # there is a good thread on this here:
 # https://old.reddit.com/r/linuxquestions/comments/1qzah2h/the_font_rendering_on_linux_is_just_bad_has/
 #
-# I installed this and in my opinion it looks better, albeit a bit bold.
-# The only caveat is that it does not work on Chromium browsers.
+# I installed this and in my opinion it looks better, albeit a bit more bold but I like that personally.
+#
+# The only real caveat is that it does not work on Chromium browsers.
 # If you use those then you wont see a difference on the internet,
 # but the rest of the system will look better.
-# I prefer it, but YMMV
+# I prefer it, but YMMV. Try it and see if it works for you,
+# if it doesn't remove it with `sudo pacman -Rns lucidglyph` and then
+# reboot again.
 yay -S --needed lucidglyph
 
 # Set the fonts in KDE Plasma 6
