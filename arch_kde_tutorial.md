@@ -977,11 +977,6 @@ nano /etc/sysctl.d/70-settings.conf
 ```
 
 ```bash
-# The sysctl swappiness parameter determines the kernel's preference for pushing anonymous pages or page cache to disk in memory-starved situations.
-# A low value causes the kernel to prefer freeing up open files (page cache).
-# A high value causes the kernel to try to use swap space.
-vm.swappiness = 100
-
 # The value controls the tendency of the kernel to reclaim the memory.
 # It's used for caching of directory and inode objects (VFS cache).
 # Lowering it from the default value of 100 makes the kernel less inclined -
@@ -1034,21 +1029,6 @@ net.core.netdev_max_backlog = 4096
 # Set size of file handles and inode cache
 fs.file-max = 2097152
 
-# Disable extra reclaim on fragmentation events.
-# Setting vm.watermark_boost_factor to 0 stops the kernel from doing
-# additional aggressive reclaim when it detects fragmented memory.
-# This can reduce unnecessary swap activity and page thrashing under load,
-# which helps keep desktop workloads smoother and more responsive.
-vm.watermark_boost_factor = 0
-
-# Tune when kswapd starts and stops reclaiming memory.
-# vm.watermark_scale_factor controls how far apart the free-memory
-# watermarks are. Raising it from the default (around 10) to 125 means
-# kswapd starts reclaiming earlier and maintains a larger free-memory
-# buffer. That reduces chances of direct reclaim stalls and can improve
-# responsiveness when the system is under memory pressure.
-vm.watermark_scale_factor = 125
-
 # Use 'bbr' to achieve higher throughput when sending to high-latency destinations.
 # Also 'fq' to prevent one greedy app from causing lag (bufferbloat) for everything else.
 # `bbr` relies on pacing, and thus performs better with the `fq` qdisc.
@@ -1063,6 +1043,33 @@ fs.inotify.max_user_watches = 524288
 ```bash
 # update the sysctl
 sysctl --system
+```
+
+```bash
+# Add Arch Wiki optimizations
+mkdir -p /etc/tmpfiles.d/
+nano /etc/tmpfiles.d/consistent-response-time-for-gaming.conf
+```
+
+```conf
+#    Path                  Mode UID  GID  Age Argument
+w /proc/sys/vm/compaction_proactiveness - - - - 0
+w /proc/sys/vm/watermark_boost_factor - - - - 1
+w /proc/sys/vm/min_free_kbytes - - - - 1048576
+w /proc/sys/vm/watermark_scale_factor - - - - 500
+w /proc/sys/vm/swappiness - - - - 10
+w /sys/kernel/mm/lru_gen/enabled - - - - 5
+w /proc/sys/vm/zone_reclaim_mode - - - - 0
+w /sys/kernel/mm/transparent_hugepage/enabled - - - - madvise
+w /sys/kernel/mm/transparent_hugepage/shmem_enabled - - - - advise
+w /sys/kernel/mm/transparent_hugepage/defrag - - - - never
+w /proc/sys/vm/page_lock_unfairness - - - - 1
+w /proc/sys/kernel/sched_child_runs_first - - - - 0
+w /proc/sys/kernel/sched_autogroup_enabled - - - - 1
+w /proc/sys/kernel/sched_cfs_bandwidth_slice_us - - - - 3000
+w /sys/kernel/debug/sched/base_slice_ns  - - - - 3000000
+w /sys/kernel/debug/sched/migration_cost_ns - - - - 500000
+w /sys/kernel/debug/sched/nr_migrate - - - - 8
 ```
 
 #### Force GTK to use Portals
