@@ -559,10 +559,12 @@ propietary codecs and such that Valve cannot package themselves, this helps with
 # reflector will run reflector any time mirrorlist updates
 #
 # paccache-hook is the GOAT. it cleans your cache after using pacman.
+#
+# pacman-hook-kernel-install prevents stale UKIs
 yay -S --needed \
   pacdiff-pacman-hook-git \
   reflector-pacman-hook-git \
-  paccache-hook
+  paccache-hook pacman-hook-kernel-install
 ```
 
 ### Install & Enable Nohang:
