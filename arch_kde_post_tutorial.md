@@ -424,7 +424,7 @@ $ fwupdmgr update
 
 ### 4.1 Firewall
 ```bash
-sudo pacman -S --needed firewalld python-pyqt6
+sudo pacman -S --needed firewalld firewall-applet
 sudo systemctl enable --now firewalld
 sudo firewall-cmd --permanent --zone=public --add-service=kdeconnect
 sudo firewall-cmd --reload
