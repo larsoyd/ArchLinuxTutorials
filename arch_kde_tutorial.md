@@ -678,7 +678,7 @@ nano /etc/hosts
 
 ### Info:
 I have taken the liberty to make some decisions for a few packages you will install, some of them are technically "optional" but
-all of them are in my opinion essential to the well functioning of a KDE Plasma desktop except for kitty and pkgstats. 
+all of them are in my opinion essential to the well functioning of a KDE Plasma desktop. 
 
 Here's why I included those:
 
@@ -692,6 +692,9 @@ prioritize in testing and for other things. If you are extremely paranoid then y
 kitty is a terminal that I think is the best sort of default terminal on Linux. It's easy to use, GPU accelerated, fast enough and hassle free.
 It allows you to zoom in by pressing `CTRL + SHIFT and +` and zoom out by `CTRL + SHIFT and -` It doesn't look terrible like some terminals do.
 konsole is included as a backup. If you want to use another terminal as your main, replace it.
+
+### ark
+ark is a KDE developed method to unzip archive files on your computer. "Optional" but you are going to want this. It supports various optional additions not included here like `7zip` and `unrar` to name two packages (.7Z and .RAR format support respectively). 
 
 ---
 
