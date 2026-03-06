@@ -740,7 +740,7 @@ NVIDIA:
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
-  plasma-meta dolphin dolphin-plugins konsole kitty kio-admin \
+  plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
   plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
   nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda \
   pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils \
@@ -754,7 +754,7 @@ or AMDGPU:
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
-  plasma-meta dolphin dolphin-plugins konsole kitty kio-admin \
+  plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
   plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
   mesa vulkan-radeon \
   libva libva-utils \
@@ -770,7 +770,7 @@ or Intel GPUs (I think):
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
-  plasma-meta dolphin dolphin-plugins konsole kitty kio-admin \
+  plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
   plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
   mesa vulkan-intel \
   libva libva-utils intel-media-driver \
