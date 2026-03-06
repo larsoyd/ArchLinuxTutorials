@@ -869,6 +869,8 @@ nano /etc/kernel/cmdline
 # loglevel=3 just increases verbosity in logging.
 #
 # zswap.compressor=lz4 switches compressor to lz4 from zstd, lz4 is considered faster
+# All the other zswap kernel settings are default on Arch native kernels.
+# I included them to ensure they are loaded regardless.
 #
 # If you are using AMDGPU and Radeon and it insists on using Radeon instead,
 # You can add either of these depending on your card here to force the loading of AMDGPU:
