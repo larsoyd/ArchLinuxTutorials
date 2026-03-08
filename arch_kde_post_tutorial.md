@@ -49,7 +49,7 @@ sudo pacman -S --needed base-devel git  # when you run pacman with the --needed 
 ### Optimize Build Environment:
 
 ```bash
-sudo pacman -S --needed ccache mold rustup
+sudo pacman -S --needed ccache mold rustup sccache
 
 # setup rustup
 rustup default stable
