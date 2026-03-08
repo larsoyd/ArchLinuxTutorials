@@ -900,21 +900,22 @@ nano /etc/kernel/install.conf
 layout=uki
 ```
 
-#### Prevent Stale UKIs
+#### INFO: How to Prevent Stale UKIs
 ```bash
 # To prevent stale UKIs you need a hook to run after every update
 # Or do it manually, but automatic is better.
 #
-# to do this you gotta complete this tutorial
+# WE CAN'T DO THIS IN THIS STAGE OF THE INSTALL EASILY
+# so to do this you got to first complete this tutorial,
 # then follow the post install tutorial to install yay (AUR Helper)
-# and then install like so:
+# After you have, install it like so:
 yay -S pacman-hook-kernel-install
 
 # then after you install do both:
 sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
 sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 
-# to prevent duplicates
+# in order to prevent duplicates
 ```
 
 ### Now install kernel UKIs
