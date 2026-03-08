@@ -877,7 +877,7 @@ echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 # I prefer it, but YMMV. Try it and see if it works for you,
 # if it doesn't remove it with `sudo pacman -Rns lucidglyph` and then
 # reboot again.
-yay -S --needed lucidglyph
+yay -S --needed lucidglyph ttf-dejavu-nerd
 
 # Set the fonts in KDE Plasma 6
    a) Open: System Settings
