@@ -390,7 +390,7 @@ If you are like me you close tabs with middle mouse click and you don't care to 
 
 /* Light blue border around tabs that are currently playing audio */
 .tabbrowser-tab[soundplaying] .tab-background {
-  box-shadow: inset 0 0 0 2px #7dd3fc !important;
+  box-shadow: inset 0 0 0 2px #1793d1 !important;
 }
 ```
 
