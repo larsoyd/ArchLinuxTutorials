@@ -365,6 +365,32 @@ media.hardware-video-decoding.force-enabled → true
 media.hardwaremediakeys.enabled → false
 ```
 
+### OPTIONAL: Remove the Close + Mute button on Vertical Tabs
+
+If you are like me you close tabs with middle mouse click and you don't care what tab has sound on it then you want to remove these buttons on the vertical tabs since they get in the way if you have minimized the vertical tabs as much as possible. 
+
+1. To enable this write `about:support` in the URL bar and press enter.
+2. Go to `Profile Folder` section and press `Open Folder`
+3. Create a new folder in the directory called `chrome` (Yes I know, that is what it is called)
+4. Create a file in there called `userChrome.css` with these contents :
+
+```css
+/* Remove the tab close icon/button */
+.tab-close-button,
+.tab-close-button.close-icon {
+  display: none !important;
+}
+
+/* Remove tab audio (speaker/mute/autoplay-blocked) indicators in all tab-strip modes */
+.tab-audio-button,
+.tab-icon-overlay:is([soundplaying], [muted], [activemedia-blocked]) {
+  display: none !important;
+}
+```
+
+5. Go now to `about:config` in URL bar and then put in `toolkit.legacyUserProfileCustomizations.stylesheets` and set it to `true`
+6. Completely quit and restart Firefox for the changes to take effect. 
+
 
 ### OPTIONAL: Fixing Firefox:
 
