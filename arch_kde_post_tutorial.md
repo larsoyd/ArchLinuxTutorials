@@ -169,11 +169,14 @@ cp /usr/share/oh-my-zsh/zshrc ~/.zshrc
 
 ### Configure ~/.zshrc
 
-```bash
+```ini
 # Tip: You can press F12 to insert the letter ~ into the terminal
 # This avoids having to spider-man hand ALT + whatever to write it
 #
 nano ~/.zshrc
+
+# Before scrolling to the bottom uncomment the PATH like so:
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Scroll to the bottom, add these two lines to the bottom:
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
