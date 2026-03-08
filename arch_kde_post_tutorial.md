@@ -575,6 +575,21 @@ yay -S --needed \
   paccache-hook pacman-hook-kernel-install
 ```
 
+
+### How to Prevent Stale UKIs
+```bash
+# To prevent stale UKIs you need a hook to run after every update
+# Or do it manually, but automatic is better.
+#
+yay -S --needed pacman-hook-kernel-install
+
+# then after you install do both:
+sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
+sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
+
+# in order to prevent duplicates
+```
+
 ### Install & Enable Nohang:
 ```bash
 # This is an OOM killer. DON'T SKIP. It's VITAL.
