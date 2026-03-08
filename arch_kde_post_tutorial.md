@@ -365,9 +365,11 @@ media.hardware-video-decoding.force-enabled → true
 media.hardwaremediakeys.enabled → false
 ```
 
+---
+
 ### OPTIONAL: Remove the Close + Mute button on Vertical Tabs
 
-If you are like me you close tabs with middle mouse click and you don't care what tab has sound on it then you want to remove these buttons on the vertical tabs since they get in the way if you have minimized the vertical tabs as much as possible. 
+If you are like me you close tabs with middle mouse click and you don't care to mute the tab has sound on it then you want to remove these buttons on the vertical tabs since they get in the way if you have minimized the vertical tabs as much as possible. These changes removes those buttons then puts a light blue border around the tab icon of whatever tab is playing audio. Why light blue? It harmonizes with the primary color of Arch Linux and KDE Plasma.
 
 1. To enable this write `about:support` in the URL bar and press enter.
 2. Go to `Profile Folder` section and press `Open Folder`
@@ -385,6 +387,11 @@ If you are like me you close tabs with middle mouse click and you don't care wha
 .tab-audio-button,
 .tab-icon-overlay:is([soundplaying], [muted], [activemedia-blocked]) {
   display: none !important;
+}
+
+/* Light blue border around tabs that are currently playing audio */
+.tabbrowser-tab[soundplaying] .tab-background {
+  box-shadow: inset 0 0 0 2px #7dd3fc !important;
 }
 ```
 
