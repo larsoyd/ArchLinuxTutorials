@@ -324,7 +324,9 @@ On Arch with KDE Plasma, you should put environmental variables in Plasma’s se
 
 ```zsh
 # While the libva-nvidia-driver implementation does enable hardware video decoding,
-# current limits for NVIDIA power management mean that with default settings it actually consumes more power than CPU video decoding.
+# current limits for NVIDIA power management mean that with default settings
+# it actually consumes more power than CPU video decoding.
+# 
 # A workaround is possible using NVIDIA driver version 580.105.08 or newer, exporting the environment variable:
 export CUDA_DISABLE_PERF_BOOST=1
 ```
