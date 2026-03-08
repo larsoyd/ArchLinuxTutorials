@@ -587,8 +587,8 @@ yay -S --needed protonup-qt
 2. In the dropdown, choose **Proton GE**.  
 3. Click OK and restart Steam.
 
-ProtonGE is a good default for a lot of games, works just as well as regular Proton for most games and for other games include 
-propietary codecs and such that Valve cannot package themselves, this helps with video files and music with odd formats.
+ProtonGE is a good default for a lot of games IMO, works just as well as regular Proton for most games and **BETTER** for other games that include 
+propietary codecs and such that Valve cannot package themselves. This helps with games that rely on video files and music with odd/outdated formats.
 
 
 
