@@ -74,7 +74,6 @@ nano ~/.cargo/config.toml
 [build]
 rustc-wrapper = "sccache"
 
-# change znver4 to native if u dont have that supported
 [target.x86_64-unknown-linux-gnu]
 rustflags = ["-C", "target-cpu=native", "-C", "link-arg=-fuse-ld=mold"]
 ```
