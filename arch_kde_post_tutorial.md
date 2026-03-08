@@ -700,6 +700,14 @@ OPTION B)
 # repositories, reason why its not reccomended is it may lag behind
 # the official package
 yay -S --needed yt-dlp
+
+---
+
+# Then install deno and nodejs
+yay -S --needed deno nodejs
+
+# And finally add a config file to use the solver each time
+mkdir -p ~/.config/yt-dlp && echo "--remote-components ejs:github" >> ~/.config/yt-dlp/config
 ```
 
 #### OPTIONAL QoL FOR YT-DLP:
