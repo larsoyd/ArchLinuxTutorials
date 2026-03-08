@@ -905,19 +905,16 @@ layout=uki
 # To prevent stale UKIs you need a hook to run after every update
 # Or do it manually, but automatic is better.
 #
-# You can skip this if you are using post-install tutorial, but if not:
-su - lars
+# to do this you gotta complete this tutorial
+# then follow the post install tutorial to install yay (AUR Helper)
+# and then install like so:
+yay -S pacman-hook-kernel-install
 
-# Clone the AUR repo of the pacman hooks and build the package
-cd /tmp
-git clone https://aur.archlinux.org/pacman-hook-kernel-install.git
-cd pacman-hook-kernel-install
+# then after you install do both:
+sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
+sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 
-# Build and install the package
-makepkg -si
-
-# Drop back to root in the chroot when done
-exit
+# to prevent duplicates
 ```
 
 ### Now install kernel UKIs
