@@ -1063,24 +1063,7 @@ shutdown now
 ---
 
 # 1) Post-Install Tutorial
-Head to `arch_kde_post_tutorial.md` to do the post-install tutorial.
-
-
-#### INFO: How to Prevent Stale UKIs
-```bash
-# To prevent stale UKIs you need a hook to run after every update
-# Or do it manually, but automatic is better.
-#
-# Follow the post install tutorial to install yay (AUR Helper)
-# After you have, install it like so:
-yay -S pacman-hook-kernel-install
-
-# then after you install do both:
-sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
-sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
-
-# in order to prevent duplicates
-```
+Head to `arch_kde_post_tutorial.md` to do the post-install tutorial. This is not optional.
 
 ---
 
