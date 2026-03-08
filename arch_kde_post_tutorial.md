@@ -707,12 +707,12 @@ yay -S --needed yt-dlp
 - Here are some aliases I use, add to `~/.zshrc` with `nano` on the bottom:
 
 ```bash
-alias ytdla='yt-dlp -f bestaudio \
+alias ytdla='yt-dlp --js-runtimes deno -f "bestaudio/best" \
                  --extract-audio \
                  --audio-format mp3 \
                  -o "/home/$USER/Music/%(title)s.%(ext)s"'
 
-alias ytdlv='yt-dlp -f bestvideo+bestaudio \
+alias ytdlv='yt-dlp --js-runtimes deno -f "bestvideo+bestaudio" \
     --merge-output-format mkv \
     -o "$HOME/Videos/%(title)s.%(ext)s"'
 ```
