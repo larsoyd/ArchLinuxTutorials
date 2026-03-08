@@ -318,6 +318,34 @@ yay -S --needed firefox
 yay -S --needed chromium   # example of "anything else"
 ```
 
+### How to add Environmental Variables:
+
+On Arch with KDE Plasma, you should put environmental variables in Plasma’s session environment directory. Create a small .sh file there for each variable. For example, for decoding with NVIDIA you create ~/.config/plasma-workspace/env/cuda-disable-perf-boost.sh, with this content:
+
+```zsh
+# While the libva-nvidia-driver implementation does enable hardware video decoding,
+# current limits for NVIDIA power management mean that with default settings it actually consumes more power than CPU video decoding.
+# A workaround is possible using NVIDIA driver version 580.105.08 or newer, exporting the environment variable:
+export CUDA_DISABLE_PERF_BOOST=1
+```
+
+A clean way to create it from the terminal is:
+
+```zsh
+mkdir -p ~/.config/plasma-workspace/env
+cat > ~/.config/plasma-workspace/env/cuda-disable-perf-boost.sh <<'EOF'
+export CUDA_DISABLE_PERF_BOOST=1
+EOF
+```
+
+Then log out of Plasma completely and log back in. After that, check it with:
+
+```zsh
+printenv CUDA_DISABLE_PERF_BOOST
+```
+
+It should return `1`
+
 ### Configuring Firefox:
 
 #### Make Firefox follow your KDE default apps via mimeapps.list on Arch.
