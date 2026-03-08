@@ -527,8 +527,11 @@ checkrebuild
 
 ### 4.2.5 Games, Steam & 32-bit Libraries
 ```bash
-# then after enabling multilib DL Steam 
-yay -S --needed steam
+# then after enabling multilib DL Steam
+# 
+# xorg-fonts-misc is an optional addition to Steam that was recently added.
+# It simply provides fonts for for non-latin locales. Neat to have.
+yay -S --needed steam xorg-fonts-misc
 
 # Run Steam in terminal to install it:
 steam
