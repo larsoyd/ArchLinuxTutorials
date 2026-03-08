@@ -518,6 +518,14 @@ pacup
 
 # or if you didn't add the alias:
 topgrade
+
+# ____
+# NOTE: If Topgrade is updated it can't update itself
+# this means you need to run `yay` and then run `topgrade`
+# This is the only downside of using the AUR version,
+# getting the self-updating binary is also an option but
+# a bit out of scope of this tutorial.
+# ____
 ```
 
 Option 2) with yay:
