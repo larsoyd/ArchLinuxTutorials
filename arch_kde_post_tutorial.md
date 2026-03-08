@@ -320,7 +320,7 @@ yay -S --needed chromium   # example of "anything else"
 
 ### How to add Environmental Variables:
 
-On Arch with KDE Plasma, you should put environmental variables in Plasma’s session environment directory. Create a small .sh file there for each variable. For example, for decoding with NVIDIA you create ~/.config/plasma-workspace/env/cuda-disable-perf-boost.sh, with this content:
+On Arch with KDE Plasma, you should put environmental variables in Plasma’s session environment directory. This is located in `~/.config/plasma-workspace/env` Create a small .sh file there for each variable. For example, for decoding with NVIDIA you create `~/.config/plasma-workspace/env/cuda-disable-perf-boost.sh`, with this content:
 
 ```zsh
 # While the libva-nvidia-driver implementation does enable hardware video decoding,
