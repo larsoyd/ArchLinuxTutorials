@@ -499,7 +499,19 @@ Option 1) Topgrade - Update everything on your system with one command! :
 # ... I still think it's essential for QoL on any Arch system.
 # If you think this sounds neat then I strongly recommend it.
 #
-yay -S --needed topgrade-bin
+# First go to  and look for ver number, replace this ver= with number you find.
+ver='vXX.X.X'
+target='x86_64-unknown-linux-gnu'
+tmpdir="$(mktemp -d)"
+
+mkdir -p "$HOME/.local/bin"
+cd "$tmpdir" || exit 1
+
+curl -fLO "https://github.com/topgrade-rs/topgrade/releases/download/$ver/topgrade-$ver-$target.tar.gz"
+tar -xzf "topgrade-$ver-$target.tar.gz"
+install -m 0755 topgrade "$HOME/.local/bin/topgrade"
+
+topgrade --version
 
 # If you want you can add an alias to topgrade
 # so that you better remember it and it fits more
@@ -518,14 +530,6 @@ pacup
 
 # or if you didn't add the alias:
 topgrade
-
-# ____
-# NOTE: If Topgrade is updated it can't update itself
-# this means you need to run `yay` and then run `topgrade`
-# This is the only downside of using the AUR version,
-# getting the self-updating binary is also an option but
-# a bit out of scope of this tutorial.
-# ____
 ```
 
 Option 2) with yay:
