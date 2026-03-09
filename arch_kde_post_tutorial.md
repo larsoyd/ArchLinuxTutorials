@@ -499,7 +499,12 @@ Option 1) Topgrade - Update everything on your system with one command! :
 # ... I still think it's essential for QoL on any Arch system.
 # If you think this sounds neat then I strongly recommend it.
 #
-# First go to  and look for ver number, replace this ver= with number you find.
+# I am going to show you how to install the self updating binary which is easier to use than the
+# one packaged by the AUR which can't update itself.
+# First go to https://github.com/topgrade-rs/topgrade/releases and look for ver number,
+# the result should be the latest one. replace this ver= with number you find.
+#
+# example: ver=v17.0.0
 ver='vXX.X.X'
 target='x86_64-unknown-linux-gnu'
 tmpdir="$(mktemp -d)"
