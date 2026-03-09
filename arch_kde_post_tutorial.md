@@ -1,4 +1,4 @@
-# OPTIONAL: Post-Install Tutorial
+# Post-Install Tutorial (KDE)
 
 ## 1 · Update Base System
 
