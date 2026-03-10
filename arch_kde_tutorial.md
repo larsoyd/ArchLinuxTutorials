@@ -425,7 +425,8 @@ nano /etc/pacman.conf
 # If your CPU don't support znver4 add any of the others that fit.
 #
 # Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
-# Add one of the 3 mirrorlists under that fit your CPU above the other repos
+#
+# ADD ONLY ONE of the 3 mirrorlists under that fit your CPU above the other repos
 # in the same section & in this direction:
 ```
 
