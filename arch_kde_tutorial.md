@@ -744,7 +744,7 @@ NVIDIA:
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
-  plasma-meta dolphin dolphin-plugins konsole kitty ark unarchiver unrar 7zip
+  plasma-meta dolphin dolphin-plugins konsole kitty ark unarchiver unrar 7zip \
   kio-admin plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
   nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda \
   pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils \
