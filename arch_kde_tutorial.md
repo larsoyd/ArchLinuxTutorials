@@ -1015,14 +1015,15 @@ fs.file-max = 2097152
 sysctl --system
 ```
 
-### modprobe.d files 
+### modprobe.d optimizations 
 
 ```zsh
-# make folder
+# These are optimizations as well.
+# Create folder
 mkdir -p /usr/lib/modprobe.d/
 
-# These are verbatim lifted from CachyOS
-# Analyze them yourself if wanted
+# These are pretty much verbatim lifted from CachyOS
+# Analyze them yourself if curious
 #
 # copy NVIDIA (if you have NVIDIA)
 cp /tmp/ArchLinuxTutorials/nvidia.conf /usr/lib/modprobe.d/nvidia.conf
