@@ -2,7 +2,7 @@
 
 ## 1 · Update Base System
 
-```bash
+```zsh
 # Bring everything to the latest version
 sudo pacman -Syu
 ```
@@ -38,7 +38,7 @@ sudo pacman -Syu
 * Afterwards you can right click on the icon on your Task Manager and pin it for easy access later.
 
 ### Essential build tools, you already installed these during install but just to be sure
-```bash
+```zsh
 sudo pacman -S --needed base-devel git  # when you run pacman with the --needed flag it will skip
                                         # any package that is already on the system.
                                         #
@@ -48,7 +48,7 @@ sudo pacman -S --needed base-devel git  # when you run pacman with the --needed 
 
 ### Optimize Build Environment:
 
-```bash
+```zsh
 sudo pacman -S --needed ccache mold rustup sccache
 
 # setup rustup
@@ -83,7 +83,7 @@ sudo mkdir -p /etc/makepkg.conf.d
 sudo nano /etc/makepkg.conf.d/rust.conf
 ```
 
-```bash
+```zsh
 # /etc/makepkg.conf.d/rust.conf
 RUSTFLAGS="-C link-arg=-fuse-ld=mold -C target-cpu=native"
 ```
@@ -91,7 +91,7 @@ RUSTFLAGS="-C link-arg=-fuse-ld=mold -C target-cpu=native"
 EITHER:
 
 1) Copy it from my repo
-```bash
+```zsh
 cd /tmp
 git clone https://github.com/larsoyd/ArchLinuxTutorials
 cp /tmp/ArchLinuxTutorials/makepkg.conf ~/.makepkg.conf
@@ -99,7 +99,7 @@ cd
 ```
 
 2. Write it manually
-```bash
+```zsh
 nano ~/.makepkg.conf
 ```
 
@@ -143,7 +143,7 @@ What you are looking out for are malicious links or anything else out of the ord
 ```
 
 ### Build and install yay
-```bash
+```zsh
 cd /tmp                                      # go to the temporary directory
 git clone https://aur.archlinux.org/yay.git  # clone the yay pkgbuild from the aur
 cd yay                                       # enter the cloned folder
@@ -154,7 +154,7 @@ yay --version  # quick test | NOTE: Whenever you run any 'yay' command, do not u
 ```
 
 ### Shell and terminal bliss
-```bash
+```zsh
 # Oh-my-zsh makes your terminal nicer, zsh-autosuggestions and the other are plugins
 # More on them later.
 yay -S --needed oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
@@ -162,7 +162,7 @@ yay -S --needed oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
 
 ### Copy .zshrc default template config
 
-```bash
+```zsh
 # This makes it so you don't have to write out a buncha crap
 cp /usr/share/oh-my-zsh/zshrc ~/.zshrc
 ```
@@ -205,7 +205,7 @@ alias pacin='yay -S --needed'
 ```
 
 ### Reload & Guide
-```bash
+```zsh
 # Then reload zshrc like so:
 source ~/.zshrc
 ```
@@ -225,7 +225,7 @@ then replace the package name with something else.
 
 ### 3.1 Pacman candy
 Edit `/etc/pacman.conf`:
-```bash
+```zsh
 sudo nano /etc/pacman.conf
 ```
 ```ini
@@ -240,7 +240,7 @@ ILoveCandy                 # write this manually under Color
 ```
 
 ### Enable syntax highlighting in nano
-```bash
+```zsh
 # This command `mkdir -p` is essentially, "if it doesnt exist, create it + w/ the subfolder"
 # If it already exists it will skip the action, it doesn't overwrite the folder that's there
 # This is a good way to prevent issues where you try to make a file in a folder that dont exist.
@@ -264,7 +264,7 @@ include "/usr/share/nano-syntax-highlighting/*.nanorc"
 EOF
 ```
 ### Turn off that incessant beeping in kitty without doing it system wide.
-```bash
+```zsh
 # You can turn this off system wide in KDE settings, but that is a bit overkill.
 nano ~/.config/kitty/kitty.conf
 
@@ -285,7 +285,7 @@ printf '%b' '\a'
 
 ### Show asterisks when typing your sudo password
 Use `visudo` and add the `pwfeedback` default. This is the safe way to edit sudoers.
-```bash
+```zsh
 # open a drop-in with visudo
 sudo EDITOR=/usr/bin/nano visudo -f /etc/sudoers.d/pwfeedback
 
@@ -298,7 +298,7 @@ sudo true
 ```
 ### Install Basic packages:
 
-```bash
+```zsh
 # essential stuff to have.
 yay -S --needed informant \
 gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly \
@@ -351,7 +351,7 @@ It should return `1`
 ### Configuring Firefox:
 
 #### Make Firefox follow your KDE default apps via mimeapps.list on Arch.
-```bash
+```zsh
 # create if not already created
 mkdir -p ~/.local/share/applications
 
@@ -363,7 +363,7 @@ mkdir -p ~/.local/share/applications
 ln -sf ~/.config/mimeapps.list ~/.local/share/applications/mimeapps.list
 ```
 #### Add VA-API to Firefox (GPU accelerated video)
-```bash
+```zsh
 # Confirm VA-API support
 vainfo
 
@@ -372,7 +372,7 @@ media.hardware-video-decoding.force-enabled → true
 ```
 
 #### Ensure Firefox media keys dont conflict with Plasma
-```bash
+```zsh
 # open about:config and set
 media.hardwaremediakeys.enabled → false
 ```
@@ -421,14 +421,14 @@ in another desktop environment. Portals are supposed to fix that, but if they do
 fixes:
 
 #### (Optional) - Force Firefox to use Dolphin
-```bash
+```zsh
 # Optional if needed. GDK_DEBUG=portals set earlier should have done it.
 # If not, force Firefox to do it, open about:config and set:
 widget.use-xdg-desktop-portal.file-picker → 1 (always)
 ```
 
 #### (Optional) - Add all buttons to Firefox
-```bash
+```zsh
 # Sometimes Firefox does not have the minimize and maximize buttons
 # You can try this remedy:
 gsettings set org.gnome.desktop.wm.preferences button-layout 'icon:minimize,maximize,close'
@@ -443,7 +443,7 @@ yay -S --needed xdg-desktop-portal-gtk
 ## 4 · Essential security and quality of life
 
 ### 4.0 Firmware Updates
-```bash
+```zsh
 # You are going to need to update your firmware
 # To do this install fwupd and start the service
 sudo pacman -S ---needed fwupd
@@ -468,7 +468,7 @@ $ fwupdmgr update
 ```
 
 ### 4.1 Firewall
-```bash
+```zsh
 sudo pacman -S --needed firewalld firewall-applet
 sudo systemctl enable --now firewalld
 sudo firewall-cmd --permanent --zone=public --add-service=kdeconnect
@@ -477,7 +477,7 @@ sudo firewall-cmd --reload
 
 ### 4.2 Enable multilib for 32-bit support (pre-Steam)
 
-```bash
+```zsh
 # to enable 32-bit support you need to uncomment
 # a new repository, essentially add it and then update system.
 sudo nano /etc/pacman.conf
@@ -491,7 +491,7 @@ Include = /etc/pacman.d/mirrorlist
 Update your system to include multilib:
 
 Option 1) Topgrade - Update everything on your system with one command! :
-```bash
+```zsh
 # Topgrade is an optional but super quality of life package
 # With one command of `topgrade` you can upgrade all your packages of any type on your entire system...
 # That is *all* your packages, including flatpaks, sys packages like the kernel, AUR, Rust crate, etc.
@@ -538,7 +538,7 @@ topgrade
 ```
 
 Option 2) with yay:
-```bash
+```zsh
 # Tip/Fun Fact: You can update your system by just writing 'yay'.
 # This is actually ideal, as pacman -Syu does not update your AUR packages.
 # Try it:
@@ -555,7 +555,7 @@ checkrebuild
 ```
 
 ### 4.2.5 Games, Steam & 32-bit Libraries
-```bash
+```zsh
 # then after enabling multilib DL Steam
 # 
 # xorg-fonts-misc is an optional addition to Steam that was recently added.
@@ -604,7 +604,7 @@ ntsync
 ```
 
 ### 4.2.6 plocate - Quickly find any file or folder on your Arch Linux system
-```bash
+```zsh
 # To quickly learn how to find steamapps for example without googling you can use plocate
 # It's the fastest way to find any file or folder on your system, first install plocate:
 yay -S --needed plocate
@@ -620,7 +620,7 @@ sudo systemctl start --now plocate-updatedb.timer
 ```
 
 ### ProtonUp-Qt:
-```bash
+```zsh
 # install protonup qt (ProtonGE)
 yay -S --needed protonup-qt
 ```
@@ -640,7 +640,7 @@ propietary codecs and such that Valve cannot package themselves. This helps with
 ---
 
 ## 5 · Maintenance hooks
-```bash
+```zsh
 # these hooks are great for system maintenance
 #
 # pacdiff shows you if any .pacnew is on your system needed to merge
@@ -656,7 +656,7 @@ yay -S --needed \
 
 
 ### How to Prevent Stale UKIs
-```bash
+```zsh
 # To prevent stale UKIs you need a hook to run after every update
 # Or do it manually, but automatic is better.
 #
@@ -670,7 +670,7 @@ sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ```
 
 ### Install & Enable Nohang:
-```bash
+```zsh
 # This is an OOM killer. DON'T SKIP. It's VITAL.
 yay -S --needed nohang-git 
 
@@ -681,7 +681,7 @@ sudo systemctl enable --now nohang-desktop.service
 ```
 
 ### Set Journalctl limit:
-```bash
+```zsh
 # SUPER important, DO NOT SKIP. The journal on desktop use fills up very quickly which takes space
 # a large one can slow down boot times after a while.
 sudo mkdir -p /etc/systemd/journald.conf.d
@@ -704,10 +704,10 @@ udev rules based on whitelist or blacklist filtering can help to mitigate the pr
 Try this before you do Option B, it's simpler
 and it is the reccomended way to do it on the ArchWiki:
 
-```bash
+```zsh
 sudo nano /etc/udev/rules.d/50-usb_power_save.rules
 ```
-```bash
+```zsh
 ACTION=="add", SUBSYSTEM=="usb", ATTR{product}!="*Mouse", ATTR{product}!="*Keyboard", TEST=="power/control", ATTR{power/control}="auto"
 ```
 
@@ -724,10 +724,10 @@ They represent a specific hierarchy of device identification:
 01: The Subclass code for Boot Interface, indicating the device supports the simplified "boot" communication mode.
 01 or 02: The Protocol code, where 01 is for Keyboard and 02 is for Mouse.
 
-```bash
+```zsh
 sudo nano /etc/udev/rules.d/50-usb_power_save.rules
 ```
-```bash
+```zsh
 # Default: enable autosuspend on USB devices
 ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", TEST=="power/control", ATTR{power/control}="auto"
 
@@ -737,7 +737,7 @@ ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{ID_USB_INTERFAC
 ```
 
 Apply and retrigger, then recheck:
-```bash
+```zsh
 sudo udevadm control --reload-rules
 sudo udevadm trigger --subsystem-match=usb --action=add
 
@@ -750,7 +750,7 @@ grep -H . /sys/bus/usb/devices/*/power/{control,runtime_status}
 YT-DLP is a downloader for online media hosted on sites. It's very good.
 
 Install (pick one option):
-```bash
+```zsh
 OPTION A)
 # From pipx.
 #
@@ -793,7 +793,7 @@ mkdir -p ~/.config/yt-dlp && echo "--remote-components ejs:github" >> ~/.config/
 
 - Here are some aliases I use, add to `~/.zshrc` with `nano` on the bottom:
 
-```bash
+```zsh
 alias ytdla='yt-dlp --js-runtimes deno -f "bestaudio/best" \
                  --extract-audio \
                  --audio-format mp3 \
@@ -813,13 +813,13 @@ You simply write either of these and a link.
 
 - Here is a script I made that makes clipping videos easier.
 
-```bash
+```zsh
 mkdir -p /home/$USER/bin/
 nano /home/$USER/bin/ytclip
 ```
 
 Add this script:
-```bash                             
+```zsh                             
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -896,7 +896,7 @@ exec yt-dlp "$URL" \
 
 #### How to use:
 
-```bash
+```zsh
 ytclip <url> <start> - <end> [best|360p|720p|1080p]
 Examples:
   ytclip '(link)' 3:51 - 3:54 360p
@@ -913,7 +913,7 @@ My advice is pick one here, you can do both but it's best to not clutter your sy
 ### Option 1) VLC
 
 #### VLC Install:
-```bash
+```zsh
 # VLC is the only officially supported third-party player with official Phonon support on KDE.
 # It's more fully featured than MPV, MPV requires more manual config to look better.
 #
@@ -935,7 +935,7 @@ yay -S --needed vlc-pause-click-plugin
 
 ### Option 2) MPV
 #### MPV Install:
-```bash
+```zsh
 # Has become more popular in recent years, is very powerful but a bit nerdy
 # If you care about manual configs and stuff use MPV, otherwise use VLC
 #
@@ -951,7 +951,7 @@ echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 ```
 
 #### Optional: Improve Font Rendering
-```bash
+```zsh
 # some people have criticized the font rendering on Linux
 # there is a good thread on this here:
 # https://old.reddit.com/r/linuxquestions/comments/1qzah2h/the_font_rendering_on_linux_is_just_bad_has/
@@ -996,7 +996,7 @@ text_composition_strategy 1.7 0
 
 #### Reboot again into new system and you can finally sit back, relax, and use arch btw
 
-```bash
+```zsh
 # before reboot it's worth learning how to find all orphaned packages
 # (those that were installed as dependencies but are no longer needed by anything),
 # and completely remove them, including their configuration files and any now-unused dependencies.
@@ -1025,31 +1025,31 @@ fastfetch
 - And by all I mean ALL instances, even in the .mount & .automount files
 
 #### 0) Identify the new disk (double check before you write to it)
-```bash
+```zsh
 lsblk -e7 -o NAME,SIZE,TYPE,MOUNTPOINT,MODEL,SERIAL
 DEV=/dev/nvme1n1    # <-- set this to your new disk
 ```
 #### 1) Create a GPT partition and give it a PARTLABEL
-```bash
+```zsh
 #    WARNING: the zap step is destructive. Save data on disk first.
 sudo sgdisk --zap-all "$DEV"
 sudo sgdisk -n1:0:0 -t1:8300 -c1:"data" "$DEV"   # one Linux partition named "data"
 ```
 #### 2) Make a filesystem (example: ext4)
-```bash
+```zsh
 sudo mkfs.ext4 -L data "${DEV}p1"   # remove p like in install if ur disk is 'sda' and not nvme
 ```
 #### 3) Verify the persistent symlink created by udev, then wait if needed
-```bash
+```zsh
 ls -l /dev/disk/by-partlabel/ | grep ' data$' || true
 sudo udevadm settle
 ```
 #### 4) Create the mount point
-```bash
+```zsh
 sudo mkdir -p /mnt/data
 ```
 #### 5) Create a native systemd mount unit
-```bash
+```zsh
 sudo nano /etc/systemd/system/mnt-data.mount
 
 # add
@@ -1066,7 +1066,7 @@ Options=noatime
 WantedBy=multi-user.target
 ```
 #### Create an automount for on-demand mounting
-```bash
+```zsh
 sudo nano /etc/systemd/system/mnt-data.automount
 
 # add
@@ -1080,12 +1080,12 @@ Where=/mnt/data
 WantedBy=multi-user.target
 ```
 #### 6) Enable it
-```bash
+```zsh
 sudo systemctl daemon-reload
 sudo systemctl enable --now mnt-data.automount
 ```
 #### 7) Test
-```bash
+```zsh
 systemctl status mnt-data.automount
 df -h /mnt/data
 touch /mnt/data/it-works
@@ -1096,7 +1096,7 @@ touch /mnt/data/it-works
 As of now there is an issue on Wayland with NVIDIA where the power state goes down too low on idle which causes lag and a jump during various use like desktop animations etc. The only solution for this is to either turn off GSP which you need the propietary driver to do (i.e not open kernel modules) or set minimum and max clocks so it doesn't enter that idle state. This is how to do the latter with a systemd service I wrote for it. There are trade offs to this obv, but I have done it as safe as possible by locking the VRAM clocks to a valid safe range chosen from the device’s supported table.
 
 ### 0) confirm driver + tool exist
-```bash
+```zsh
 nvidia-smi || { echo "nvidia-smi not found or driver not loaded"; exit 1; }
 
 # try idling a bit in firefox wait 5 seconds then scroll
@@ -1110,13 +1110,13 @@ nvidia-smi --query-gpu=clocks.mem,clocks.gr,pstate,power.draw,temperature.gpu \
 ```
 
 ### 1) create the clock-locking script
-```bash
+```zsh
 # to solve this we will set minimum clock speed
 # what it does: installs /usr/local/sbin/lock-nvidia-mem.sh with a safe, dynamic min/max picker
 sudo nano /usr/local/sbin/lock-nvidia-mem.sh
 ```
 
-```bash
+```zsh
 # ----- /usr/local/sbin/lock-nvidia-mem.sh -----
 #!/usr/bin/env bash
 set -euo pipefail
@@ -1181,18 +1181,18 @@ $SUDO nvidia-smi -i "$GPU" -pm 1
 ```
 
 ### 2) make it executable
-```bash
+```zsh
 # what it does: sets correct mode so systemd can run it
 sudo chmod 755 /usr/local/sbin/lock-nvidia-mem.sh
 ```
 
 ### 3) create env overrides
-```bash
+```zsh
 # what it does: lets you change GPU/PCT/B1..B3/V1..V3 without editing the script
 sudo nano /etc/default/nvidia-lock
 ```
 
-```bash
+```zsh
 # ----- /etc/default/nvidia-lock -----
 # GPU index and percentile
 GPU=0
@@ -1208,11 +1208,11 @@ V3=0.80
 ```
 
 ### 4) create a systemd unit
-```bash
+```zsh
 # what it does: runs the lock at boot and keeps state via persistence
 sudo nano /etc/systemd/system/nvidia-lock.service
 ```
-```bash
+```zsh
 # ----- /etc/systemd/system/nvidia-lock.service -----
 [Unit]
 Description=Lock NVIDIA memory clocks and enable persistence
@@ -1230,24 +1230,24 @@ WantedBy=multi-user.target
 ```
 
 ### 5) enable NVIDIA persistence daemon
-```bash
+```zsh
 # what it does: keeps GPU initialized so your lock survives idle periods
 sudo systemctl enable --now nvidia-persistenced.service
 ```
 ### 6) reload units and enable our service
-```bash
+```zsh
 # what it does: starts clock lock at boot and immediately
 sudo systemctl daemon-reload
 sudo systemctl enable --now nvidia-lock.service
 ```
 ### 7) verify supported clocks + current locks
-```bash
+```zsh
 # what it does: shows supported memory clocks and the lock status
 nvidia-smi -i "${GPU:-0}" -q -d SUPPORTED_CLOCKS | head -n 60
 nvidia-smi -i "${GPU:-0}" -q -d CLOCK | head -n 80
 ```
 ### 8) test run manually (optional)
-```bash
+```zsh
 # what it does: prints chosen MIN/MAX and applies lock interactively
 sudo /usr/local/sbin/lock-nvidia-mem.sh
 
