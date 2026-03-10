@@ -1009,6 +1009,11 @@ net.core.netdev_max_backlog = 4096
 fs.file-max = 2097152
 ```
 
+```zsh
+# Load settings from all system configuration files to configure kernel parameters at runtime.
+sysctl --system
+```
+
 #### Force GTK to use Portals
 ```bash
 # This is important for file pickers and GTK windows on KDE
