@@ -1031,6 +1031,26 @@ nano /etc/plasmalogin.conf.d/10-breeze.conf
 Current=breeze
 ```
 
+#### Add a DNS Resolver (systemd-resolved)
+
+This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional /etc/resolv.conf, DNS is usually just a flat list of nameservers. With systemd-resolved, you get a local caching stub resolver, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration. Red Hat’s networking docs describe this model as NetworkManager writing 127.0.0.53 to /etc/resolv.conf while systemd-resolved dynamically routes queries to the right upstream DNS servers for each connection. 
+
+```zsh
+mkdir -p /usr/lib/NetworkManager/conf.d/
+nano /usr/lib/NetworkManager/conf.d/dns.conf
+```
+
+```ini
+# /usr/lib/NetworkManager/conf.d/dns.conf
+[main]
+dns=systemd-resolved
+```
+
+```zsh
+# Enable the service
+systemctl enable systemd-resolved.service
+```
+
 ### 4.10 Enable Essential Services
 
 ```bash
