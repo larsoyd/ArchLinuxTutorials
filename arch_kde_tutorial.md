@@ -953,7 +953,8 @@ systemctl enable swapfile.swap
 ### Kernel Optimizations :
 
 ```bash
-# Create systemd-tmpfiles folder
+# These are a combination of CachyOS settings and other sources
+# Create sysctl.d folder
 mkdir -p /usr/lib/sysctl.d/
 
 # copy from tmp
@@ -1014,7 +1015,26 @@ fs.file-max = 2097152
 sysctl --system
 ```
 
-#### Force GTK to use Portals
+### modprobe.d files 
+
+```zsh
+# make folder
+mkdir -p /usr/lib/modprobe.d/
+
+# These are verbatim lifted from CachyOS
+# Analyze them yourself if wanted
+#
+# copy NVIDIA (if you have NVIDIA)
+cp /tmp/ArchLinuxTutorials/nvidia.conf /usr/lib/modprobe.d/nvidia.conf
+
+# copy AMDGPU (if you plan to use AMDGPU)
+cp /tmp/ArchLinuxTutorials/amdgpu.conf /usr/lib/modprobe.d/amdgpu.conf
+
+# copy blacklist
+cp /tmp/ArchLinuxTutorials/blacklist.conf /usr/lib/modprobe.d/blacklist.conf
+```
+
+### Force GTK to use Portals
 ```bash
 # This is important for file pickers and GTK windows on KDE
 # This may mean nothing to you now, but basically its the
@@ -1030,7 +1050,7 @@ GTK_USE_PORTAL=1
 GDK_DEBUG=portals
 ```
 
-#### Optional: Set Login Theme Before Reboot
+### Optional: Set Login Theme Before Reboot
 
 ```bash
 # This will set your Login theme so you aren't
@@ -1047,7 +1067,7 @@ nano /etc/plasmalogin.conf.d/10-breeze.conf
 Current=breeze
 ```
 
-#### Add a DNS Resolver (systemd-resolved)
+### Add a DNS Resolver (systemd-resolved)
 
 This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional /etc/resolv.conf, DNS is usually just a flat list of nameservers. With systemd-resolved, you get a local caching stub resolver, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration. Red Hat’s networking docs describe this model as NetworkManager writing 127.0.0.53 to /etc/resolv.conf while systemd-resolved dynamically routes queries to the right upstream DNS servers for each connection. 
 
