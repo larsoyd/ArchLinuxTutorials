@@ -110,7 +110,7 @@ For AMDGPU or Intel GPU you should look either up at the Arch Wiki and replace t
 
 Set up your keyboard layou if you're not on an US keyboard, and verify UEFI boot:
 
-```bash
+```zsh
 # Set your keyboard layout, you can skip this is u use a normal keyboard (US)
 # each line in these code blocks is a separate line in the terminal FYI
 
@@ -194,7 +194,7 @@ timedatectl status | sed -n '1,12p'  # look for "System clock synchronized: yes"
 
 ## Step 1: Partition the NVMe drive with systemd-repart
 
-```bash
+```zsh
 lsblk -l
 
 # Set the device you want to operate on
@@ -205,7 +205,7 @@ d=/dev/sda   # if sd# or sda specifically it's this instead.
 mkdir -p /tmp/repart.d
 ```
 
-```bash
+```zsh
 # Create 10-esp.conf
 nano /tmp/repart.d/10-esp.conf
 
@@ -218,7 +218,7 @@ SizeMinBytes=2G
 SizeMaxBytes=2G
 ```
 
-```bash
+```zsh
 # Create 20-root.conf
 nano /tmp/repart.d/20-root.conf
 
@@ -229,7 +229,7 @@ Label=root
 Format=ext4
 ```
 
-```bash
+```zsh
 # Preview the plan 
 systemd-repart --definitions=/tmp/repart.d --empty=force "$d"
 
@@ -265,14 +265,14 @@ dumpe2fs -h /dev/disk/by-label/root | grep -i 'Fast commit length'
 
 ## Step 2: Mount filesystems (labels match your original layout)
 
-```bash
+```zsh
 # Mount root first
 mount /dev/disk/by-label/root /mnt
 ```
 
 #### Create and mount EFI directory with strict masks
 
-```bash
+```zsh
 mkdir -p /mnt/efi
 mount -o fmask=0177,dmask=0077,noexec,nodev,nosuid /dev/disk/by-label/EFI /mnt/efi
 ```
@@ -304,10 +304,10 @@ First update mirrorlist for optimal download speeds, obv replace Norway and Germ
 A good rule of thumb here is doing your country + closest neighbours and then a few larger neighbours after that.
 So for me it's Norway,Sweden,Denmark then Germany,Netherlands:
 
-```bash
+```zsh
 # Update mirrorlist before install so you install with fastest mirrors
 #
-# PROTIP: "\" is a pipe, it basically is a fancy way to add a space to a bash command.
+# PROTIP: "\" is a pipe, it basically is a fancy way to add a space to a zsh command.
 # So essentially just write each line until there isnt a "\" and it will run it all as one command.
 # This is good for keeping large commands digestible during install.
 #
@@ -329,7 +329,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
 ```
 
-```bash
+```zsh
 # and then **Install the base of Arch Linux!** :
 pacstrap /mnt base nano sudo
 ```
@@ -338,7 +338,7 @@ pacstrap /mnt base nano sudo
 
 ### 4.1 Enter the Base
 
-```bash
+```zsh
 # However before you can say you've installed arch you need to configure the system
 arch-chroot /mnt
 ```
@@ -347,7 +347,7 @@ arch-chroot /mnt
 
 ### 4.5 Create User Account
 
-```bash
+```zsh
 # Install zsh & git
 pacman -S --needed zsh git
 
@@ -362,7 +362,7 @@ passwd lars
 chsh -s /usr/bin/zsh lars
 ```
 
-```bash
+```zsh
 # Finally enable sudo for wheel group
 EDITOR=nano visudo
 # Uncomment: %wheel ALL=(ALL:ALL) ALL
@@ -392,7 +392,7 @@ if you aren't, like linux-zen and linux-lts.
 
 * A separate Chaotic-AUR method to get the kernels will be provided if your CPU dont support any of those instructions. Scroll until you see "Option B)" and start from there instead.
 
-```bash
+```zsh
 # Import and locally sign the CachyOS repo key
 #
 # Initialize keys
@@ -414,13 +414,13 @@ chmod +x setup.sh
 cd
 ```
 
-```bash
+```zsh
 # Now that you have added the mirrors + keys
 # You need to edit /etc/pacman.conf
 nano /etc/pacman.conf
 ```
 
-```bash
+```zsh
 # I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5.
 # If your CPU don't support znver4 add any of the others that fit.
 #
@@ -430,7 +430,7 @@ nano /etc/pacman.conf
 # in the same section & in this direction:
 ```
 
-```bash
+```zsh
 # If your CPU is based on Zen 4 or Zen 5, add [cachyos-znver4],
 # [cachyos-core-znver4], and [cachyos-extra-znver4]:
 
@@ -444,7 +444,7 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 Include = /etc/pacman.d/cachyos-v4-mirrorlist
 ```
 
-```bash
+```zsh
 # If your CPU supports x86-64-v3, then add [cachyos-v3],[cachyos-core-v3],[cachyos-extra-v3]
 [cachyos-v3]
 Include = /etc/pacman.d/cachyos-v3-mirrorlist
@@ -454,7 +454,7 @@ Include = /etc/pacman.d/cachyos-v3-mirrorlist
 Include = /etc/pacman.d/cachyos-v3-mirrorlist
 ```
 
-```bash
+```zsh
 # If your CPU supports x86-64-v4, then add [cachyos-v4], [cachyos-core-v4], and [cachyos-extra-v4]
 [cachyos-v4]
 Include = /etc/pacman.d/cachyos-v4-mirrorlist
@@ -465,7 +465,7 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 ```
 
 ### 6.1 Update mirrors and run reflector to new Cachy mirrors
-```bash
+```zsh
 # Update package database
 pacman -Syu
 
@@ -476,7 +476,7 @@ pacman -S --needed base-devel
 su - lars
 ```
 
-```bash
+```zsh
 # Install rate-mirrors
 # Go to https://packages.cachyos.org/package/cachyos/x86_64/rate-mirrors to see what numbers to replace x's with
 sudo pacman -U 'https://cdn77.cachyos.org/repo/x86_64/cachyos/rate-mirrors-x.xx.x-x-x86_64.pkg.tar.zst'
@@ -497,7 +497,7 @@ exit
 ```
 ### Install CachyOS Kernel + Headers:
 
-```bash
+```zsh
 pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
 linux-cachyos-lts-headers
 ```
@@ -506,7 +506,7 @@ linux-cachyos-lts-headers
 
 ### Option B) ALTERNATIVE CHAOTIC AUR METHOD:
 
-```bash
+```zsh
 # Import and locally sign the Chaotic-AUR repo key
 #
 # Initialize keys
@@ -528,13 +528,13 @@ chmod +x chaotic-setup.sh
 cd
 ```
 
-```bash
+```zsh
 # Now that you have added the mirrors + keys
 # You need to edit /etc/pacman.conf
 nano /etc/pacman.conf
 ```
 
-```bash
+```zsh
 # Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
 # Add Chaotic-AUR repo UNDER all the other ones existing.
 #
@@ -545,14 +545,14 @@ nano /etc/pacman.conf
 Include = /etc/pacman.d/chaotic-mirrorlist
 ```
 
-```bash
+```zsh
 # Update package database
 pacman -Syu
 ```
 
 ### Install CachyOS Kernel + Headers:
 
-```bash
+```zsh
 # As of writing the Chaotic-AUR does not have the CachyOS kernel I prefer to use
 # which is the BORE kernel. It only packages the lts, regular and rc versions.
 # Out of those I would pick both lts and regular, rc is more for realtime audio work.
@@ -564,7 +564,7 @@ linux-cachyos-lts-headers
 
 
 ### 6.5 Install Packages
-```bash
+```zsh
 # linux-zen is a tuned kernel, should work on any CPU.
 # it has nothing to do with the Zen architecture by AMD FYI.
 # Optional if you got the cachyos kernels already
@@ -580,18 +580,18 @@ pacman -S --needed linux-firmware amd-ucode nano sudo zsh systemd-ukify
 pacman -S --needed linux-firmware intel-ucode nano sudo zsh systemd-ukify
 ```
 
-```bash
+```zsh
 # OPTIONAL: Point /bin/sh to dash for 4x faster sh scripts which can make up a lot
 # of daily operation in Linux
 #
-# BE ADVISED it can lead to problems with "bashisms"
+# BE ADVISED it can lead to problems with "zshisms"
 # but it's not a super huge problem, as it's default on Debian & Ubuntu
 # Because of that it is de facto a standard in Linux for most shell scripts to
-# come with a header that explicitly defines a bash script whenever necessary.
+# come with a header that explicitly defines a zsh script whenever necessary.
 #
 # You will be fine, but if you are ever unsure then you can
-# run "checkbashisms" on the *.sh file via the terminal or skip this step entirely.
-pacman -S --needed dash checkbashisms
+# run "checkzshisms" on the *.sh file via the terminal or skip this step entirely.
+pacman -S --needed dash checkzshisms
 
 # Then do this to symlink dash to /usr/bin/sh
 ln -sfT dash /usr/bin/sh
@@ -599,7 +599,7 @@ ln -sfT dash /usr/bin/sh
 
 ### 4.2 Set Timezone
 
-```bash
+```zsh
 # Set timezone to your own continent and city
 ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
@@ -609,7 +609,7 @@ hwclock --systohc
 
 ### 4.3 Configure Locale & Keyboard
 
-```bash
+```zsh
 # Now we are going to configure our system language.
 # I am going to have my system be in English,
 # but my time and date will be set as it is in Norway.
@@ -661,7 +661,7 @@ localectl set-x11-keymap no pc105
 
 ### 4.4 Set Hostname and Hosts
 
-```bash
+```zsh
 # Set hostname, echo lets you do it quickly w/o using nano
 # good for one line stuff
 #
@@ -704,7 +704,7 @@ ark is a KDE developed method to unzip archive files on your computer. "Optional
 ### wireless-regdb
 If you use wireless then an **essential package** is also `wireless-regdb`. It installs regulatory.db, a machine-readable table of Wi-Fi rules per country  that allows you to connect properly. If regulatory.db is missing or cannot be read, Linux falls back to the “world” regdomain 00. That profile is **intentionally conservative,** which means fewer channels and more restrictions. For example, world 00 marks many 5 GHz channels as passive-scan only and limits parts of 2.4 GHz (12–13 passive, 14 effectively off).
 
-```bash
+```zsh
 # after install enable your region
 nano /etc/conf.d/wireless-regdom
 
@@ -738,7 +738,7 @@ If you need printer support. You will also need to enable `cups.service` at the 
 **EITHER**
 
 NVIDIA: 
-```bash
+```zsh
 # pipe commands, like before type out each pipe line, press enter on each until base-devel
 # then when u press enter it installs it all
 pacman -S --needed \
@@ -754,7 +754,7 @@ pacman -S --needed \
 ```
 
 or AMDGPU:
-```bash
+```zsh
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
@@ -771,7 +771,7 @@ pacman -S --needed \
 ```
 
 or Intel GPUs (I think):
-```bash
+```zsh
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
@@ -791,7 +791,7 @@ pacman -S --needed \
 
 ### 4.6 Configure Initramfs
 
-```bash
+```zsh
 # Edit mkinitcpio configuration
 nano /etc/mkinitcpio.conf
 
@@ -837,7 +837,7 @@ HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block file
 
 ### 4.8 Install UKIs and Configure Bootloader
 
-```bash
+```zsh
 # Install systemd-boot
 #
 # NOTE: Remember to include `--variables=yes` flag. - Here's why:
@@ -878,32 +878,32 @@ rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enable
 ```
 
 #### Make the ESP directory
-```bash
+```zsh
 # Make ESP directory
 mkdir -p /efi/EFI/Linux
 ```
 
 #### Edit kernel-install config so it installs UKIs to the ESP
 
-```bash
+```zsh
 # Edit:
 nano /etc/kernel/install.conf
 ```
 
-```bash
+```zsh
 # Add only:
 layout=uki
 ```
 
 ### Now install kernel UKIs
-```bash
+```zsh
 # Simply run
 kernel-install add-all
 ```
 
 #### Configure bootloader
 
-```bash
+```zsh
 # write the loader
 nano /efi/loader/loader.conf
 
@@ -915,7 +915,7 @@ editor no
 
 ### 4.9 Create swap file & Configure Zswap
 
-```bash
+```zsh
 # Create a 16 GiB swap file and initialize it in one step.
 #   --size 16G   -> allocate a 16 GiB file
 #   --file       -> create the file with correct mode and real blocks
@@ -924,7 +924,7 @@ mkswap -U clear --size 16G --file /swapfile
 ```
 
 edit:
-```bash
+```zsh
 nano /etc/systemd/system/swapfile.swap
 ```
 and add:
@@ -940,13 +940,13 @@ Priority=100
 WantedBy=swap.target
 ```
 then:
-```bash
+```zsh
 systemctl enable swapfile.swap
 ```
 
 ### Kernel Optimizations :
 
-```bash
+```zsh
 # These are a combination of CachyOS settings and other sources
 # Create sysctl.d folder
 mkdir -p /usr/lib/sysctl.d/
@@ -1030,7 +1030,7 @@ cp /tmp/ArchLinuxTutorials/blacklist.conf /usr/lib/modprobe.d/blacklist.conf
 ```
 
 ### Force GTK to use Portals
-```bash
+```zsh
 # This is important for file pickers and GTK windows on KDE
 # This may mean nothing to you now, but basically its the
 # difference between having a maximize button on Firefox and not.
@@ -1047,7 +1047,7 @@ GDK_DEBUG=portals
 
 ### Optional: Set Login Theme Before Reboot
 
-```bash
+```zsh
 # This will set your Login theme so you aren't
 # met with an old login screen first boot
 #
@@ -1084,7 +1084,7 @@ systemctl enable systemd-resolved.service
 
 ### 4.10 Enable Essential Services
 
-```bash
+```zsh
 # Enable network, display manager, and timesyncd
 # Include cups.service if you are using printer
 # Include bluetooth.service for Bluetooth if you installed bluez and bluez-utils
@@ -1094,7 +1094,7 @@ fstrim.timer reflector.timer pkgstats.timer
 
 ## Step 5: Complete Installation
 
-```bash
+```zsh
 # Exit environment
 exit
 
