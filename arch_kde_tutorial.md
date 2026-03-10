@@ -950,14 +950,14 @@ then:
 systemctl enable swapfile.swap
 ```
 
-### Optimizations:
+### Kernel Optimizations :
 
 ```bash
 # Create systemd-tmpfiles folder
 mkdir -p /usr/lib/sysctl.d/
 
 # copy from tmp
-cp /tmp/ArchLinuxTutorials/70-cachyos-settings.conf /usr/lib/sysctl.d/70-cachyos-settings.conf
+cp /tmp/ArchLinuxTutorials/70-settings.conf /usr/lib/sysctl.d/70-settings.conf
 ```
 
 ```conf
