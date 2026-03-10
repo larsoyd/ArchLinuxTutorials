@@ -695,7 +695,7 @@ It allows you to zoom in by pressing `CTRL + SHIFT and +` and zoom out by `CTRL 
 konsole is included as a backup. If you want to use another terminal as your main, replace it.
 
 ### ark
-ark is a KDE developed method to unzip archive files on your computer. "Optional" but you are going to want this. It supports various optional additions not included here like `7zip` and `unrar` to name two packages (.7Z and .RAR format support respectively). 
+ark is a KDE developed method to unzip archive files on your computer. "Optional" but you are going to want this. It supports various optional additions included like `7zip` and `unrar` .7Z and .RAR format support respectively. 
 
 ---
 
