@@ -228,7 +228,7 @@ Edit `/etc/pacman.conf`:
 ```zsh
 sudo nano /etc/pacman.conf
 ```
-```ini
+```conf
 # Color adds color (duh),
 # To add it you need to "Uncomment" the setting,
 # what this means is removing the #'s in front of it.
