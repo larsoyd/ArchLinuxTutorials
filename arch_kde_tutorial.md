@@ -803,8 +803,6 @@ MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 ---
 
 # Example for MODULES if you use amdgpu
-# Officially supported kernels enable AMDGPU support for cards of the Southern Islands (GCN 1, released in 2012)
-# and Sea Islands (GCN 2, released in 2013).
 #
 # The amdgpu kernel driver needs to be loaded before the radeon one.
 # You can check which kernel driver is loaded by running lspci -k.
@@ -874,12 +872,6 @@ nano /etc/kernel/cmdline
 # zswap.compressor=lz4 switches compressor to lz4 from zstd, lz4 is considered faster
 # All the other zswap kernel settings are default on Arch native kernels.
 # I included them to ensure they are loaded regardless.
-#
-# If you are using AMDGPU and Radeon and it insists on using Radeon instead,
-# You can add either of these depending on your card here to force the loading of AMDGPU:
-#
-# Southern Islands (SI): radeon.si_support=0 amdgpu.si_support=1
-# Sea Islands (CIK): radeon.cik_support=0 amdgpu.cik_support=1
 #
 ## /etc/kernel/cmdline
 rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
