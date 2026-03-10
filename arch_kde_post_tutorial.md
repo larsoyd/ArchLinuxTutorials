@@ -592,7 +592,7 @@ yay -S --needed lib32-gst-plugins-ugly lib32-gst-plugins-bad lib32-gst-libav
 # ntsync is an experimental Linux kernel driver mimicking Windows synchronization mechanisms.
 # It significantly improves performance of Wine synchronization syscalls comparing to their previous,
 # more user-space-based implementations (esync, fsync).
-mkdir -p /usr/lib/modules-load.d/
+sudo mkdir -p /usr/lib/modules-load.d/
 sudo nano /usr/lib/modules-load.d/ntsync.conf
 ```
 
