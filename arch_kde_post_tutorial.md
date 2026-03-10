@@ -587,6 +587,20 @@ yay -S --needed lib32-gst-plugins-base lib32-gst-plugins-good
 yay -S --needed lib32-gst-plugins-ugly lib32-gst-plugins-bad lib32-gst-libav
 ```
 
+### Enable ntsync by default
+```zsh
+# NTSync is a superior form of syncing 
+mkdir -p /usr/lib/modules-load.d/
+sudo nano /usr/lib/modules-load.d/ntsync.conf
+```
+
+Add this:
+
+```conf
+# /usr/lib/modules-load.d/ntsync.conf
+ntsync
+```
+
 ### 4.2.6 plocate - Quickly find any file or folder on your Arch Linux system
 ```bash
 # To quickly learn how to find steamapps for example without googling you can use plocate
