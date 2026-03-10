@@ -307,7 +307,7 @@ So for me it's Norway,Sweden,Denmark then Germany,Netherlands:
 ```zsh
 # Update mirrorlist before install so you install with fastest mirrors
 #
-# PROTIP: "\" is a pipe, it basically is a fancy way to add a space to a zsh command.
+# PROTIP: "\" is a pipe, it basically is a fancy way to add a space to a command.
 # So essentially just write each line until there isnt a "\" and it will run it all as one command.
 # This is good for keeping large commands digestible during install.
 #
@@ -574,10 +574,10 @@ pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
 
 # Install firmware and some core packages:
 # For AMD CPUs:
-pacman -S --needed linux-firmware amd-ucode nano sudo zsh systemd-ukify
+pacman -S --needed linux-firmware amd-ucode nano sudo systemd-ukify
 
 # For INTEL CPUs:
-pacman -S --needed linux-firmware intel-ucode nano sudo zsh systemd-ukify
+pacman -S --needed linux-firmware intel-ucode nano sudo systemd-ukify
 ```
 
 ```zsh
@@ -587,7 +587,7 @@ pacman -S --needed linux-firmware intel-ucode nano sudo zsh systemd-ukify
 # BE ADVISED it can lead to problems with "bashisms"
 # but it's not a super huge problem, as it's default on Debian & Ubuntu
 # Because of that it is de facto a standard in Linux for most shell scripts to
-# come with a header that explicitly defines a zsh script whenever necessary.
+# come with a header that explicitly defines a bash script whenever necessary.
 #
 # You will be fine, but if you are ever unsure then you can
 # run "checkbashisms" on the *.sh file via the terminal or skip this step entirely.
