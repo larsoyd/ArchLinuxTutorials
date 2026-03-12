@@ -729,7 +729,7 @@ Same for Blu-Rays. After you have installed the system and configured an AUR hel
 For Bluetooth support if you use Bluetooth. You will also need to enable `bluetooth.service` then at the end of the tutorial.
 
 ### cups & cups-pdf (Optional: bluez-cups for Bluetooth printers)
-If you need printer support. You will also need to enable `cups.service` at the end of the tutorial.
+If you need printer support. You will also need to enable `cups.service` at the end of the tutorial. For GUI support you need to also install `system-config-printer` & `cups-pk-helper`.
 
 ---
 
