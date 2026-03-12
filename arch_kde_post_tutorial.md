@@ -919,6 +919,10 @@ My advice is pick one here, you can do both but it's best to not clutter your sy
 #
 # install Haruna (video)
 yay -S --needed haruna
+
+# You have to do this if you want GPU acceleration for your wholesome entertainment
+mkdir -p ~/.config/mpv
+echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 ```
 
 ### Option 2) VLC
@@ -928,6 +932,7 @@ yay -S --needed haruna
 # VLC is the only officially supported third-party player with official Phonon support on KDE.
 # It's more fully featured than MPV, MPV requires more manual config to look better.
 # However it is buggy in some aspects, like using it for YouTube playback has not been good IMO.
+# It also is not reliable for hardware acceleration on NVIDIA IMO
 #
 # install vlc (video)
 yay -S --needed vlc vlc-plugins-all
@@ -949,7 +954,7 @@ yay -S --needed vlc-pause-click-plugin
 #### MPV Install:
 ```zsh
 # Has become more popular in recent years, is very powerful but a bit nerdy
-# If you care about manual configs and stuff use MPV, otherwise use VLC
+# If you care about manual configs and stuff use MPV, otherwise use VLC or Haruna
 #
 # install mpv (video)
 yay -S --needed mpv  
@@ -974,7 +979,7 @@ echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 yay -S --needed elisa
 ```
 
-#### Optional: Improve Font Rendering
+## Optional: Improve Font Rendering
 ```zsh
 # some people have criticized the font rendering on Linux
 # there is a good thread on this here:
