@@ -65,14 +65,14 @@ Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random update
 
 - systemd-automount for GPT partitions 
 - KDE Plasma on Wayland
-- `linux-zen` default kernel, `linux-lts` backup. Optional `linux-cachyos` and `linux-cachyos-lts` for optimized kernel.
+- Option B) `linux-zen` default kernel, `linux-lts` backup. ~ Option A) `linux-cachyos-bore` and `linux-cachyos-lts` for optimized kernel.
 - zsh default shell for users, optional dash shell for /usr/bin/sh 
 - systemd-boot with UKIs
 - zswap with a 16 GiB swap file
 - EXT4 for `/` with optional fast_commit journaling
 
 ## What my guide will primarily target:
-- AMD CPU + NVIDIA GPU w/ `nvidia-open` 
+- AMD CPU + NVIDIA GPU w/ `nvidia-open-dkms` 
 **NOTE:** This tutorial assumes you have a Turing (NV160/TUXXX) and newer	card for current driver. Check your card first.
 
 I included some stuff for AMDGPUs and Intel too, but my system is NVIDIA so I may have missed some things.
@@ -425,6 +425,8 @@ nano /etc/pacman.conf
 # If your CPU don't support znver4 add any of the others that fit.
 #
 # Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
+# NOTE: CHANGE ARCHITECTURE TO "Architecture = x86_64 x86_64_v4" or "v3" (respectively)
+# Otherwise the update will fail!
 #
 # ADD ONLY ONE of the 3 mirrorlists under that fit your CPU above the other repos
 # in the same section & in this direction:
