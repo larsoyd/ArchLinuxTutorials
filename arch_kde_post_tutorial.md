@@ -910,12 +910,24 @@ Examples:
 
 My advice is pick one here, you can do both but it's best to not clutter your system.
 
-### Option 1) VLC
+### Option 1) Haruna
+
+```zsh
+# Haruna is KDE's official video player, it is based on MPV but with a Qt based GUI frontend that
+# integrates natively into your KDE Plasma system. This is what I use at the moment. Works with
+# YouTube Playback well.
+#
+# install Haruna (video)
+yay -S --needed haruna
+```
+
+### Option 2) VLC
 
 #### VLC Install:
 ```zsh
 # VLC is the only officially supported third-party player with official Phonon support on KDE.
 # It's more fully featured than MPV, MPV requires more manual config to look better.
+# However it is buggy in some aspects, like using it for YouTube playback has not been good IMO.
 #
 # install vlc (video)
 yay -S --needed vlc vlc-plugins-all
@@ -933,7 +945,7 @@ yay -S --needed phonon-qt6-vlc
 yay -S --needed vlc-pause-click-plugin
 ```
 
-### Option 2) MPV
+### Option 3) MPV
 #### MPV Install:
 ```zsh
 # Has become more popular in recent years, is very powerful but a bit nerdy
@@ -948,6 +960,18 @@ yay -S --needed phonon-qt6-mpv
 # You have to do this if you want GPU acceleration for your wholesome entertainment
 mkdir -p ~/.config/mpv
 echo "hwdec=auto" > ~/.config/mpv/mpv.conf
+```
+
+## Music Playback
+
+### Elisa
+
+```zsh
+# Elisa is KDE's official music player, it also has a Qt based GUI frontend that
+# integrates natively into your KDE Plasma system. This is what I use at the moment.
+#
+# install Elisa (music)
+yay -S --needed elisa
 ```
 
 #### Optional: Improve Font Rendering
