@@ -894,6 +894,11 @@ exec yt-dlp "$URL" \
   -o "%(id)s_${start_tag}_${end_tag}.%(ext)s"
   ```
 
+```zsh
+# make it executable
+chmod +x /home/$USER/bin/ytclip
+```
+
 #### How to use:
 
 ```zsh
