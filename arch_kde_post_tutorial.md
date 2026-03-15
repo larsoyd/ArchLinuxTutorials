@@ -329,18 +329,27 @@ On Arch with KDE Plasma, you should put environmental variables in Plasma’s se
 # 
 # A workaround is possible using NVIDIA driver version 580.105.08 or newer, exporting the environment variable:
 export CUDA_DISABLE_PERF_BOOST=1
-```
 
-A clean way to create it from the terminal is:
+At the moment for NVIDIA you also need to add other variables:
+export LIBVA_DRIVER_NAME=nvidia
+export MOZ_DISABLE_RDD_SANDBOX=1
+export NVD_BACKEND=direct
+```
 
 ```zsh
-mkdir -p ~/.config/plasma-workspace/env
-cat > ~/.config/plasma-workspace/env/cuda-disable-perf-boost.sh <<'EOF'
-export CUDA_DISABLE_PERF_BOOST=1
-EOF
+# Create the file:
+nano ~/.config/plasma-workspace/env/libva-values.sh
 ```
 
-Then log out of Plasma completely and log back in. After that, check it with:
+```sh
+export LIBVA_DRIVER_NAME=nvidia
+export MOZ_DISABLE_RDD_SANDBOX=1
+export NVD_BACKEND=direct
+export CUDA_DISABLE_PERF_BOOST=1
+```
+
+
+Then log out of Plasma completely and log back in. After that, check any value with:
 
 ```zsh
 printenv CUDA_DISABLE_PERF_BOOST
