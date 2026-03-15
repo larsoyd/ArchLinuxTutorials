@@ -320,7 +320,7 @@ yay -S --needed chromium   # example of "anything else"
 
 ### How to add Environmental Variables:
 
-On Arch with KDE Plasma, you should put environmental variables in Plasma’s session environment directory. This is located in `~/.config/plasma-workspace/env` Create a small .sh file there for each variable. For example, for decoding with NVIDIA you create `~/.config/plasma-workspace/env/cuda-disable-perf-boost.sh`, with this content:
+On Arch with KDE Plasma, you should put environmental variables in Plasma’s session environment directory. This is located in `~/.config/plasma-workspace/env` Create a small .sh file there for each variable. For example, for decoding with NVIDIA you create `~/.config/plasma-workspace/env/libva-values.sh`
 
 ```zsh
 # While the libva-nvidia-driver implementation does enable hardware video decoding,
@@ -330,10 +330,7 @@ On Arch with KDE Plasma, you should put environmental variables in Plasma’s se
 # A workaround is possible using NVIDIA driver version 580.105.08 or newer, exporting the environment variable:
 export CUDA_DISABLE_PERF_BOOST=1
 
-At the moment for NVIDIA you also need to add other variables:
-export LIBVA_DRIVER_NAME=nvidia
-export MOZ_DISABLE_RDD_SANDBOX=1
-export NVD_BACKEND=direct
+# At the moment for NVIDIA you also need to add other variables.
 ```
 
 ```zsh
@@ -342,6 +339,7 @@ nano ~/.config/plasma-workspace/env/libva-values.sh
 ```
 
 ```sh
+# nano ~/.config/plasma-workspace/env/libva-values.sh
 export LIBVA_DRIVER_NAME=nvidia
 export MOZ_DISABLE_RDD_SANDBOX=1
 export NVD_BACKEND=direct
@@ -352,6 +350,7 @@ export CUDA_DISABLE_PERF_BOOST=1
 Then log out of Plasma completely and log back in. After that, check any value with:
 
 ```zsh
+# For example:
 printenv CUDA_DISABLE_PERF_BOOST
 ```
 
