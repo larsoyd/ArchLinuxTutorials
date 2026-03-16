@@ -656,6 +656,8 @@ propietary codecs and such that Valve cannot package themselves. This helps with
 # reflector will run reflector any time mirrorlist updates
 #
 # paccache-hook is the GOAT. it cleans your cache after using pacman.
+#
+# yaycache-hook will remove old and uninstalled packages from yay cache
 yay -S --needed \
   pacdiff-pacman-hook-git \
   reflector-pacman-hook-git \
@@ -670,11 +672,13 @@ yay -S --needed \
 #
 yay -S --needed pacman-hook-kernel-install
 
-# then after you install do both:
+# NOTE: This may not be needed, sometimes they are not installed
+# other times they are. I have had mixed results. Good to run both
+# anyways just to ensure they are removed.
+#
+# Mask the mkinitcpio hooks to prevent duplicates::
 sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
 sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
-
-# in order to prevent duplicates
 ```
 
 ### Install & Enable Nohang:
