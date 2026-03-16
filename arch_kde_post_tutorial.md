@@ -1133,9 +1133,13 @@ df -h /mnt/data
 touch /mnt/data/it-works
 ```
 
-# NVIDIA GSP ISSUES - TUTORIAL (2025)
+# NVIDIA GSP ISSUES - TUTORIAL (2025 - POSSIBLY OUTDATED)
 
-As of now there is an issue on Wayland with NVIDIA where the power state goes down too low on idle which causes lag and a jump during various use like desktop animations etc. The only solution for this is to either turn off GSP which you need the propietary driver to do (i.e not open kernel modules) or set minimum and max clocks so it doesn't enter that idle state. This is how to do the latter with a systemd service I wrote for it. There are trade offs to this obv, but I have done it as safe as possible by locking the VRAM clocks to a valid safe range chosen from the device’s supported table.
+2025: As of now there is an issue on Wayland with NVIDIA where the power state goes down too low on idle which causes lag and a jump during various use like desktop animations etc. The only solution for this is to either turn off GSP which you need the propietary driver to do (i.e not open kernel modules) or set minimum and max clocks so it doesn't enter that idle state. This is how to do the latter with a systemd service I wrote for it. There are trade offs to this obv, but I have done it as safe as possible by locking the VRAM clocks to a valid safe range chosen from the device’s supported table.
+
+
+**UPDATE - 2026** : This seems to have been solved on `nvidia-open-dkms` (595.45.04-2<) for me on the CachyOS kernels. I do not know if this is fixed via CachyOS's kernels or a driver update. 
+For now I will be leaving this up for anyone who might need the fix or if this is borked again in the future (with NVIDIA it is likely), however if you see no slowdown in your system, *do not* do this.
 
 ### 0) confirm driver + tool exist
 ```zsh
