@@ -659,7 +659,7 @@ propietary codecs and such that Valve cannot package themselves. This helps with
 yay -S --needed \
   pacdiff-pacman-hook-git \
   reflector-pacman-hook-git \
-  paccache-hook
+  paccache-hook yaycache-hook
 ```
 
 
