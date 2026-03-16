@@ -420,17 +420,27 @@ cd
 nano /etc/pacman.conf
 ```
 
-```zsh
-# I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5.
-# If your CPU don't support znver4 add any of the others that fit.
-#
-# Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
-# NOTE: CHANGE ARCHITECTURE TO "Architecture = x86_64 x86_64_v4" or "v3" (respectively)
-# Otherwise the update will fail!
-#
-# ADD ONLY ONE of the 3 mirrorlists under that fit your CPU above the other repos
-# in the same section & in this direction:
-```
+
+I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5.
+If your CPU don't support znver4 add any of the others that fit.
+
+Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
+
+---
+
+**WARNING: CHANGE ARCHITECTURE under "Architecture = auto" to:**
+
+* Architecture = x86_64 x86_64_v4"
+  
+or
+
+* Architecture = x86_64 x86_64_v3"
+
+**add that INSTEAD of "auto" as pacman can't resolve Cachy repos automatically**
+
+#### ADD ONLY ONE of the 3 mirrorlists under that fit your CPU above the other repos
+#### in the same section & in this direction:
+
 
 ```zsh
 # If your CPU is based on Zen 4 or Zen 5, add [cachyos-znver4],
@@ -466,38 +476,23 @@ Include = /etc/pacman.d/cachyos-v4-mirrorlist
 Include = /etc/pacman.d/cachyos-v4-mirrorlist
 ```
 
-### 6.1 Update mirrors and run reflector to new Cachy mirrors
 ```zsh
-# Update package database
+# IMPORTANT: Update to new repos & packages when mirrors are added
+# If done correctly the Cachy versions of packages will now be retrieved
+#
+# If one mirror 404s out it is not necssarily an  error,
+# it usually just means one of the Cachy mirrors doesn't have the package
+# that you are requesting. To check if the package installed you can
+# sanity check w/e dependency errored with "pacman -Q (pkgname)"
+# If it is returned it was retrieved. I wish that pacman would mute this
+# term noise if the package was actually retrieved, but alas...
+#
+# Press Y for Yes to any replacements when prompted:
+#
 pacman -Syu
-
-# Install base-devel
-pacman -S --needed base-devel
-
-# Login to user
-su - lars
 ```
 
-```zsh
-# Install rate-mirrors
-# Go to https://packages.cachyos.org/package/cachyos/x86_64/rate-mirrors to see what numbers to replace x's with
-sudo pacman -U 'https://cdn77.cachyos.org/repo/x86_64/cachyos/rate-mirrors-x.xx.x-x-x86_64.pkg.tar.zst'
-
-# Install cachyos-rate-mirrors
-# Go to https://packages.cachyos.org/package/cachyos/any/cachyos-rate-mirrors to see what numbers to replace x's with
-sudo pacman -U 'https://mirror.cachyos.org/repo/x86_64/cachyos/cachyos-rate-mirrors-xx-x-any.pkg.tar.zst'
-
-# Rate CachyOS Mirrors, run:
-sudo cachyos-rate-mirrors
-
-# Enable mirror rate timer
-sudo systemctl enable cachyos-rate-mirrors.timer
-
-# Drop back to root in the chroot when done
-exit
-
-```
-### Install CachyOS Kernel + Headers:
+### 6.1 Install CachyOS Kernel + Headers:
 
 ```zsh
 pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
@@ -573,6 +568,9 @@ linux-cachyos-lts-headers
 #
 # THIS IS REQUIRED IF YOU DONT GET CACHYOS KERNEL:
 pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
+
+---
+REGARDLESS OF WHAT KERNEL YOU GOT, CONTINUE FROM HERE:
 
 # Install firmware and some core packages:
 # For AMD CPUs:
