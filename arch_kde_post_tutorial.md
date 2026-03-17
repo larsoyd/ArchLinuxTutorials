@@ -37,6 +37,16 @@ sudo pacman -Syu
 * Navigate to the "System" submenu, then locate & launch the program entitled: `kitty`
 * Afterwards you can right click on the icon on your Task Manager and pin it for easy access later.
 
+### Optional: Rebind CTRL + V to paste
+CTRL + C terminates output which is useful, so keep CTRL + Shift + C as copy, but to rebind CTRL + V to paste, Add this to your `kitty` config, `~/.config/kitty/kitty.conf`:
+
+```conf
+map ctrl+shift+v no_op
+map ctrl+v paste_from_clipboard
+```
+
+Then reload Kitty’s config with Ctrl+Shift+F5.
+
 ### Essential build tools, you already installed these during install but just to be sure
 ```zsh
 sudo pacman -S --needed base-devel git  # when you run pacman with the --needed flag it will skip
