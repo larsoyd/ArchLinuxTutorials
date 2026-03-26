@@ -553,6 +553,12 @@ pacup
 
 # or if you didn't add the alias:
 topgrade
+
+# This is a good time to teach you the habit of running `checkrebuild` after updates.
+# 'checkrebuild' checks if you need to rebuild any packages towards new dependencies.
+#
+# If you don't do that when needed, it can lead to instability.
+checkrebuild
 ```
 
 Option 2) with yay:
