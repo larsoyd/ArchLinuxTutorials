@@ -37,12 +37,15 @@ sudo pacman -Syu
 * Navigate to the "System" submenu, then locate & launch the program entitled: `kitty`
 * Afterwards you can right click on the icon on your Task Manager and pin it for easy access later.
 
-### Optional: Rebind CTRL + V to paste
-CTRL + C terminates output which is useful, so keep CTRL + Shift + C as copy, but to rebind CTRL + V to paste, Add this to your `kitty` config, `~/.config/kitty/kitty.conf`:
+### Optional: Rebind CTRL + C to copy and CTRL + V to paste
+Here is how to rebind CTRL + C and CTRL + V to copy + paste, Add this to your `kitty` config, `~/.config/kitty/kitty.conf`:
 
 ```conf
 map ctrl+shift+v no_op
 map ctrl+v paste_from_clipboard
+map ctrl+shift+c no_op
+map ctrl+c copy_and_clear_or_interrupt
+map ctrl+shift+c send_text all \x03
 ```
 
 Then reload Kitty’s config with Ctrl+Shift+F5.
