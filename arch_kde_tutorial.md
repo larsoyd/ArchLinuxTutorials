@@ -1045,6 +1045,129 @@ GTK_USE_PORTAL=1
 GDK_DEBUG=portals
 ```
 
+### Fix Emojis rendering as black and white
+```zsh
+# Qt does not support automatically looking up the best font for emojis
+# Therefore the user must manually add a color emoji font as a fallback.
+# This fix uses Noto-Fonts-Emoji, we installed it in the list of packages.
+#
+# If you later replace it with another Emoji package, make sure to update this
+# as well.
+#
+mkdir -p /etc/fonts/conf.d
+
+# copy from tmp
+cp /tmp/ArchLinuxTutorials/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
+```
+
+```conf
+# /etc/fonts/conf.d/75-noto-color-emoji.conf
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+
+    <!-- Add generic family. -->
+    <match target="pattern">
+        <test qual="any" name="family"><string>emoji</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <!-- This adds Noto Color Emoji as a final fallback font for the default font families. -->
+    <match target="pattern">
+        <test name="family"><string>sans</string></test>
+        <edit name="family" mode="append"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test name="family"><string>serif</string></test>
+        <edit name="family" mode="append"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test name="family"><string>sans-serif</string></test>
+        <edit name="family" mode="append"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test name="family"><string>monospace</string></test>
+        <edit name="family" mode="append"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <!-- Block Symbola from the list of fallback fonts. -->
+    <selectfont>
+        <rejectfont>
+            <pattern>
+                <patelt name="family">
+                    <string>Symbola</string>
+                </patelt>
+            </pattern>
+        </rejectfont>
+    </selectfont>
+
+    <!-- Use Noto Color Emoji when other popular fonts are being specifically requested. -->
+    <match target="pattern">
+        <test qual="any" name="family"><string>Apple Color Emoji</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>Segoe UI Emoji</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>Segoe UI Symbol</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>Android Emoji</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>Twitter Color Emoji</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>Twemoji</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>Twemoji Mozilla</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>TwemojiMozilla</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>EmojiTwo</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>Emoji Two</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>EmojiSymbols</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+    <match target="pattern">
+        <test qual="any" name="family"><string>Symbola</string></test>
+        <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
+    </match>
+
+</fontconfig>
+```
+
 ### Optional: Set Login Theme Before Reboot
 
 ```zsh
