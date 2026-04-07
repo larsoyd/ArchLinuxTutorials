@@ -581,7 +581,7 @@ checkrebuild
 # yay  -S <pkg> --rebuild
 ```
 
-### 4.2.5 Games, Steam & 32-bit Libraries
+### 4.2.5 Games & Steam
 ```zsh
 # then after enabling multilib DL Steam
 # 
@@ -591,34 +591,14 @@ yay -S --needed steam xorg-fonts-misc
 
 # Run Steam in terminal to install it:
 steam
-
-# OPTIONAL: Consider also getting the 32-bit versions of GStreamer plugins.
-# This gives you support for a number of audio & video formats on 32-bit software.
-#
-# For gaming on Proton it is NOT vital, Proton and ProtonGE bundle their own GStreamer, but
-# for any other 32-bit application like say if you want to run WINE yourself for stuff
-# then they are vital to not get issues with playback with MP3 for example through Windows software.
-#
-# NOTE: lib32-gst-plugins-ugly, lib32-gst-libav & lib32-gst-plugins-bad are from the AUR
-# which means they are packaged by a third party.
-# Check the PKGBUILD of both before installing or leave them out. But if you do be aware
-# that lib32-*-ugly is required for MP3 on 32-bit apps. WINE generally recommends you get *-bad and *-libav.
-
-# The ones from the official repos, no compiling required. No problem installing them, good to have regardless.
-yay -S --needed lib32-gst-plugins-base lib32-gst-plugins-good
-
-# From AUR
-# NOTE: You will have to compile these, and that will take a while. I recommend only doing this if you need them,
-# again you do NOT need them for Steam so if you are only planning to use WINE/Proton for Steam, I say skip these.
-# If not, I recommend you do these at the end of the tutorial since the build time is LONG.
-yay -S --needed lib32-gst-plugins-ugly lib32-gst-plugins-bad lib32-gst-libav
 ```
 
 ### Enable ntsync by default
 ```zsh
 # ntsync is an experimental Linux kernel driver mimicking Windows synchronization mechanisms.
-# It significantly improves performance of Wine synchronization syscalls comparing to their previous,
-# more user-space-based implementations (esync, fsync).
+# It should improve performance of Wine synchronization syscalls comparing to their previous,
+# more user-space-based implementations (esync, fsync). Emphasis on should. I have personally
+# noticed no regressions. 
 sudo mkdir -p /usr/lib/modules-load.d/
 sudo nano /usr/lib/modules-load.d/ntsync.conf
 ```
