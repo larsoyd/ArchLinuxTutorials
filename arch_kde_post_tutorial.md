@@ -1045,7 +1045,7 @@ text_composition_strategy 1.7 0
 # 
 # WHILE IN THEORY IT SHOULD NOT BE A PROBLEM AND APPLY CLEANLY,
 # THIS WILL STILL COME WITH THE RISK OF ISSUES IF SAID THIRD PARTY FAILS TO UPDATE
-# THE PACKAGE CLEANLY, POTENTIALLY LEADING TO UNBOOTABLE SYSTEMS! - If you are okay
+# THE PACKAGE, POTENTIALLY LEADING TO UNBOOTABLE SYSTEMS! - If you are okay
 # with chrooting in and reversing a broken update and this issue matters enough to you as it
 # does for me, then continue. If not, DO NOT DO THIS. There is no other fix for this than
 # doing this.
@@ -1053,13 +1053,16 @@ text_composition_strategy 1.7 0
 #
 # There is a long-standing issue with Qt that makes animations such as Overview transitions and scrolling animations
 # get capped at 60 frames per second on Qt based applications. on KDE Plasma the best way to see this in action is
-# to open up Dolphin (File Manager) or System Settings and then scroll the list up & down on a monitor with a high refresh rate (over 60Hz)
+# to open up Dolphin (File Manager) or System Settings and then scroll the list up & down on a monitor
+# with a high refresh rate (over 60Hz)
 #
 # This is still unresolved after more than a year and a half due to the way animations are done in Qt.
-# More information on this can be found here: https://www.old.reddit.com/r/kde/comments/1p26pu0/highrefreshrate_users_were_working_on_removing/
+# More information on this can be found here:
+# https://www.old.reddit.com/r/kde/comments/1p26pu0/highrefreshrate_users_were_working_on_removing/
 #
 # Basically Qt6's animations are hard coded to only run at a certain refresh rate due to tech debt of the Qt Framework itself.
-# As of now (2026) the only fix is to use a patched version of qt6-base from the AUR that lowers the hard coded number from 16 (around 60Hz) to 4.
+# As of now (2026) the only fix is to use a patched version of qt6-base from the AUR that lowers the hard coded number
+# from 16 (around 60Hz) to 4.
 yay -S --needed qt6-base-hifps
 ```
 
