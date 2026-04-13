@@ -17,6 +17,10 @@ if [[ -z "$aur_user" || "$aur_user" == "root" ]]; then
   exit 1
 fi
 
+pkg_installed() {
+  pacman -Qq "$1" >/dev/null 2>&1
+}
+
 pacman-key --recv-keys "$key"
 pacman-key --finger "$key"
 
@@ -37,6 +41,16 @@ fi
 
 # Refresh package databases and install XLibre packages
 pacman -Syu --needed xlibre-xserver xlibre-input-libinput
+
+# Remove Plasma Login Manager if it is installed
+if pkg_installed plasma-login-manager; then
+  pacman -Rns plasma-login-manager
+fi
+
+# Install SDDM if it is not installed
+if ! pkg_installed sddm; then
+  pacman -S --needed sddm
+fi
 
 # Build yay only if it is missing
 if ! command -v yay >/dev/null 2>&1; then
