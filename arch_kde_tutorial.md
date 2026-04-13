@@ -717,10 +717,10 @@ WIRELESS_REGDOM="US"
 ```
 
 ### audiocd-kio
-This adds the audiocd:/ KIO worker so Dolphin and other KDE apps can read and rip audio CDs. Not needed on non-KDE Plasma systems, but KDE has their own thing with this for some reason. If you are on a laptop with a CD player then you are going to want this.
+This adds the audiocd:/ KIO worker so Dolphin and other KDE apps can read and rip audio CDs. Not needed on non-KDE Plasma systems, but KDE has their own thing for this. If you are on a laptop with a CD player and/or ever need to play audio CDs on your PC then you are going to want this.
 
 ### libdvdread, libdvdnav, and libdvdcss
-This is the same as above but for DVD playback. This is needed on any DE.
+This is the same as above but for DVD playback. 
 
 ### libbluray and libaacs
 Same for Blu-Rays. After you have installed the system and configured an AUR helper you may also wish to install **libbdplus** from the AUR if you want for BD+ playback. From there you will have to set it up with KEYS which is shown on the Arch Wiki about Blu-Ray.
@@ -1222,9 +1222,9 @@ fstrim.timer reflector.timer pkgstats.timer
 
 - KDE Plasma is losing X11 support next major release to become a Wayland only DE. If you are new to Linux and dont know what that means then you can just skip this part to Step 5. 
 
-- For those who know what X11 is and who also want to use it instead of Wayland your only option to continue using KDE Plasma on X11 is to migrate to XLibre and SonicDE. XLibre aims to be a continually maintained version of X11 and SonicDE aims to be the same for KDE Plasma 6 (X11). If you want to use it, I have written a script for you that *should* work. 
+- For those who do know what X11 is and also want to continue using it **instead** of Wayland, your only option is to migrate to XLibre and SonicDE. XLibre is a continually maintained fork of X11, while SonicDE is the same but for KDE Plasma 6 (X11). If you want to migrate I have written a script for you that *should* work. 
 
-- Please be aware that SonicDE by the virtue of the decreasing demand for X11 especially with KDE is increasingly a niche use case, this is because Wayland is finally maturing for many users. As such it is not going to be as healthy of a project as KDE Plasma both was and is, and that means *some* regressions are probably inevitable. XLibre has similar problems on top of the issue of a controversial reputation due to the personal politics of the maintainer behind it, google it if you are worried about this.
+- Please be aware before you do that SonicDE is by the virtue of the decreasing demand for X11 especially with KDE increasingly niche, this is because Wayland is finally maturing for many users. As such it is not going to be as healthy of a project as KDE Plasma both was and is, and that means *some* regressions are probably inevitable. This is not me dunking on SonicDE, it's just an objective reality whether you like Wayland or not. XLibre have similar problems on top of a complex reputation due to the personal politics of the head maintainer/creator behind it, google it if you are worried about this.
 
 - **NOTE: If you install SonicDE it WILL replace your KDE Plasma session. You sadly can't run KDE Plasma (Wayland) and SonicDE on your system at the same time.**
 
