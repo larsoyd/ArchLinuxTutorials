@@ -1220,11 +1220,11 @@ fstrim.timer reflector.timer pkgstats.timer
 
 ### OPTIONAL: SonicDE/XLibre Install Script (EXPERIMENTAL)
 
-- KDE Plasma is losing X11 support next major release to become a Wayland only DE. If you are new to Linux and dont know what that means then you can just skip this part to Step 5. For those who know what X11 is and who also want to use it instead of Wayland:
+- KDE Plasma is losing X11 support next major release to become a Wayland only DE. If you are new to Linux and dont know what that means then you can just skip this part to Step 5. 
 
-- The only viable path forward ATM to continue using KDE Plasma 6 on X11 is to migrate to XLibre and SonicDE. XLibre is a continually maintained version of X11 and SonicDE is the same for KDE Plasma (X11). If you want to use it I have written a script for you that *should* work. 
+- For those who know what X11 is and who also want to use it instead of Wayland your only option to continue using KDE Plasma on X11 is to migrate to XLibre and SonicDE. XLibre aims to be a continually maintained version of X11 and SonicDE aims to be the same for KDE Plasma 6 (X11). If you want to use it, I have written a script for you that *should* work. 
 
-- Please be aware that SonicDE by the the virtue of the demand for X11 especially with KDE is increasingly a niche use case, this is because Wayland is finally maturing. As such it is not going to be as healthy of a project as KDE Plasma both was and is, and that means regressions are probably inevitable. XLibre has similar problems on top of the issue of a controversial reputation due to the personal politics of the maintainer behind it, google it if you are worried about this.
+- Please be aware that SonicDE by the virtue of the decreasing demand for X11 especially with KDE is increasingly a niche use case, this is because Wayland is finally maturing for many users. As such it is not going to be as healthy of a project as KDE Plasma both was and is, and that means *some* regressions are probably inevitable. XLibre has similar problems on top of the issue of a controversial reputation due to the personal politics of the maintainer behind it, google it if you are worried about this.
 
 - **NOTE: If you install SonicDE it WILL replace your KDE Plasma session. You sadly can't run KDE Plasma (Wayland) and SonicDE on your system at the same time.**
 
