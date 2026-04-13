@@ -4,7 +4,7 @@ This is an **OPINIONATED** Arch installation guide for regular folks who just wa
 and usually the one most people want to use because of that, at least for their first DE. I've used every DE and WM that is both trendy and some obscure,
 I started with KDE Plasma and Arch Linux. I always come back to both eventually. It's fun to try out new things, but KDE Plasma is OP at the moment I am writing 
 this. It's fully featured, they finally have a good process in eliminating bugs which plagued the DE before, and it's very easy to customize. Most DEs and WMs have
-some caveat, KDE Plasma does not. That is why I use it.
+some caveat, KDE Plasma does not with the exception of one thing for some users. KDE Plasma is losing Xorg/X11 support soon, the only way forward for users who want to use X11 is to use SonicDE (A fork of KDE Plasma X11) and XLibre. An experimental script will be provided for this on the bottom. **Installing SonicDE will replace KDE Plasma, you can only use one of these sessions.**
 
 
 ## NOTE (ACTUALLY READ THIS): 
@@ -1213,6 +1213,37 @@ systemctl enable systemd-resolved.service
 # Include bluetooth.service for Bluetooth if you installed bluez and bluez-utils
 systemctl enable NetworkManager plasmalogin systemd-timesyncd systemd-boot-update.service \
 fstrim.timer reflector.timer pkgstats.timer
+```
+
+---
+
+
+### Optional: SonicDE/XLibre Install Script (EXPERIMENTAL)
+
+KDE Plasma is losing X11 support next major release. The only path forward to continue using KDE Plasma on X11 is to migrate to XLibre and SonicDE. XLibre is a continually maintained version of X11 and SonicDE is the same for KDE Plasma (X11). If you want to use it I have written a script for you, however be aware that its by the virtue of the increasing niche demand of X11 especially with KDE not as supported as KDE Plasma, regressions are probably inevitable. XLibre has a controversial reputation due to the personal politics of the maintainer behind it, google it if you are worried about this. - **NOTE: If you install SonicDE it WILL replace your KDE Plasma session. You sadly can't run KDE Plasma (Wayland) and SonicDE on your system at the same time.**
+
+```zsh
+# Login to your user
+su - lars
+
+# Clone to user
+mkdir -p git
+cd /git
+git clone https://github.com/larsoyd/ArchLinuxTutorials.git
+cd ArchLinuxTutorials
+
+# Install SonicDE + XLibre
+chmod +x xlibre-sonicde.sh
+./xlibre-sonicde.sh
+
+# Logout
+exit
+
+# disable Plasma Login Manager
+systemctl disable plasmalogin
+
+# Enable SDDM
+systemctl enable sddm
 ```
 
 ## Step 5: Complete Installation
