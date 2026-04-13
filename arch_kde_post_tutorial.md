@@ -335,6 +335,8 @@ yay -S --needed chromium   # example of "anything else"
 
 On Arch with KDE Plasma, you should put environmental variables in Plasma’s session environment directory. This is located in `~/.config/plasma-workspace/env` Create a small .sh file there for each variable. For example, for decoding with NVIDIA you create `~/.config/plasma-workspace/env/libva-values.sh`
 
+For SonicDE you have to replace `plasma-workspace` with `sonicde-workspace` instead.
+
 ```zsh
 # While the libva-nvidia-driver implementation does enable hardware video decoding,
 # current limits for NVIDIA power management mean that with default settings
