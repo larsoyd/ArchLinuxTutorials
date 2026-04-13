@@ -76,5 +76,29 @@ if ! command -v yay >/dev/null 2>&1; then
   exit 1
 fi
 
-# Install sonicde-meta from the AUR as the invoking user
+# Install SonicDE from the AUR as the invoking user
 sudo -H -u "$aur_user" yay -S --needed sonicde-meta
+
+# Set the SDDM theme to Sonic Silver
+sddm_theme_dir="/usr/share/sddm/themes"
+sddm_theme=""
+
+if [[ -d "$sddm_theme_dir/Sonic-Silver" ]]; then
+  sddm_theme="Sonic-Silver"
+elif [[ -d "$sddm_theme_dir/sonic-silver" ]]; then
+  sddm_theme="sonic-silver"
+else
+  echo "Could not find the Sonic Silver SDDM theme in $sddm_theme_dir" >&2
+  echo "Expected one of:" >&2
+  echo "  $sddm_theme_dir/Sonic-Silver" >&2
+  echo "  $sddm_theme_dir/sonic-silver" >&2
+  exit 1
+fi
+
+install -d -m 0755 /etc/sddm.conf.d
+cat > /etc/sddm.conf.d/10-silver.conf <<EOF
+[Theme]
+Current=$sddm_theme
+EOF
+
+echo "Configured SDDM theme: $sddm_theme"
