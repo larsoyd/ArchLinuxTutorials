@@ -17,8 +17,59 @@ if [[ -z "$aur_user" || "$aur_user" == "root" ]]; then
   exit 1
 fi
 
+user_home="$(getent passwd "$aur_user" | cut -d: -f6)"
+user_group="$(id -gn "$aur_user")"
+
+# SDDM theme name
+sddm_theme="Sonic-Silver"
+
+# Plasma Global Theme / Look-and-Feel package
+# Change this one variable to switch variants:
+#   org.kde.silverdarkbottompanel.desktop
+#   org.kde.silverdarkleftpanel.desktop
+#   org.kde.silverlightbottompanel.desktop
+#   org.kde.silverlightleftpanel.desktop
+plasma_lnf="${PLASMA_LNF:-org.kde.silverdarkbottompanel.desktop}"
+
 pkg_installed() {
   pacman -Qq "$1" >/dev/null 2>&1
+}
+
+set_kconfig_key() {
+  local file="$1"
+  local group="$2"
+  local key="$3"
+  local value="$4"
+
+  if command -v kwriteconfig6 >/dev/null 2>&1; then
+    kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value"
+    return
+  fi
+
+  python - "$file" "$group" "$key" "$value" <<'PY'
+import configparser
+import os
+import sys
+
+file_path, group, key, value = sys.argv[1:]
+cfg = configparser.ConfigParser(interpolation=None)
+cfg.optionxform = str
+
+if os.path.exists(file_path):
+    cfg.read(file_path)
+
+if not cfg.has_section(group):
+    cfg.add_section(group)
+
+cfg.set(group, key, value)
+
+parent = os.path.dirname(file_path)
+if parent:
+    os.makedirs(parent, exist_ok=True)
+
+with open(file_path, "w", encoding="utf-8") as f:
+    cfg.write(f, space_around_delimiters=False)
+PY
 }
 
 pacman-key --recv-keys "$key"
@@ -79,19 +130,10 @@ fi
 # Install SonicDE from the AUR as the invoking user
 sudo -H -u "$aur_user" yay -S --needed sonicde-meta
 
-# Set the SDDM theme to Sonic Silver
+# Configure SDDM theme
 sddm_theme_dir="/usr/share/sddm/themes"
-sddm_theme=""
-
-if [[ -d "$sddm_theme_dir/Sonic-Silver" ]]; then
-  sddm_theme="Sonic-Silver"
-elif [[ -d "$sddm_theme_dir/sonic-silver" ]]; then
-  sddm_theme="sonic-silver"
-else
-  echo "Could not find the Sonic Silver SDDM theme in $sddm_theme_dir" >&2
-  echo "Expected one of:" >&2
-  echo "  $sddm_theme_dir/Sonic-Silver" >&2
-  echo "  $sddm_theme_dir/sonic-silver" >&2
+if [[ ! -d "$sddm_theme_dir/$sddm_theme" ]]; then
+  echo "Could not find SDDM theme: $sddm_theme_dir/$sddm_theme" >&2
   exit 1
 fi
 
@@ -101,4 +143,37 @@ cat > /etc/sddm.conf.d/10-silver.conf <<EOF
 Current=$sddm_theme
 EOF
 
+# Configure Plasma default global theme
+plasma_theme_dir="/usr/share/plasma/look-and-feel/$plasma_lnf"
+if [[ ! -d "$plasma_theme_dir" ]]; then
+  echo "Requested Plasma global theme was not found: $plasma_lnf" >&2
+  echo "Available Silver Plasma theme IDs:" >&2
+  printf '  %s\n' \
+    org.kde.silverdarkbottompanel.desktop \
+    org.kde.silverdarkleftpanel.desktop \
+    org.kde.silverlightbottompanel.desktop \
+    org.kde.silverlightleftpanel.desktop >&2
+  exit 1
+fi
+
+# System-wide default for new/clean Plasma configs
+install -d -m 0755 /etc/xdg
+set_kconfig_key /etc/xdg/kdeglobals KDE LookAndFeelPackage "$plasma_lnf"
+
+# Seed the invoking user's config too
+install -d -o "$aur_user" -g "$user_group" -m 0755 "$user_home/.config"
+set_kconfig_key "$user_home/.config/kdeglobals" KDE LookAndFeelPackage "$plasma_lnf"
+chown "$aur_user:$user_group" "$user_home/.config/kdeglobals"
+
+# Best-effort live apply for an already running Plasma session
+user_uid="$(id -u "$aur_user")"
+runtime_dir="/run/user/$user_uid"
+if command -v plasma-apply-lookandfeel >/dev/null 2>&1 && [[ -S "$runtime_dir/bus" ]]; then
+  sudo -H -u "$aur_user" \
+    env XDG_RUNTIME_DIR="$runtime_dir" \
+        DBUS_SESSION_BUS_ADDRESS="unix:path=$runtime_dir/bus" \
+    plasma-apply-lookandfeel --resetLayout --apply "$plasma_lnf" || true
+fi
+
 echo "Configured SDDM theme: $sddm_theme"
+echo "Configured Plasma global theme: $plasma_lnf"
