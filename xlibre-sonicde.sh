@@ -35,6 +35,18 @@ pkg_installed() {
   pacman -Qq "$1" >/dev/null 2>&1
 }
 
+pacman_key_exists() {
+  pacman-key --list-keys "$1" >/dev/null 2>&1
+}
+
+repo_exists() {
+  pacman-conf --config "$pacman_conf" --repo-list | grep -Fxq -- "$repo_name"
+}
+
+repo_server_matches() {
+  pacman-conf --config "$pacman_conf" --repo "$repo_name" Server 2>/dev/null | grep -Fxq -- "$repo_url"
+}
+
 set_kconfig_key() {
   local file="$1"
   local group="$2"
@@ -72,16 +84,30 @@ with open(file_path, "w", encoding="utf-8") as f:
 PY
 }
 
-pacman-key --recv-keys "$key"
-pacman-key --finger "$key"
+# Import and locally sign the XLibre key only if it is not already present
+if pacman_key_exists "$key"; then
+  echo "Pacman key $key already exists, skipping key import/signing."
+else
+  pacman-key --recv-keys "$key"
+  pacman-key --finger "$key"
 
-echo
-echo "Verify the fingerprint above matches the trusted source before continuing."
-read -r "?Press Enter to locally sign the key, or Ctrl+C to abort... "
+  echo
+  echo "Verify the fingerprint above matches the trusted source before continuing."
+  read -r -p "Press Enter to locally sign the key, or Ctrl+C to abort... " _
 
-pacman-key --lsign-key "$key"
+  pacman-key --lsign-key "$key"
+fi
 
-if ! grep -q "^\[$repo_name\]$" "$pacman_conf"; then
+# Add the XLibre repo only if it is not already configured
+if repo_exists; then
+  echo "Repository [$repo_name] is already configured, skipping pacman.conf edit."
+
+  if ! repo_server_matches; then
+    echo "Warning: [$repo_name] exists, but its configured Server does not include:" >&2
+    echo "  $repo_url" >&2
+    echo "Leaving the existing repo configuration unchanged." >&2
+  fi
+else
   cp -a "$pacman_conf" "${pacman_conf}.bak.$(date +%Y%m%d-%H%M%S)"
   cat >> "$pacman_conf" <<EOF
 
@@ -143,7 +169,7 @@ cat > /etc/sddm.conf.d/10-silver.conf <<EOF
 Current=$sddm_theme
 EOF
 
-# Configure Plasma default global theme
+# Configure Plasma Look-and-Feel selection
 plasma_theme_dir="/usr/share/plasma/look-and-feel/$plasma_lnf"
 if [[ ! -d "$plasma_theme_dir" ]]; then
   echo "Requested Plasma global theme was not found: $plasma_lnf" >&2
@@ -165,15 +191,24 @@ install -d -o "$aur_user" -g "$user_group" -m 0755 "$user_home/.config"
 set_kconfig_key "$user_home/.config/kdeglobals" KDE LookAndFeelPackage "$plasma_lnf"
 chown "$aur_user:$user_group" "$user_home/.config/kdeglobals"
 
-# Best-effort live apply for an already running Plasma session
+# Best-effort live apply only if a Plasma session bus already exists
+live_apply_done=0
 user_uid="$(id -u "$aur_user")"
 runtime_dir="/run/user/$user_uid"
+
 if command -v plasma-apply-lookandfeel >/dev/null 2>&1 && [[ -S "$runtime_dir/bus" ]]; then
-  sudo -H -u "$aur_user" \
+  if sudo -H -u "$aur_user" \
     env XDG_RUNTIME_DIR="$runtime_dir" \
         DBUS_SESSION_BUS_ADDRESS="unix:path=$runtime_dir/bus" \
-    plasma-apply-lookandfeel --resetLayout --apply "$plasma_lnf" || true
+    plasma-apply-lookandfeel --resetLayout --apply "$plasma_lnf"; then
+    live_apply_done=1
+  fi
 fi
 
 echo "Configured SDDM theme: $sddm_theme"
-echo "Configured Plasma global theme: $plasma_lnf"
+
+if (( live_apply_done )); then
+  echo "Applied Plasma global theme to the active session: $plasma_lnf"
+else
+  echo "Staged Plasma global theme for the next Plasma login: $plasma_lnf"
+fi
