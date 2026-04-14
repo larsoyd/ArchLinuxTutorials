@@ -116,7 +116,6 @@ sonicde_packages=(
   bluedevil
   breeze
   breeze-gtk
-  flatpak-kcm
   kactivitymanagerd
   kde-cli-tools
   kde-gtk-config
