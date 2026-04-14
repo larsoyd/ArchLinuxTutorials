@@ -526,20 +526,36 @@ Option 1) Topgrade - Update everything on your system with one command! :
 # one packaged by the AUR which can't update itself.
 # First go to https://github.com/topgrade-rs/topgrade/releases and look for ver number,
 # the result should be the latest one. replace this ver= with number you find.
+# Paste each line by line.
 #
-# example: ver=v17.0.0
+# 1. example: ver=v17.0.0
 ver='vXX.X.X'
+
+# 2. This targets your architecture
 target='x86_64-unknown-linux-gnu'
+
+# 3. Sets a tmpdir
 tmpdir="$(mktemp -d)"
 
+# 4. Creates the binary programs folder in HOME folder if it dont exist
 mkdir -p "$HOME/.local/bin"
+
+# 5. Goes to tmpdir 
 cd "$tmpdir" || exit 1
 
+# 6. curl to install the binary
 curl -fLO "https://github.com/topgrade-rs/topgrade/releases/download/$ver/topgrade-$ver-$target.tar.gz"
+
+# 7. Untar the binary
 tar -xzf "topgrade-$ver-$target.tar.gz"
+
+# 8. Install binary to HOME binary programs folder
 install -m 0755 topgrade "$HOME/.local/bin/topgrade"
 
+# 9. Check version to ensure it worked.
 topgrade --version
+
+# ---
 
 # If you want you can add an alias to topgrade
 # so that you better remember it and it fits more
