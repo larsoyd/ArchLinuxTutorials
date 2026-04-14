@@ -1,6 +1,6 @@
 # Complete Arch Linux Tutorial w/ Automounting Partitions
 
-This is a OPINIONATED Arch installation guide for people that just want a working system to game on. Choose either KDE (Reccomended) or GNOME
+This is a OPINIONATED Arch installation guide for people that just want a working system to game on. Choose either KDE (Wayland) or SonicDE (X11)
 
 - A bootable Arch Linux USB (written with `dd` or similar)
 - Internet connection
