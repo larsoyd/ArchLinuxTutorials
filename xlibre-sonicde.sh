@@ -154,7 +154,7 @@ if ! command -v yay >/dev/null 2>&1; then
 fi
 
 # Install SonicDE from the AUR as the invoking user
-sudo -H -u "$aur_user" yay -S --needed sonicde-meta
+sudo -H -u "$aur_user" yay -S --needed sonicde-meta sonic-workspace-bin sonic-x11-session-bin kgamma sonic-workspace-wallpapers sonic-desktop-interface sonic-interface-libraries sonic-screenlocker sonic-screen sonic-keybind-daemon
 
 # Configure SDDM theme
 sddm_theme_dir="/usr/share/sddm/themes"
