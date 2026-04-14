@@ -154,7 +154,7 @@ if ! command -v yay >/dev/null 2>&1; then
 fi
 
 # Install SonicDE from the AUR as the invoking user
-sudo -H -u "$aur_user" yay -S --needed sonicde-meta sonic-workspace-bin sonic-x11-session-bin kgamma sonic-workspace-wallpapers sonic-desktop-interface sonic-interface-libraries sonic-screenlocker sonic-screen sonic-keybind-daemon
+sudo -H -u "$aur_user" yay -S --needed sonic-workspace-bin sonic-x11-session-bin kgamma sonic-workspace-wallpapers sonic-desktop-interface sonic-interface-libraries sonic-screenlocker sonic-screen sonic-keybind-daemon aurorae bluedevil breeze breeze-gtk flatpak-kcm kactivitymanagerd kde-cli-tools kde-gtk-config kdecoration kdeplasma-addons kglobalacceld knighttime kpipewire krdp ksshaskpass ksystemstats kwallet-pam kwayland kwrited milou plasma-activities plasma-activities-stats plasma-browser-integration plasma-disks plasma-firewall plasma-integration plasma-nm plasma-pa plasma-systemmonitor plasma-thunderbolt plasma-vault polkit-kde-agent powerdevil print-manager sddm-kcm sonic-desktop-interface sonic-screen-library sonic-silver-sddm sonic-silver-theme sonic-system-info sonic-win spectacle systemsettings xdg-desktop-portal-kde
 
 # Configure SDDM theme
 sddm_theme_dir="/usr/share/sddm/themes"
