@@ -84,6 +84,80 @@ with open(file_path, "w", encoding="utf-8") as f:
 PY
 }
 
+pac_install() {
+  pacman -S --needed "$@"
+}
+
+yay_install() {
+  sudo -H -u "$aur_user" yay -S --needed "$@"
+}
+
+xlibre_packages=(
+  xlibre-xserver
+  xlibre-input-libinput
+)
+
+yay_build_deps=(
+  git
+  base-devel
+)
+
+sonicde_packages=(
+  sonic-workspace-bin
+  sonic-x11-session-bin
+  kgamma
+  sonic-workspace-wallpapers
+  sonic-desktop-interface
+  sonic-interface-libraries
+  sonic-screenlocker
+  sonic-screen
+  sonic-keybind-daemon
+  aurorae
+  bluedevil
+  breeze
+  breeze-gtk
+  flatpak-kcm
+  kactivitymanagerd
+  kde-cli-tools
+  kde-gtk-config
+  kdecoration
+  kdeplasma-addons
+  kglobalacceld
+  knighttime
+  kpipewire
+  krdp
+  ksshaskpass
+  ksystemstats
+  kwallet-pam
+  kwayland
+  kwrited
+  milou
+  plasma-activities
+  plasma-activities-stats
+  plasma-browser-integration
+  plasma-disks
+  plasma-firewall
+  plasma-integration
+  plasma-nm
+  plasma-pa
+  plasma-systemmonitor
+  plasma-thunderbolt
+  plasma-vault
+  polkit-kde-agent
+  powerdevil
+  print-manager
+  sddm-kcm
+  sonic-desktop-interface
+  sonic-screen-library
+  sonic-silver-sddm
+  sonic-silver-theme
+  sonic-system-info
+  sonic-win
+  spectacle
+  systemsettings
+  xdg-desktop-portal-kde
+)
+
 # Import and locally sign the XLibre key only if it is not already present
 if pacman_key_exists "$key"; then
   echo "Pacman key $key already exists, skipping key import/signing."
@@ -117,7 +191,7 @@ EOF
 fi
 
 # Refresh package databases and install XLibre packages
-pacman -Syu --needed xlibre-xserver xlibre-input-libinput
+pacman -Syu --needed "${xlibre_packages[@]}"
 
 # Remove Plasma Login Manager if it is installed
 if pkg_installed plasma-login-manager; then
@@ -126,12 +200,12 @@ fi
 
 # Install SDDM if it is not installed
 if ! pkg_installed sddm; then
-  pacman -S --needed sddm
+  pac_install sddm
 fi
 
 # Build yay only if it is missing
 if ! command -v yay >/dev/null 2>&1; then
-  pacman -S --needed git base-devel
+  pac_install "${yay_build_deps[@]}"
 
   sudo -H -u "$aur_user" bash <<'EOF'
 set -euo pipefail
@@ -154,7 +228,7 @@ if ! command -v yay >/dev/null 2>&1; then
 fi
 
 # Install SonicDE from the AUR as the invoking user
-sudo -H -u "$aur_user" yay -S --needed sonic-workspace-bin sonic-x11-session-bin kgamma sonic-workspace-wallpapers sonic-desktop-interface sonic-interface-libraries sonic-screenlocker sonic-screen sonic-keybind-daemon aurorae bluedevil breeze breeze-gtk flatpak-kcm kactivitymanagerd kde-cli-tools kde-gtk-config kdecoration kdeplasma-addons kglobalacceld knighttime kpipewire krdp ksshaskpass ksystemstats kwallet-pam kwayland kwrited milou plasma-activities plasma-activities-stats plasma-browser-integration plasma-disks plasma-firewall plasma-integration plasma-nm plasma-pa plasma-systemmonitor plasma-thunderbolt plasma-vault polkit-kde-agent powerdevil print-manager sddm-kcm sonic-desktop-interface sonic-screen-library sonic-silver-sddm sonic-silver-theme sonic-system-info sonic-win spectacle systemsettings xdg-desktop-portal-kde
+yay_install "${sonicde_packages[@]}"
 
 # Configure SDDM theme
 sddm_theme_dir="/usr/share/sddm/themes"
