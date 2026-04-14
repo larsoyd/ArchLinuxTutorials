@@ -1220,11 +1220,11 @@ fstrim.timer reflector.timer pkgstats.timer
 
 ### OPTIONAL: SonicDE/XLibre Install Script (EXPERIMENTAL)
 
-- KDE Plasma is losing X11 support next major release to become a Wayland only DE. If you are new to Linux and dont know what that means then you can just skip this part to Step 5. 
+- KDE Plasma is losing X11 support next major release to become a Wayland only DE. If you are new to Linux and dont know what any of that means then you can just skip this part to Step 5. 
 
-- For those who do know what X11 is and also want to continue using it **instead** of Wayland, your only option is to migrate to XLibre and SonicDE. XLibre is a continually maintained fork of X11, while SonicDE is the same but for KDE Plasma 6 (X11). If you want to migrate I have written a script for you that *should* work. 
+- For those who want to continue using X11 **instead** of Wayland on Plasma, your only option atm is to migrate to XLibre and SonicDE. XLibre is a continually maintained fork of X11, while SonicDE is the same but for KDE Plasma 6 (X11). I have written a script for you that *should* work if you want to migrate to both.
 
-- Please be aware before you do that SonicDE is by the virtue of the decreasing demand for X11 especially with KDE increasingly niche, this is because Wayland is finally maturing for many users. As such it is not going to be as healthy of a project as KDE Plasma both was and is, and that means *some* regressions are probably inevitable. This is not me dunking on SonicDE, it's just an objective reality whether you like Wayland or not. XLibre have similar problems on top of a complex reputation due to the personal politics of the head maintainer/creator behind it, google it if you are worried about this.
+- Please be aware before you do that SonicDE by the virtue of the decreasing demand for X11 is a niche option, this is because Wayland is finally maturing for many users. As such it is not going to be as healthy of a project as KDE Plasma both was for X11 and is for Wayland, and that also means that *some* regressions are probably inevitable. This is not me dunking on SonicDE, it's just how it is whether you like Wayland or not. XLibre have similar problems on top of a complex reputation due to the personal politics of the head maintainer/creator behind it, google it if you are worried about this.
 
 - **NOTE: If you install SonicDE it WILL replace your KDE Plasma session. You sadly can't run KDE Plasma (Wayland) and SonicDE on your system at the same time.**
 
