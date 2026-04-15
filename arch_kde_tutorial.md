@@ -749,7 +749,7 @@ pacman -S --needed \
   nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda \
   pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
-  ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols \
+  ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols zsh-completions \
   base-devel
 ```
 
@@ -761,7 +761,7 @@ pacman -S --needed \
   plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
   unarchiver unrar 7zip kamera \
   plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
-  mesa vulkan-radeon \
+  mesa vulkan-radeon zsh-completions \
   libva libva-utils \
   quota-tools hunspell hunspell-en_us usbutils \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
@@ -778,7 +778,7 @@ pacman -S --needed \
   plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
   unarchiver unrar 7zip kamera \
   plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
-  mesa vulkan-intel \
+  mesa vulkan-intel zsh-completions \
   libva libva-utils intel-media-driver \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
   ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols \
