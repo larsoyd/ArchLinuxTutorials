@@ -1040,6 +1040,14 @@ sysctl --system
 ### modprobe.d optimizations 
 
 ```zsh
+# If you didn't install the CachyOS kernels
+# then you probably did not clone the repo.
+#
+# If not, do so first:
+cd /tmp
+git clone https://github.com/larsoyd/ArchLinuxTutorials.git
+cd ArchLinuxTutorials
+
 # These are optimizations as well.
 # Create folder
 mkdir -p /usr/lib/modprobe.d/
