@@ -1046,7 +1046,6 @@ sysctl --system
 # If not, do so first:
 cd /tmp
 git clone https://github.com/larsoyd/ArchLinuxTutorials.git
-cd ArchLinuxTutorials
 
 # These are optimizations as well.
 # Create folder
