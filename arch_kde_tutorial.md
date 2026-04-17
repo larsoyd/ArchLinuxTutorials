@@ -746,7 +746,7 @@ pacman -S --needed \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty ark unarchiver unrar 7zip kamera \
   kio-admin plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
-  nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda \
+  nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda vulkan-headers \
   pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
   ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols zsh-completions \
@@ -759,7 +759,7 @@ pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
-  unarchiver unrar 7zip kamera \
+  unarchiver unrar 7zip kamera vulkan-headers \
   plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
   mesa vulkan-radeon zsh-completions \
   libva libva-utils \
@@ -776,7 +776,7 @@ pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
-  unarchiver unrar 7zip kamera \
+  unarchiver unrar 7zip kamera vulkan-headers \
   plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
   mesa vulkan-intel zsh-completions \
   libva libva-utils intel-media-driver \
