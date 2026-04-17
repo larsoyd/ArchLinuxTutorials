@@ -37,6 +37,8 @@ sudo pacman -Syu
 * Navigate to the "System" submenu, then locate & launch the program entitled: `kitty`
 * Afterwards you can right click on the icon on your Task Manager and pin it for easy access later.
 
+---
+
 ### Optional: Rebind CTRL + C to copy and CTRL + V to paste
 Here is how to rebind CTRL + C and CTRL + V to copy + paste, Add this to your `kitty` config, `~/.config/kitty/kitty.conf`:
 
@@ -321,10 +323,19 @@ python-pip kdeconnect journalctl-desktop-notification
 # add yourself to group informant
 sudo usermod -aG informant $USER
 
-# then log out and back in and confirm you are in that group by running:
+# then reboot 
+reboot
+
+# afterwards confirm you are in that group by running:
 groups
 
-# browser
+# if you are run informant
+informant --check
+```
+
+### Browser
+```zsh
+# recommended:
 yay -S --needed firefox
 
 # or anything else
@@ -354,6 +365,8 @@ nano ~/.config/plasma-workspace/env/libva-values.sh
 ```
 
 ```sh
+# Other options added to ensure hardware acceleration works
+# on NVIDIA.
 # nano ~/.config/plasma-workspace/env/libva-values.sh
 export LIBVA_DRIVER_NAME=nvidia
 export MOZ_DISABLE_RDD_SANDBOX=1
@@ -1108,6 +1121,41 @@ fastfetch
 # press prt scr to take a desktop photo
 # save it
 ```
+
+### (OPTIONAL) Misc. System Defaults You May Want To Change:
+
+By default KDE Plasma saves your desktop session before you shut it off by default. This is undesirable for many users. To turn it off open System Settings then:
+
+* Go to System -> Desktop Session and then under "System Restore" check the "Start with an empry session" box.
+
+______
+
+By default KDE Plasma grows your cursor if you shake it, this is an intended behavior to make it easier to find your cursor. If you find it annoying you can turn it off like so:
+
+* Go to Input & Output -> Accessibility -> Shake Cursor and then uncheck "Enable" under Shake pointer to find it
+
+______
+
+By default KDE Plasma will zoom & magnify your screen if you hit a hotkey by accident (Windows Key + CTRL IIRC) which can seriously mess your day up if you don't know about it.
+Here is how to turn it off:
+
+* Go to Input & Output -> Accessibility -> Zoom & Magnifier and then check "Disabled"
+
+______
+
+By default KDE's taskbar (panel) will float if no windows are on the screen. You can turn this off by:
+
+Right Click the Taskbar -> "Show Panel Configuration" -> Look For the "Floating" option in the Window On The Right -> Change Dropdown Menu Option to "Disabled"
+
+______
+
+By default even though we installed Hunspell for spellchecking in the Install phase, KDE will not have turned it on by default. 
+To turn on spellchecking you have to open System Settings and go to:
+
+1. Language & Time -> Preferred Languages -> American English (United States) and choose the large option -> Apply
+2. Check "Automatic Spell Checking enabled by default"
+
+______
 
 # EXTRA TUTORIAL: How to add a new Drive/SSD to GPT-Auto Setups
 
