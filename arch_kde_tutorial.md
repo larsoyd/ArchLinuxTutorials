@@ -1047,6 +1047,9 @@ sysctl --system
 cd /tmp
 git clone https://github.com/larsoyd/ArchLinuxTutorials.git
 
+# Then leave tmp directory
+cd
+
 # These are optimizations as well.
 # Create folder
 mkdir -p /usr/lib/modprobe.d/
