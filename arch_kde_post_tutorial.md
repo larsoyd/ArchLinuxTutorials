@@ -1239,6 +1239,8 @@ touch /mnt/data/it-works
 **UPDATE - 2026** : This seems to have been solved on `nvidia-open-dkms` (595.45.04-2<) for me on the CachyOS kernels. I do not know if this is fixed via CachyOS's kernels or a driver update. 
 For now I will be leaving this up for anyone who might need the fix or if this is borked again in the future (with NVIDIA it is likely), however if you see no slowdown in your system, *do not* do this.
 
+**UPDATE - 2026 - 2** : NVM, it is not fixed. This workaround is still necessary.
+
 ### 0) confirm driver + tool exist
 ```zsh
 nvidia-smi || { echo "nvidia-smi not found or driver not loaded"; exit 1; }
