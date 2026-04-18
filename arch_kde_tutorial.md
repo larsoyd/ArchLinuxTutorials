@@ -65,7 +65,7 @@ Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random update
 
 - systemd-automount for GPT partitions 
 - KDE Plasma on Wayland
-- Option B) `linux-zen` default kernel, `linux-lts` backup. ~ Option A) `linux-cachyos-bore` and `linux-cachyos-lts` for optimized kernel.
+- `linux-zen` default kernel, `linux-lts` backup.
 - zsh default shell for users, optional dash shell for /usr/bin/sh 
 - systemd-boot with UKIs
 - zswap with a 16 GiB swap file
@@ -376,209 +376,12 @@ EDITOR=nano visudo
 # Uncomment: %wheel ALL=(ALL:ALL) ALL
 ```
 
-# CachyOS packages and Kernel
 
-My reasoning for including this is that the CachyOS kernel and packages are very good at the moment.
-There are two options to install the CachyOS kernels on Arch, either through adding CachyOS repos 
-or the AUR (via Chaotic-AUR so you dont have to compile it which takes ages)
-
-**NOTE:** Combining repositories like this is officially unsupported by Arch Linux, if you suffer breakages, do not
-come running to me, the forums or whatever with your problems. If you can't fix it, then insert install USB again, chroot in 
-and remove the kernels and the repos. 
-
-Using unofficial kernels is also not officially supported. By using the CachyOS kernel and/or repos you 
-acknowledge this.
-
-If you don't want the Cachy kernels you skip this + the ChaoticAUR method to the **6.5 Install Packages** step showing what kernels to install
-if you aren't, like linux-zen and linux-lts. 
-
----
-
-### Option A) Add CachyOS Repos to Arch Linux:
-
-* SKIP THIS IF YOUR CPU DOES NOT SUPPORT: **znver4, x86_64_v3, or x86_64_v4,**
-
-* A separate Chaotic-AUR method to get the kernels will be provided if your CPU dont support any of those instructions. Scroll until you see "Option B)" and start from there instead.
-
-```zsh
-# Import and locally sign the CachyOS repo key
-#
-# Initialize keys
-pacman-key --init
-
-# Populate keys
-pacman-key --populate
-
-# Clone this repo
-cd /tmp
-git clone https://github.com/larsoyd/ArchLinuxTutorials.git
-cd ArchLinuxTutorials
-
-# Install + sign keys & mirrors
-chmod +x setup.sh
-./setup.sh
-
-# Leave /tmp
-cd
-```
-
-```zsh
-# Now that you have added the mirrors + keys
-# You need to edit /etc/pacman.conf
-nano /etc/pacman.conf
-```
-
-
-I will add the CachyOS znver4 repos for AMD Zen 4 and Zen 5.
-If your CPU don't support znver4 add any of the others that fit.
-
-Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
-
----
-
-**WARNING: CHANGE ARCHITECTURE under "Architecture = auto" to:**
-
-* Architecture = x86_64 x86_64_v4"
-  
-or
-
-* Architecture = x86_64 x86_64_v3"
-
-**add that INSTEAD of "auto" as pacman can't resolve Cachy repos automatically**
-
-#### ADD ONLY ONE of the 3 mirrorlists under that fit your CPU above the other repos
-#### in the same section & in this direction:
-
-
-```zsh
-# If your CPU is based on Zen 4 or Zen 5, add [cachyos-znver4],
-# [cachyos-core-znver4], and [cachyos-extra-znver4]:
-
-[cachyos-znver4]
-Include = /etc/pacman.d/cachyos-v4-mirrorlist
-
-[cachyos-core-znver4]
-Include = /etc/pacman.d/cachyos-v4-mirrorlist
-
-[cachyos-extra-znver4]
-Include = /etc/pacman.d/cachyos-v4-mirrorlist
-```
-
-```zsh
-# If your CPU supports x86-64-v3, then add [cachyos-v3],[cachyos-core-v3],[cachyos-extra-v3]
-[cachyos-v3]
-Include = /etc/pacman.d/cachyos-v3-mirrorlist
-[cachyos-core-v3]
-Include = /etc/pacman.d/cachyos-v3-mirrorlist
-[cachyos-extra-v3]
-Include = /etc/pacman.d/cachyos-v3-mirrorlist
-```
-
-```zsh
-# If your CPU supports x86-64-v4, then add [cachyos-v4], [cachyos-core-v4], and [cachyos-extra-v4]
-[cachyos-v4]
-Include = /etc/pacman.d/cachyos-v4-mirrorlist
-[cachyos-core-v4]
-Include = /etc/pacman.d/cachyos-v4-mirrorlist
-[cachyos-extra-v4]
-Include = /etc/pacman.d/cachyos-v4-mirrorlist
-```
-
-```zsh
-# IMPORTANT: Update to new repos & packages when mirrors are added
-# If done correctly the Cachy versions of packages will now be retrieved
-#
-# If one mirror 404s out it is not necssarily an  error,
-# it usually just means one of the Cachy mirrors doesn't have the package
-# that you are requesting. To check if the package installed you can
-# sanity check w/e dependency errored with "pacman -Q (pkgname)"
-# If it is returned it was retrieved. I wish that pacman would mute this
-# term noise if the package was actually retrieved, but alas...
-#
-# Press Y for Yes to any replacements when prompted:
-#
-pacman -Syu
-```
-
-### 6.1 Install CachyOS Kernel + Headers:
-
-```zsh
-pacman -S --needed linux-cachyos-bore linux-cachyos-lts linux-cachyos-bore-headers \
-linux-cachyos-lts-headers
-```
-
----
-
-### Option B) ALTERNATIVE CHAOTIC AUR METHOD:
-
-```zsh
-# Import and locally sign the Chaotic-AUR repo key
-#
-# Initialize keys
-pacman-key --init
-
-# Populate keys
-pacman-key --populate
-
-# Clone this repo
-cd /tmp
-git clone https://github.com/larsoyd/ArchLinuxTutorials.git
-cd ArchLinuxTutorials
-
-# Install + sign keys & mirrors
-chmod +x chaotic-setup.sh
-./chaotic-setup.sh
-
-# Leave /tmp
-cd
-```
-
-```zsh
-# Now that you have added the mirrors + keys
-# You need to edit /etc/pacman.conf
-nano /etc/pacman.conf
-```
-
-```zsh
-# Keep the Arch repos ([core], [extra], [multilib]) exactly as they are.
-# Add Chaotic-AUR repo UNDER all the other ones existing.
-#
-# /etc/pacman.conf
-# under all the other repos:
-
-[chaotic-aur]
-Include = /etc/pacman.d/chaotic-mirrorlist
-```
-
-```zsh
-# Update package database
-pacman -Syu
-```
-
-### Install CachyOS Kernel + Headers:
-
-```zsh
-# As of writing the Chaotic-AUR does not have the CachyOS kernel I prefer to use
-# which is the BORE kernel. It only packages the lts, regular and rc versions.
-# Out of those I would pick both lts and regular, rc is more for realtime audio work.
-pacman -S --needed linux-cachyos linux-cachyos-lts linux-cachyos-headers \
-linux-cachyos-lts-headers
-```
-
----
-
-
-### 6.5 Install Packages
+### 5.5 Install Packages
 ```zsh
 # linux-zen is a tuned kernel, should work on any CPU.
 # it has nothing to do with the Zen architecture by AMD FYI.
-# Optional if you got the cachyos kernels already
-#
-# THIS IS REQUIRED IF YOU DONT GET CACHYOS KERNEL:
 pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
-
----
-REGARDLESS OF WHAT KERNEL YOU GOT, CONTINUE FROM HERE:
 
 # Install firmware and some core packages:
 # For AMD CPUs:
@@ -955,6 +758,13 @@ systemctl enable swapfile.swap
 ### Kernel Optimizations :
 
 ```zsh
+# Clone repo first:
+cd /tmp
+git clone https://github.com/larsoyd/ArchLinuxTutorials.git
+
+# Then leave tmp directory
+cd
+
 # These are a combination of CachyOS settings and other sources
 # Create sysctl.d folder
 mkdir -p /usr/lib/sysctl.d/
@@ -1040,16 +850,6 @@ sysctl --system
 ### modprobe.d optimizations 
 
 ```zsh
-# If you didn't install the CachyOS kernels
-# then you probably did not clone the repo.
-#
-# If not, do so first:
-cd /tmp
-git clone https://github.com/larsoyd/ArchLinuxTutorials.git
-
-# Then leave tmp directory
-cd
-
 # These are optimizations as well.
 # Create folder
 mkdir -p /usr/lib/modprobe.d/
