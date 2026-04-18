@@ -1136,6 +1136,10 @@ By default KDE Plasma grows your cursor if you shake it, this is an intended beh
 
 ______
 
+By default KDE Plasma has an annoying beep when you raise and lower your volume. This is intended. To turn it off, go to System Settings > Sound > Configure Volume Controls... and under Play audio feedback for changes to: disable Audio volume.
+
+______
+
 By default KDE Plasma will zoom & magnify your screen if you hit a hotkey by accident (Windows Key + CTRL IIRC) which can seriously mess your day up if you don't know about it.
 Here is how to turn it off:
 
