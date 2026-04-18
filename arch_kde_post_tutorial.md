@@ -121,11 +121,13 @@ nano ~/.makepkg.conf
 ```sh
 # ~/.makepkg.conf
 
-# Retarget both C and C++ to CPU while keeping Arch's hardening flags
+# Retarget both C and C++ to native while keeping Arch's hardening flags
+CFLAGS="${CFLAGS/-march=x86-64-v4/-march=native}"
 CFLAGS="${CFLAGS/-march=x86-64-v3/-march=native}"
 CFLAGS="${CFLAGS/-march=x86-64-v2/-march=native}"
 CFLAGS="${CFLAGS/-march=x86-64/-march=native}"
 
+CXXFLAGS="${CXXFLAGS/-march=x86-64-v4/-march=native}"
 CXXFLAGS="${CXXFLAGS/-march=x86-64-v3/-march=native}"
 CXXFLAGS="${CXXFLAGS/-march=x86-64-v2/-march=native}"
 CXXFLAGS="${CXXFLAGS/-march=x86-64/-march=native}"
