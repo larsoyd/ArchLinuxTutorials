@@ -1263,29 +1263,31 @@ sudo nano /usr/local/sbin/lock-nvidia-mem.sh
 ```
 
 ```zsh
-# ----- /usr/local/sbin/lock-nvidia-mem.sh -----
 #!/usr/bin/env bash
 set -euo pipefail
 
 GPU=${GPU:-0}
-PCT=${PCT:-0.70}   # 0..1 percentile anchor
-# piecewise β parameters (MHz breakpoints and targets)
+PCT=${PCT:-0.70}
 B1=${B1:-5000};  B2=${B2:-10000}; B3=${B3:-15000}
 V1=${V1:-0.60};  V2=${V2:-0.75};  V3=${V3:-0.80}
 
-SUDO=""; (( EUID != 0 )) && SUDO="sudo"
+SUDO=""
+(( EUID != 0 )) && SUDO="sudo"
 
-# Supported memory clocks (MHz), ascending unique
-mapfile -t S < <(nvidia-smi -i "$GPU" \
-  --query-supported-clocks=memory --format=csv,noheader,nounits \
-  | tr -d ' ' | sort -nu)
+mapfile -t S < <(
+  nvidia-smi -i "$GPU" \
+    --query-supported-clocks=memory \
+    --format=csv,noheader,nounits \
+  | tr -d ' ' | sort -nu
+)
+
 ((${#S[@]})) || { echo "no supported clocks for GPU $GPU"; exit 1; }
 
 MAX="${S[-1]}"
 
-beta() { # β(MAX) piecewise-linear
+beta() {
   local m="$1"
-  if   (( m <= B1 )); then
+  if (( m <= B1 )); then
     awk -v v="$V1" 'BEGIN{print v}'
   elif (( m <= B2 )); then
     awk -v v1="$V1" -v v2="$V2" -v m="$m" -v b1="$B1" -v b2="$B2" \
@@ -1298,31 +1300,31 @@ beta() { # β(MAX) piecewise-linear
   fi
 }
 
-# snap helper: largest supported ≤ target
-pick_le() { awk -v t="$1" '$1<=t{m=$1} END{if(m)print m}'; }
+pick_le() {
+  awk -v t="$1" '$1<=t{m=$1} END{if(m)print m}'
+}
 
-# 1) Percentile anchor within supported set
 k=${#S[@]}
 q=$(awk -v p="$PCT" -v k="$k" 'BEGIN{printf("%d",(p*k==int(p*k)?p*k:(int(p*k)+1)))}')
-(( q<1 )) && q=1
-(( q>k )) && q=k
+(( q < 1 )) && q=1
+(( q > k )) && q=k
 S_Q="${S[$((q-1))]}"
 
-# 2) Fractional floor from β(MAX)
 BETA=$(beta "$MAX")
 TGT=$(awk -v b="$BETA" -v m="$MAX" 'BEGIN{printf("%.0f", b*m)}')
 S_F="$(printf "%s\n" "${S[@]}" | pick_le "$TGT")"
 [[ -n "$S_F" ]] || S_F="${S[0]}"
 
-# 3) Final MIN = max(percentile anchor, fractional floor)
-MIN="$S_Q"; (( S_F > MIN )) && MIN="$S_F"; (( MIN > MAX )) && MIN="$MAX"
+MIN="$S_Q"
+(( S_F > MIN )) && MIN="$S_F"
+(( MIN > MAX )) && MIN="$MAX"
 
 echo "GPU=$GPU k=${#S[@]} MIN=$MIN MAX=$MAX (percentile=${PCT}, beta=${BETA})"
 
-# Lock memory clocks and enable persistence
 if ! $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks="$MIN","$MAX"; then
   $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks-deferred="$MIN" || true
 fi
+
 $SUDO nvidia-smi -i "$GPU" -pm 1
 ```
 
@@ -1359,16 +1361,15 @@ V3=0.80
 sudo nano /etc/systemd/system/nvidia-lock.service
 ```
 ```zsh
-# ----- /etc/systemd/system/nvidia-lock.service -----
 [Unit]
 Description=Lock NVIDIA memory clocks and enable persistence
 Wants=nvidia-persistenced.service
-After=multi-user.target nvidia-persistenced.service
+After=nvidia-persistenced.service
 
 [Service]
 Type=oneshot
 EnvironmentFile=-/etc/default/nvidia-lock
-ExecStart=/usr/local/sbin/lock-nvidia-mem.sh
+ExecStart=/usr/bin/bash /usr/local/sbin/lock-nvidia-mem.sh
 RemainAfterExit=yes
 
 [Install]
