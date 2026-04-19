@@ -184,7 +184,7 @@ diff -u \
 
 ## Optional automatic reapply after updates
 
-Arch supports post-transaction hooks in `/etc/pacman.d/hooks`. Use this only after the manual script works.
+Arch supports post-transaction hooks in `/etc/pacman.d/hooks`. Use this only after the manual script works. Change user and such to yours.
 
 ### 1. Create `/usr/local/bin/plasma-folderview-deselect-hook`
 
