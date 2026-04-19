@@ -386,6 +386,23 @@ printenv CUDA_DISABLE_PERF_BOOST
 
 It should return `1`
 
+### NVIDIA GST Libav Fix:
+
+For some NVIDIA users, gst-libav may prioritize the Libav decoder over nvcodec decoders which will inhibit hardware acceleration. The GST_PLUGIN_FEATURE_RANK environment variable can be used to rank decoders and thus alleviate this issue. See "GST_PLUGIN_FEATURE_RANK" in the documentation for more information.
+
+```zsh
+# Create the file:
+nano ~/.config/plasma-workspace/env/gst-nvidia-values.sh
+```
+
+```sh
+# ~/.config/plasma-workspace/env/gst-nvidia-values.sh
+export GST_PLUGIN_FEATURE_RANK=nvmpegvideodec:MAX,nvmpeg2videodec:MAX,nvmpeg4videodec:MAX,nvh264sldec:MAX,nvh264dec:MAX,nvjpegdec:MAX,nvh265sldec:MAX,nvh265dec:MAX,nvvp9dec:MAX
+```
+
+Those without AV1 hardware support may also want to disable AV1 decoders (e.g., for YouTube on webkit2gtk based browsers) by appending `avdec_av1:NONE` and `av1dec:NONE` to the list above. 
+
+
 ### Configuring Firefox:
 
 #### Make Firefox follow your KDE default apps via mimeapps.list on Arch.
@@ -414,13 +431,6 @@ media.hardware-video-decoding.force-enabled → true
 # open about:config and set
 media.hardwaremediakeys.enabled → false
 ```
-##### NVIDIA GST Libav Fix:
-
-For some NVIDIA users, gst-libav may prioritize the Libav decoder over nvcodec decoders which will inhibit hardware acceleration. The GST_PLUGIN_FEATURE_RANK environment variable can be used to rank decoders and thus alleviate this issue. See "GST_PLUGIN_FEATURE_RANK" in the documentation for more information. For example:
-
-`GST_PLUGIN_FEATURE_RANK=nvmpegvideodec:MAX,nvmpeg2videodec:MAX,nvmpeg4videodec:MAX,nvh264sldec:MAX,nvh264dec:MAX,nvjpegdec:MAX,nvh265sldec:MAX,nvh265dec:MAX,nvvp9dec:MAX`
-
-Those without AV1 hardware support may also want to disable AV1 decoders (e.g., for YouTube on webkit2gtkAUR-based browsers) by appending avdec_av1:NONE and av1dec:NONE to the list above. 
 
 ---
 
