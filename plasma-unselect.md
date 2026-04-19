@@ -70,7 +70,7 @@ FILE=/usr/share/plasma/plasmoids/org.kde.desktopcontainment/contents/ui/FolderVi
 grep -nC3 -F 'dir.run(positioner.map(gridView.currentIndex));' "$FILE"
 ```
 
-You should see exactly one match.
+You should see exactly one match. Ensure `rsync` is installed, if not install it with `$ pacman -S --needed rsync`.
 
 ### 2. Create the sync script
 
