@@ -11,5 +11,5 @@ ____
 
 - All code is licensed under the MIT License which is attached to this repository as `LICENSE`
 
-- All text is licensed under the Creative Commons Attribution-ShareAlike 4.0 International Public
+- All markdown text is licensed under the Creative Commons Attribution-ShareAlike 4.0 International Public
 License which is attached to this repository as `CREATIVE-LICENSE`
