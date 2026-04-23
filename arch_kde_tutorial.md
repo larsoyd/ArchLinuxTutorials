@@ -556,7 +556,7 @@ pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty ark unarchiver unrar 7zip kamera \
-  kio-admin plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
+  kio-admin plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog tesseract \
   nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda vulkan-headers \
   pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
@@ -569,7 +569,7 @@ or AMDGPU:
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
-  plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
+  plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin tesseract \
   unarchiver unrar 7zip kamera vulkan-headers \
   plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
   mesa vulkan-radeon zsh-completions \
@@ -586,7 +586,7 @@ or Intel GPUs (I think):
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
-  plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
+  plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin tesseract \
   unarchiver unrar 7zip kamera vulkan-headers \
   plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
   mesa vulkan-intel zsh-completions \
