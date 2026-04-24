@@ -195,6 +195,9 @@ nano ~/.zshrc
 # Before scrolling to the bottom uncomment the PATH like so:
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
+# Add this under the path above so you also can use your Rust packages.
+export PATH="$HOME/.cargo/bin:$PATH"
+
 # Scroll to the bottom, add these two lines to the bottom:
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
