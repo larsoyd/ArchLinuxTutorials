@@ -492,6 +492,27 @@ EOF
 print -P "%F{green}Done.%f Restart kitty or press Ctrl+Shift+F5, then run: %F{cyan}fastfetch%f"
 ```
 
+#### Add Cursor Trail to Kitty & Font Rendering Improvement
+
+```zsh
+# Cursor trail is a cool animated trail and text composition strategy improves the
+# font rendering
+#
+# Add these to ~/.config/kitty/kitty.conf :
+
+# Text comp
+text_composition_strategy 1.7 0
+
+# Optional: Enable the cursor trail (set value > 0)
+cursor_trail 1
+
+# Optional: Adjust how fast the trail fades (min and max seconds)
+cursor_trail_decay 0.1 0.4
+
+# Optional: Minimum distance (in cells) the cursor must jump to trigger a trail
+cursor_trail_start_threshold 2
+```
+
 #### TERMINAL USAGE GUIDE w/ AUTOSUGGESTIONS AND SYNTAX HIGHLIGHTING:
 
 - Right arrow: accept a suggestion to autocomplete a command you've run before. 
@@ -557,6 +578,7 @@ enable_audio_bell no
 visual_bell_duration 0
 window_alert_on_bell no
 bell_on_tab none
+
 
 # reload the config
 CTRL + SHIFT + F5
