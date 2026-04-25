@@ -2,7 +2,7 @@
 
 As of now there is an issue on Wayland with NVIDIA where the power state goes down too low on idle which causes lag and a jump during various use like desktop animations etc. The only solution for this is to either turn off GSP which you need the propietary driver to do (i.e not open kernel modules) or set minimum and max clocks so it doesn't enter that idle state. This is how to do the latter with a systemd service I wrote for it. There are trade offs to this obv, your wattage will go up by about 20 watts on idle, which to me is an acceptable trade off since its about 25 to 30 watt on my computer which is about the same as my usage on other systems in general after benchmarking. I make no guarantees on safety, only that I myself use this. Use at your own volition. I have done it the only way possible by locking the VRAM clocks to a valid safe range chosen from the device's supported table.
 
-This version is **fully dynamic**: it reads the supported memory and graphics clock tables from `nvidia-smi` at runtime and picks safe lock values for whatever card is in the box. No hardcoded numbers, no per-card editing. The `/etc/default/nvidia-lock` file is now optional and only exists for overrides.
+This version is **fully dynamic**: it reads the supported memory and graphics clock tables from `nvidia-smi` at runtime and picks safe lock values for whatever card is in the box. No hardcoded numbers, no per-card editing. The `/etc/default/nvidia-lock` file is now optional and only exists for overrides — and the script sources it directly so manual runs honor it the same way the systemd unit does.
 
 ### 0) confirm driver + tool exist
 ```zsh
@@ -49,6 +49,14 @@ sudo nano /usr/local/sbin/lock-nvidia-mem.sh
 
 set -euo pipefail
 
+# Pull overrides for both manual and systemd-launched invocations. The unit
+# also sets EnvironmentFile=- on this same path; sourcing here as well is
+# redundant in that case but harmless (just re-assigns the same vars), and
+# it makes manual `sudo /usr/local/sbin/lock-nvidia-mem.sh` honor the file.
+CONFIG=/etc/default/nvidia-lock
+# shellcheck disable=SC1090
+[[ -r "$CONFIG" ]] && . "$CONFIG"
+
 GPU=${GPU:-0}
 
 # Graphics-clock floor as a fraction of detected boost. 0.40 reproduces the
@@ -56,6 +64,17 @@ GPU=${GPU:-0}
 # idle floor across the Ada / Ampere / Turing range without ever sitting in
 # the lowest power bin where the GSP idle-drop lag actually shows up.
 GFX_FLOOR_PCT=${GFX_FLOOR_PCT:-0.40}
+
+# --- validate overrides early so we fail loudly, not silently ---
+[[ "$GPU" =~ ^[0-9]+$ ]] \
+  || { echo "invalid GPU index: $GPU" >&2; exit 1; }
+[[ "$GFX_FLOOR_PCT" =~ ^[0-9]+([.][0-9]+)?$ ]] \
+  || { echo "invalid GFX_FLOOR_PCT: $GFX_FLOOR_PCT" >&2; exit 1; }
+for v in MEM_MIN MEM_MAX GFX_MIN GFX_MAX; do
+  val="${!v:-}"
+  [[ -z "$val" || "$val" =~ ^[0-9]+$ ]] \
+    || { echo "invalid $v: $val" >&2; exit 1; }
+done
 
 SUDO=""
 (( EUID != 0 )) && SUDO="sudo"
@@ -110,17 +129,26 @@ cat <<EOF
   applying            : MEM=${MEM_MIN},${MEM_MAX}  GFX=${GFX_MIN},${GFX_MAX}
 EOF
 
-# enable persistence so locks survive idle
+# enable persistence so locks survive idle. Note: persistence mode does NOT
+# survive a reboot, which is why this script runs from a boot service.
 $SUDO nvidia-smi -i "$GPU" -pm 1 >/dev/null
 
-# clear any existing locks before re-applying
-$SUDO nvidia-smi -i "$GPU" --reset-gpu-clocks    >/dev/null 2>&1 || true
-$SUDO nvidia-smi -i "$GPU" --reset-memory-clocks >/dev/null 2>&1 || true
+# clear existing locks (immediate AND any queued deferred lock) before re-applying
+$SUDO nvidia-smi -i "$GPU" --reset-gpu-clocks             >/dev/null 2>&1 || true
+$SUDO nvidia-smi -i "$GPU" --reset-memory-clocks          >/dev/null 2>&1 || true
+$SUDO nvidia-smi -i "$GPU" --reset-memory-clocks-deferred >/dev/null 2>&1 || true
 
-# memory lock: try immediate, fall back to deferred (some cards/drivers need it)
+# memory lock: try immediate first; on cards/drivers that only accept the
+# deferred path, fall back -- but make it explicit that deferred locks take
+# effect on the NEXT GPU init (driver reload / reboot), not in this session.
 if ! $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks="${MEM_MIN},${MEM_MAX}"; then
-  echo "[lock-nvidia-mem] immediate memory lock failed, trying deferred"
-  $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks-deferred="$MEM_MAX" || true
+  echo "[lock-nvidia-mem] immediate memory lock failed, trying deferred" >&2
+  if $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks-deferred="$MEM_MAX"; then
+    echo "[lock-nvidia-mem] deferred memory lock queued -- effective after GPU re-init (driver reload / reboot), NOT this session" >&2
+  else
+    echo "[lock-nvidia-mem] memory lock failed (both immediate and deferred)" >&2
+    exit 1
+  fi
 fi
 
 # graphics lock
@@ -137,7 +165,7 @@ sudo chmod 755 /usr/local/sbin/lock-nvidia-mem.sh
 
 ### 4) (optional) env overrides
 
-The script works with **no config file at all** — every value is auto-detected. Only create this if you want to tweak the floor ratio or pin specific values:
+The script works with **no config file at all** — every value is auto-detected. Only create this if you want to tweak the floor ratio or pin specific values. The script validates all values as numeric, so a typo produces an explicit error rather than silent fallthrough:
 
 ```zsh
 sudo nano /etc/default/nvidia-lock
@@ -184,7 +212,7 @@ RemainAfterExit=yes
 WantedBy=multi-user.target
 ```
 
-The `-` in `EnvironmentFile=-/etc/default/nvidia-lock` makes the file optional, so the unit still starts cleanly when you skip step 4.
+The `-` in `EnvironmentFile=-/etc/default/nvidia-lock` makes the file optional, so the unit still starts cleanly when you skip step 4. The script also sources the same file directly, so manual invocations get the same behavior.
 
 ### 6) enable NVIDIA persistence daemon
 ```zsh
@@ -217,6 +245,7 @@ sudo /usr/local/sbin/lock-nvidia-mem.sh
 #   detected gfx clocks : 117 entries, range 210..2520 MHz
 #   gfx floor target    : 1008 MHz (pct=0.40) -> snapped to 900 MHz
 #   applying            : MEM=10501,10501  GFX=900,2520
+# [lock-nvidia-mem] done
 
 # now test again with the script from step 0 and see the difference
 nvidia-smi --query-gpu=clocks.mem,clocks.gr,pstate,power.draw,temperature.gpu \
@@ -224,5 +253,9 @@ nvidia-smi --query-gpu=clocks.mem,clocks.gr,pstate,power.draw,temperature.gpu \
 
 # this also allows you to keep an eye on temps and power.
 ```
+
+### Note on the deferred memory-lock fallback
+
+If your card or driver rejects `--lock-memory-clocks` outright, the script falls back to `--lock-memory-clocks-deferred`. This is **not** equivalent to the immediate lock: per NVIDIA's `nvidia-smi` docs the deferred lock only takes effect on the next GPU initialization, i.e. after a driver reload or reboot. The script announces this explicitly when it happens. Your *current* graphical session will still drop into the GSP idle bin until the GPU is re-initialized — so if you see that warning during the manual test, reboot once and verify with step 8 afterwards.
 
 ---
