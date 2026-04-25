@@ -1380,15 +1380,13 @@ sudo nano /etc/default/nvidia-lock
 # ----- /etc/default/nvidia-lock -----
 # GPU index and percentile
 GPU=0
-PCT=0.70
-# MHz breakpoints
-B1=5000
-B2=10000
-B3=15000
-# β targets
-V1=0.60
-V2=0.75
-V3=0.80
+
+# Known-good for RTX 4070
+# Test for yourself
+MEM_MIN=10501
+MEM_MAX=10501
+GFX_MIN=900
+GFX_MAX=2520
 ```
 
 ### 4) create a systemd unit
