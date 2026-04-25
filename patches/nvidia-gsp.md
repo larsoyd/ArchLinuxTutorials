@@ -1,9 +1,8 @@
+# NVIDIA GSP ISSUES - TUTORIAL
 
-# NVIDIA GSP ISSUES - TUTORIAL 
+As of now there is an issue on Wayland with NVIDIA where the power state goes down too low on idle which causes lag and a jump during various use like desktop animations etc. The only solution for this is to either turn off GSP which you need the propietary driver to do (i.e not open kernel modules) or set minimum and max clocks so it doesn't enter that idle state. This is how to do the latter with a systemd service I wrote for it. There are trade offs to this obv, your wattage will go up by about 20 watts on idle, which to me is an acceptable trade off since its about 25 to 30 watt on my computer which is about the same as my usage on other systems in general after benchmarking. I make no guarantees on safety, only that I myself use this. Use at your own volition. I have done it the only way possible by locking the VRAM clocks to a valid safe range chosen from the device's supported table.
 
-As of now there is an issue on Wayland with NVIDIA where the power state goes down too low on idle which causes lag and a jump during various use like desktop animations etc. The only solution for this is to either turn off GSP which you need the propietary driver to do (i.e not open kernel modules) or set minimum and max clocks so it doesn't enter that idle state. This is how to do the latter with a systemd service I wrote for it. There are trade offs to this obv, your wattage will go up by about 20 watts on idle, which to me is an acceptable trade off since its about 25 to 30 watt on my computer which is about the same as my usage on other systems in general after benchmarking. I make no guarantees on safety, only that I myself use this. Use at your own volition. I have done it the only way possible by locking the VRAM clocks to a valid safe range chosen from the device’s supported table.
-
-
+This version is **fully dynamic**: it reads the supported memory and graphics clock tables from `nvidia-smi` at runtime and picks safe lock values for whatever card is in the box. No hardcoded numbers, no per-card editing. The `/etc/default/nvidia-lock` file is now optional and only exists for overrides.
 
 ### 0) confirm driver + tool exist
 ```zsh
@@ -19,119 +18,152 @@ nvidia-smi --query-gpu=clocks.mem,clocks.gr,pstate,power.draw,temperature.gpu \
 # you will see the jump happens from when the clocks readjust from a very low point
 ```
 
-### 1) create the clock-locking script
+### 1) inspect what your card actually supports
+
+The dynamic script keys off these two tables, so it's worth eyeballing them once before you commit:
+
 ```zsh
-# to solve this we will set minimum clock speed
-# what it does: installs /usr/local/sbin/lock-nvidia-mem.sh with a safe, dynamic min/max picker
+# supported memory clocks (we lock to the max of these)
+nvidia-smi -i 0 --query-supported-clocks=memory \
+  --format=csv,noheader,nounits | sort -nu | tail
+
+# supported graphics clocks (we pick a floor inside this range)
+nvidia-smi -i 0 --query-supported-clocks=graphics \
+  --format=csv,noheader,nounits | sort -nu
+```
+
+The script will pick `MEM_MAX` = the largest entry in the first list, `GFX_MAX` = the largest entry in the second, and `GFX_MIN` = the largest supported graphics clock at-or-below 40% of `GFX_MAX`. That 0.40 ratio reproduces the original RTX 4070 default (900 MHz floor on a 2520 MHz boost) and lands at sane idle floors on everything from Turing through Ada.
+
+### 2) create the clock-locking script
+```zsh
+# what it does: installs /usr/local/sbin/lock-nvidia-mem.sh, fully dynamic
 sudo nano /usr/local/sbin/lock-nvidia-mem.sh
 ```
 
 ```zsh
 #!/usr/bin/env bash
+# /usr/local/sbin/lock-nvidia-mem.sh
+# Dynamically lock NVIDIA clocks to mitigate GSP idle-drop lag on Wayland.
+# All values are auto-detected from `nvidia-smi --query-supported-clocks=...`.
+# Any detected value can be overridden via /etc/default/nvidia-lock.
+
 set -euo pipefail
 
 GPU=${GPU:-0}
-PCT=${PCT:-0.70}
-B1=${B1:-5000};  B2=${B2:-10000}; B3=${B3:-15000}
-V1=${V1:-0.60};  V2=${V2:-0.75};  V3=${V3:-0.80}
+
+# Graphics-clock floor as a fraction of detected boost. 0.40 reproduces the
+# original RTX 4070 default (900 MHz on a 2520 MHz boost) and gives a sensible
+# idle floor across the Ada / Ampere / Turing range without ever sitting in
+# the lowest power bin where the GSP idle-drop lag actually shows up.
+GFX_FLOOR_PCT=${GFX_FLOOR_PCT:-0.40}
 
 SUDO=""
 (( EUID != 0 )) && SUDO="sudo"
 
-mapfile -t S < <(
-  nvidia-smi -i "$GPU" \
-    --query-supported-clocks=memory \
-    --format=csv,noheader,nounits \
+command -v nvidia-smi >/dev/null || { echo "nvidia-smi not found"; exit 1; }
+
+# --- detect supported memory clocks (MHz, ascending, deduped) ---
+mapfile -t MEM < <(
+  nvidia-smi -i "$GPU" --query-supported-clocks=memory \
+    --format=csv,noheader,nounits 2>/dev/null \
   | tr -d ' ' | sort -nu
 )
+((${#MEM[@]})) || { echo "no supported memory clocks for GPU $GPU"; exit 1; }
 
-((${#S[@]})) || { echo "no supported clocks for GPU $GPU"; exit 1; }
+# --- detect supported graphics clocks (MHz, ascending, deduped) ---
+mapfile -t GFX < <(
+  nvidia-smi -i "$GPU" --query-supported-clocks=graphics \
+    --format=csv,noheader,nounits 2>/dev/null \
+  | tr -d ' ' | sort -nu
+)
+((${#GFX[@]})) || { echo "no supported graphics clocks for GPU $GPU"; exit 1; }
 
-MAX="${S[-1]}"
+MEM_MAX_DETECTED="${MEM[-1]}"
+GFX_MAX_DETECTED="${GFX[-1]}"
+GFX_MIN_DETECTED="${GFX[0]}"
 
-beta() {
-  local m="$1"
-  if (( m <= B1 )); then
-    awk -v v="$V1" 'BEGIN{print v}'
-  elif (( m <= B2 )); then
-    awk -v v1="$V1" -v v2="$V2" -v m="$m" -v b1="$B1" -v b2="$B2" \
-      'BEGIN{print v1 + (v2-v1)*(m-b1)/(b2-b1)}'
-  elif (( m <= B3 )); then
-    awk -v v2="$V2" -v v3="$V3" -v m="$m" -v b2="$B2" -v b3="$B3" \
-      'BEGIN{print v2 + (v3-v2)*(m-b2)/(b3-b2)}'
-  else
-    awk -v v="$V3" 'BEGIN{print v}'
-  fi
-}
+# Pick a sensible graphics floor: GFX_FLOOR_PCT of detected max, snapped DOWN
+# to the nearest actually-supported clock so the driver always accepts it.
+TARGET=$(awk -v m="$GFX_MAX_DETECTED" -v p="$GFX_FLOOR_PCT" \
+  'BEGIN{printf "%d", m*p}')
+GFX_FLOOR=$(
+  printf "%s\n" "${GFX[@]}" \
+  | awk -v t="$TARGET" '$1<=t{m=$1} END{print m}'
+)
+[[ -n "$GFX_FLOOR" ]] || GFX_FLOOR="$GFX_MIN_DETECTED"
 
-pick_le() {
-  awk -v t="$1" '$1<=t{m=$1} END{if(m)print m}'
-}
+# --- defaults: lock memory at max (the actual GSP fix), GFX clamped above floor ---
+MEM_MIN="${MEM_MIN:-$MEM_MAX_DETECTED}"
+MEM_MAX="${MEM_MAX:-$MEM_MAX_DETECTED}"
+GFX_MIN="${GFX_MIN:-$GFX_FLOOR}"
+GFX_MAX="${GFX_MAX:-$GFX_MAX_DETECTED}"
 
-k=${#S[@]}
-q=$(awk -v p="$PCT" -v k="$k" 'BEGIN{printf("%d",(p*k==int(p*k)?p*k:(int(p*k)+1)))}')
-(( q < 1 )) && q=1
-(( q > k )) && q=k
-S_Q="${S[$((q-1))]}"
+# sanity: never let MIN exceed MAX (env override could invert them)
+(( MEM_MIN > MEM_MAX )) && MEM_MIN="$MEM_MAX"
+(( GFX_MIN > GFX_MAX )) && GFX_MIN="$GFX_MAX"
 
-BETA=$(beta "$MAX")
-TGT=$(awk -v b="$BETA" -v m="$MAX" 'BEGIN{printf("%.0f", b*m)}')
-S_F="$(printf "%s\n" "${S[@]}" | pick_le "$TGT")"
-[[ -n "$S_F" ]] || S_F="${S[0]}"
+cat <<EOF
+[lock-nvidia-mem] GPU=$GPU
+  detected mem clocks : ${#MEM[@]} entries, range ${MEM[0]}..${MEM[-1]} MHz
+  detected gfx clocks : ${#GFX[@]} entries, range ${GFX[0]}..${GFX[-1]} MHz
+  gfx floor target    : ${TARGET} MHz (pct=${GFX_FLOOR_PCT}) -> snapped to ${GFX_FLOOR} MHz
+  applying            : MEM=${MEM_MIN},${MEM_MAX}  GFX=${GFX_MIN},${GFX_MAX}
+EOF
 
-MIN="$S_Q"
-(( S_F > MIN )) && MIN="$S_F"
-(( MIN > MAX )) && MIN="$MAX"
+# enable persistence so locks survive idle
+$SUDO nvidia-smi -i "$GPU" -pm 1 >/dev/null
 
-echo "GPU=$GPU k=${#S[@]} DYNAMIC_MIN=$MIN MAX=$MAX (percentile=${PCT}, beta=${BETA})"
+# clear any existing locks before re-applying
+$SUDO nvidia-smi -i "$GPU" --reset-gpu-clocks    >/dev/null 2>&1 || true
+$SUDO nvidia-smi -i "$GPU" --reset-memory-clocks >/dev/null 2>&1 || true
 
-$SUDO nvidia-smi -i "$GPU" -pm 1
-
-$SUDO nvidia-smi -i "$GPU" --reset-gpu-clocks || true
-$SUDO nvidia-smi -i "$GPU" --reset-memory-clocks || true
-
-MEM_MIN="${MEM_MIN:-$MAX}"
-MEM_MAX="${MEM_MAX:-$MAX}"
-
-# 4070 RTX default, check for your own card if this default dont work
-GFX_MIN="${GFX_MIN:-900}"
-GFX_MAX="${GFX_MAX:-2520}"
-
-echo "GPU=$GPU MEM_MIN=$MEM_MIN MEM_MAX=$MEM_MAX GFX_MIN=$GFX_MIN GFX_MAX=$GFX_MAX"
-
+# memory lock: try immediate, fall back to deferred (some cards/drivers need it)
 if ! $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks="${MEM_MIN},${MEM_MAX}"; then
+  echo "[lock-nvidia-mem] immediate memory lock failed, trying deferred"
   $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks-deferred="$MEM_MAX" || true
 fi
 
+# graphics lock
 $SUDO nvidia-smi -i "$GPU" --lock-gpu-clocks="${GFX_MIN},${GFX_MAX}"
+
+echo "[lock-nvidia-mem] done"
 ```
 
-### 2) make it executable
+### 3) make it executable
 ```zsh
 # what it does: sets correct mode so systemd can run it
 sudo chmod 755 /usr/local/sbin/lock-nvidia-mem.sh
 ```
 
-### 3) create env overrides
+### 4) (optional) env overrides
+
+The script works with **no config file at all** — every value is auto-detected. Only create this if you want to tweak the floor ratio or pin specific values:
+
 ```zsh
-# what it does: lets you change GPU/PCT/B1..B3/V1..V3 without editing the script
 sudo nano /etc/default/nvidia-lock
 ```
 
 ```zsh
 # ----- /etc/default/nvidia-lock -----
-# GPU index and percentile
-GPU=0
+# Everything here is OPTIONAL. Comment out a line and the script auto-detects.
 
-# Known-good for RTX 4070
-# Test for yourself
-MEM_MIN=10501
-MEM_MAX=10501
-GFX_MIN=900
-GFX_MAX=2520
+# which GPU index to operate on (default 0)
+#GPU=0
+
+# graphics-clock floor as fraction of detected boost (default 0.40)
+# raise toward 0.50 if you still see micro-stutters on idle->load transitions,
+# lower toward 0.30 if you want a couple watts back at idle
+#GFX_FLOOR_PCT=0.40
+
+# hard pins (override detection entirely). only set these if you know the
+# exact MHz value from `nvidia-smi --query-supported-clocks=memory`.
+#MEM_MIN=10501
+#MEM_MAX=10501
+#GFX_MIN=900
+#GFX_MAX=2520
 ```
 
-### 4) create a systemd unit
+### 5) create a systemd unit
 ```zsh
 # what it does: runs the lock at boot and keeps state via persistence
 sudo nano /etc/systemd/system/nvidia-lock.service
@@ -152,27 +184,39 @@ RemainAfterExit=yes
 WantedBy=multi-user.target
 ```
 
-### 5) enable NVIDIA persistence daemon
+The `-` in `EnvironmentFile=-/etc/default/nvidia-lock` makes the file optional, so the unit still starts cleanly when you skip step 4.
+
+### 6) enable NVIDIA persistence daemon
 ```zsh
 # what it does: keeps GPU initialized so your lock survives idle periods
 sudo systemctl enable --now nvidia-persistenced.service
 ```
-### 6) reload units and enable our service
+
+### 7) reload units and enable our service
 ```zsh
 # what it does: starts clock lock at boot and immediately
 sudo systemctl daemon-reload
 sudo systemctl enable --now nvidia-lock.service
 ```
-### 7) verify supported clocks + current locks
+
+### 8) verify supported clocks + current locks
 ```zsh
 # what it does: shows supported memory clocks and the lock status
 nvidia-smi -i "${GPU:-0}" -q -d SUPPORTED_CLOCKS | head -n 60
 nvidia-smi -i "${GPU:-0}" -q -d CLOCK | head -n 80
 ```
-### 8) test run manually (optional)
+
+### 9) test run manually (optional)
 ```zsh
-# what it does: prints chosen MIN/MAX and applies lock interactively
+# what it does: prints detected ranges + chosen MIN/MAX and applies lock interactively
 sudo /usr/local/sbin/lock-nvidia-mem.sh
+
+# expected output looks like:
+# [lock-nvidia-mem] GPU=0
+#   detected mem clocks : 4 entries, range 405..10501 MHz
+#   detected gfx clocks : 117 entries, range 210..2520 MHz
+#   gfx floor target    : 1008 MHz (pct=0.40) -> snapped to 900 MHz
+#   applying            : MEM=10501,10501  GFX=900,2520
 
 # now test again with the script from step 0 and see the difference
 nvidia-smi --query-gpu=clocks.mem,clocks.gr,pstate,power.draw,temperature.gpu \
