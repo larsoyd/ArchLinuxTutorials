@@ -1341,13 +1341,27 @@ MIN="$S_Q"
 (( S_F > MIN )) && MIN="$S_F"
 (( MIN > MAX )) && MIN="$MAX"
 
-echo "GPU=$GPU k=${#S[@]} MIN=$MIN MAX=$MAX (percentile=${PCT}, beta=${BETA})"
-
-if ! $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks="$MIN","$MAX"; then
-  $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks-deferred="$MIN" || true
-fi
+echo "GPU=$GPU k=${#S[@]} DYNAMIC_MIN=$MIN MAX=$MAX (percentile=${PCT}, beta=${BETA})"
 
 $SUDO nvidia-smi -i "$GPU" -pm 1
+
+$SUDO nvidia-smi -i "$GPU" --reset-gpu-clocks || true
+$SUDO nvidia-smi -i "$GPU" --reset-memory-clocks || true
+
+MEM_MIN="${MEM_MIN:-$MAX}"
+MEM_MAX="${MEM_MAX:-$MAX}"
+
+# 4070 RTX default, check for your own card if this default dont work
+GFX_MIN="${GFX_MIN:-900}"
+GFX_MAX="${GFX_MAX:-2520}"
+
+echo "GPU=$GPU MEM_MIN=$MEM_MIN MEM_MAX=$MEM_MAX GFX_MIN=$GFX_MIN GFX_MAX=$GFX_MAX"
+
+if ! $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks="${MEM_MIN},${MEM_MAX}"; then
+  $SUDO nvidia-smi -i "$GPU" --lock-memory-clocks-deferred="$MEM_MAX" || true
+fi
+
+$SUDO nvidia-smi -i "$GPU" --lock-gpu-clocks="${GFX_MIN},${GFX_MAX}"
 ```
 
 ### 2) make it executable
