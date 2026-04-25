@@ -322,9 +322,9 @@ cat > ~/.config/fastfetch/config.jsonc <<'EOF'
   },
 
   "display": {
-    "separator": " : ",
+    "separator": " ",
     "key": {
-      "width": 13,
+      "width": 18,
       "type": "string"
     },
     "color": {
@@ -357,32 +357,32 @@ cat > ~/.config/fastfetch/config.jsonc <<'EOF'
     },
     {
       "type": "cpu",
-      "key": "│ 󰻠 CPU",
+      "key": "│ 󰻠 CPU :",
       "keyColor": "38;2;163;190;140"
     },
     {
       "type": "gpu",
-      "key": "│ 󰍛 GPU",
+      "key": "│ 󰍛 GPU :",
       "keyColor": "38;2;163;190;140"
     },
     {
       "type": "display",
-      "key": "│ 󰍹 Display",
+      "key": "│ 󰍹 Display :",
       "keyColor": "38;2;163;190;140"
     },
     {
       "type": "disk",
-      "key": "│ 󰋊 Disk",
+      "key": "│ 󰋊 Disk :",
       "keyColor": "38;2;163;190;140"
     },
     {
       "type": "memory",
-      "key": "│  Memory",
+      "key": "│  Memory :",
       "keyColor": "38;2;163;190;140"
     },
     {
       "type": "swap",
-      "key": "│ 󰓡 Swap",
+      "key": "│ 󰓡 Swap :",
       "keyColor": "38;2;163;190;140"
     },
     {
@@ -398,62 +398,62 @@ cat > ~/.config/fastfetch/config.jsonc <<'EOF'
     },
     {
       "type": "os",
-      "key": "│  OS",
+      "key": "│  OS :",
       "keyColor": "38;2;235;203;139"
     },
     {
       "type": "kernel",
-      "key": "│  Kernel",
+      "key": "│  Kernel :",
       "keyColor": "38;2;235;203;139"
     },
     {
       "type": "packages",
-      "key": "│ 󰏖 Packages",
+      "key": "│ 󰏖 Packages :",
       "keyColor": "38;2;235;203;139"
     },
     {
       "type": "shell",
-      "key": "│  Shell",
+      "key": "│  Shell :",
       "keyColor": "38;2;235;203;139"
     },
     {
       "type": "de",
-      "key": "│ 󰧨 DE",
+      "key": "│ 󰧨 DE :",
       "keyColor": "38;2;136;192;208"
     },
     {
       "type": "wm",
-      "key": "│ 󱂬 WM",
+      "key": "│ 󱂬 WM :",
       "keyColor": "38;2;136;192;208"
     },
     {
       "type": "theme",
-      "key": "│ 󰉼 Theme",
+      "key": "│ 󰉼 Theme :",
       "keyColor": "38;2;136;192;208"
     },
     {
       "type": "icons",
-      "key": "│ 󰀻 Icons",
+      "key": "│ 󰀻 Icons :",
       "keyColor": "38;2;136;192;208"
     },
     {
       "type": "font",
-      "key": "│  Font",
+      "key": "│  Font :",
       "keyColor": "38;2;136;192;208"
     },
     {
       "type": "cursor",
-      "key": "│ 󰇀 Cursor",
+      "key": "│ 󰇀 Cursor :",
       "keyColor": "38;2;136;192;208"
     },
     {
       "type": "terminal",
-      "key": "│  Terminal",
+      "key": "│  Terminal :",
       "keyColor": "38;2;136;192;208"
     },
     {
       "type": "terminalfont",
-      "key": "│ 󰛖 TermFont",
+      "key": "│ 󰛖 TermFont :",
       "keyColor": "38;2;136;192;208"
     },
     {
@@ -469,13 +469,13 @@ cat > ~/.config/fastfetch/config.jsonc <<'EOF'
     },
     {
       "type": "command",
-      "key": "│ OS Age",
+      "key": "│ OS Age :",
       "keyColor": "38;2;180;142;173",
       "text": "zsh -fc 'print -- $(( ($(date +%s) - $(stat -c %W /)) / 86400 )) days'"
     },
     {
       "type": "uptime",
-      "key": "│ Uptime",
+      "key": "│ Uptime :",
       "keyColor": "38;2;180;142;173"
     },
     {
