@@ -43,6 +43,28 @@ sudo pacman -Syu
 Here is how to rebind CTRL + C and CTRL + V to copy + paste, Add this to your `kitty` config, `~/.config/kitty/kitty.conf`:
 
 ```conf
+# Zoom font with Ctrl + plus/minus instead of Ctrl + Shift + plus/minus
+map ctrl+plus change_font_size all +2.0
+map ctrl+equal change_font_size all +2.0
+map ctrl+kp_add change_font_size all +2.0
+
+map ctrl+minus change_font_size all -2.0
+map ctrl+kp_subtract change_font_size all -2.0
+
+# Disable Kitty's default Ctrl + Shift zoom bindings
+map ctrl+shift+plus no_op
+map ctrl+shift+equal no_op
+map ctrl+shift+kp_add no_op
+
+map ctrl+shift+minus no_op
+map ctrl+shift+kp_subtract no_op
+```
+
+
+### Optional: Rebind Ctrl + Plus and Ctrl + Minus to Zoom
+Ditto as above but for zooming.
+
+```conf
 map ctrl+shift+v no_op
 map ctrl+v paste_from_clipboard
 map ctrl+shift+c no_op
