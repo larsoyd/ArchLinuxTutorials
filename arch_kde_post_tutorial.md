@@ -1124,23 +1124,20 @@ YT-DLP is a downloader for online media hosted on sites. It's very good.
 Install (pick one option):
 ```zsh
 OPTION A)
-# From pipx.
+# From uv (Rust based Python manager, very good)
 #
 # This is recommended as its upstream, though ensure you keep it up to date.
 # If you simply run `yay` or `pacman -Syu` it will NOT update this package.
-# You must run pipx upgrade-all as well. This is tedious.
+# You must run `uv tool upgrade --all` as well. This is tedious.
 # The best way instead is to update your system using topgrade since it will
-# automatically detect that pipx is on your system and then
+# automatically detect that uv is on your system and then
 # update that too when ran without you needing to do a damn thing.
 #
 # Yes, topgrade is an amazing tool. I am not sponsored by them
-yay -S --needed python-pipx
-
-# Run this to ensure its on your PATH
-pipx ensurepath
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install yt-dlp via pipx
-pipx install yt-dlp
+uv tool install yt-dlp
 
 --
 
