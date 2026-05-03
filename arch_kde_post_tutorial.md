@@ -1134,7 +1134,19 @@ OPTION A)
 # update that too when ran without you needing to do a damn thing.
 #
 # Yes, topgrade is an amazing tool. I am not sponsored by them
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# Prevent the installer from editing shell files.
+# ~/.local/bin is already on your PATH
+UV_NO_MODIFY_PATH=1 curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Refresh command cache
+rehash
+
+# Verify the standalone uv is first
+type -a uv uvx
+uv --version
+
+# Set it to self update
+uv self update
 
 # Install yt-dlp via pipx
 uv tool install yt-dlp
