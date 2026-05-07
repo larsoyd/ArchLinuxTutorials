@@ -468,6 +468,31 @@ localectl set-keymap no-latin1
 # but in the US pc104 is the default. Check what model you use beforehand.
 localectl set-x11-keymap no pc105
 
+# one issue with kde is that it neither
+respects nor inherits system level
+keymaps. it uses its own system for
+this. so in order to not boot into a
+system with us keymap and having to
+manually change it in system settings
+you have to also do this:
+
+# create config folder and
+the keymap config file
+mkdir -p /home/lars/.config
+nano /home/lars/.config/kxkbrc
+
+# Put this in the file:
+
+[Layout]
+LayoutList=no
+Use=true
+VariantList=
+
+# Save, then fix ownership:
+
+chown -R lars:lars /home/lars/.config
+chmod 644 /home/lars/.config/kxkbr
+
 ```
 
 ### 4.4 Set Hostname and Hosts
