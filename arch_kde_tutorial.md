@@ -456,6 +456,10 @@ FONT=ter-118n  # But add this.
                # and more easily readable on boot
 ---
 
+# NOTE: This is for anyone without an US keyboard!
+# I use a Norwegian keyboard as mentioned, find out what
+# yours is and change any country code from "no" to yours.
+# 
 # set system keymaps
 #
 localectl set-keymap no-latin1
@@ -476,12 +480,14 @@ localectl set-x11-keymap no pc105
 
 # Create config folder and
 # the keymap config file
+# Change "lars" to your user
 mkdir -p /home/lars/.config
 nano /home/lars/.config/kxkbrc
-
-# Put this in the file:
 ```
+
 ```ini
+# Put this in the file:
+
 [Layout]
 LayoutList=no
 Use=true
@@ -489,8 +495,8 @@ VariantList=
 ```
 
 ```zsh
-# Save, then fix ownership:
-
+# Save, then fix ownership
+# again change "lars" to your user:
 chown -R lars:lars /home/lars/.config
 chmod 644 /home/lars/.config/kxkbr
 
