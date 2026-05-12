@@ -1060,23 +1060,34 @@ Current=breeze
 
 ### Add a DNS Resolver (systemd-resolved)
 
-This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional /etc/resolv.conf, DNS is usually just a flat list of nameservers. With systemd-resolved, you get a local caching stub resolver, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration. Red Hat’s networking docs describe this model as NetworkManager writing 127.0.0.53 to /etc/resolv.conf while systemd-resolved dynamically routes queries to the right upstream DNS servers for each connection. 
+This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional `/etc/resolv.conf`, DNS is usually just a flat list of nameservers. With `systemd-resolved`, you get a local stub resolver at `127.0.0.53`, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration. `systemd-resolved` maintains `/run/systemd/resolve/stub-resolv.conf` for traditional programs, and that file should be used through a symlink from `/etc/resolv.conf`. NetworkManager should be configured through `/etc/NetworkManager/conf.d/`, not `/usr/lib/NetworkManager/conf.d/`, because `/usr/lib` is for package-provided snippets and `/etc` is for your local config.
 
 ```zsh
-mkdir -p /usr/lib/NetworkManager/conf.d/
-nano /usr/lib/NetworkManager/conf.d/dns.conf
+# Create NetworkManager's local config directory
+mkdir -p /etc/NetworkManager/conf.d
+
+# Create the systemd-resolved DNS config
+nano /etc/NetworkManager/conf.d/20-systemd-resolved.conf
 ```
 
 ```ini
-# /usr/lib/NetworkManager/conf.d/dns.conf
+# /etc/NetworkManager/conf.d/20-systemd-resolved.conf
+
 [main]
 dns=systemd-resolved
+rc-manager=auto
 ```
 
 ```zsh
-# Enable the service
+# Make /etc/resolv.conf use systemd-resolved's stub resolver.
+# This is what makes traditional DNS clients use 127.0.0.53 correctly.
+rm -f /etc/resolv.conf
+ln -s ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
+# Enable the service for the installed system.
 systemctl enable systemd-resolved.service
 ```
+
 
 ### 4.10 Enable Essential Services
 
