@@ -952,7 +952,7 @@ Current=breeze
 
 ### Add a DNS Resolver (systemd-resolved)
 
-This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional `/etc/resolv.conf`, DNS is usually just a flat list of nameservers. With `systemd-resolved`, you get a local stub resolver at `127.0.0.53`, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration. `systemd-resolved` maintains `/run/systemd/resolve/stub-resolv.conf` for traditional programs, and that file should be used through a symlink from `/etc/resolv.conf`. NetworkManager should be configured through `/etc/NetworkManager/conf.d/`, not `/usr/lib/NetworkManager/conf.d/`, because `/usr/lib` is for package-provided snippets and `/etc` is for your local config.
+This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional `/etc/resolv.conf`, DNS is usually just a flat list of nameservers. With `systemd-resolved`, you get a local stub resolver at `127.0.0.53`, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration. `systemd-resolved` maintains `/run/systemd/resolve/stub-resolv.conf` for traditional programs, and that file should be used through a symlink from `/etc/resolv.conf`. 
 
 ```zsh
 # Create NetworkManager's local config directory
