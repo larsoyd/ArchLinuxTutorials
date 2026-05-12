@@ -1123,8 +1123,8 @@ OPTION A)
 # update that too when ran without you needing to do a damn thing.
 #
 # Yes, topgrade is an amazing tool. I am not sponsored by them
-# Prevent the installer from editing shell files.
-# ~/.local/bin is already on your PATH
+# UV_NO_MODIFY_PATH=1 prevent the installer from editing shell files.
+# ~/.local/bin is already on your PATH from ~/.zshrc step earlier
 UV_NO_MODIFY_PATH=1 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Refresh command cache
