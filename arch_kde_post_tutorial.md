@@ -500,8 +500,8 @@ middlemouse.paste → false
 # You also need to set this globally.
 System Settings → Workspace → General Behavior → Middle Click: Paste selected text → Off
 ```
-
 Then log out/in or restart for it to fully apply.
+
 ---
 
 ### OPTIONAL: Remove the Close + Mute button on Vertical Tabs
