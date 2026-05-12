@@ -971,11 +971,6 @@ rc-manager=auto
 ```
 
 ```zsh
-# Make /etc/resolv.conf use systemd-resolved's stub resolver.
-# This is what makes traditional DNS clients use 127.0.0.53 correctly.
-rm -f /etc/resolv.conf
-ln -s ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-
 # Enable the service for the installed system.
 systemctl enable systemd-resolved.service
 ```
@@ -1034,6 +1029,11 @@ systemctl enable sddm
 # Exit environment
 exit
 
+# NOTE: ENSURE you do this before umounting:
+# Make /etc/resolv.conf use systemd-resolved's stub resolver.
+# This is what makes traditional DNS clients use 127.0.0.53 correctly.
+ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+
 # Then unmount all partitions
 umount -R /mnt
 
@@ -1042,9 +1042,10 @@ shutdown now
 
 # Remove ArchISO USB from computer then boot back into it
 #
-# This is also the way to fix if the taskbar (panel) appears on the wrong monitor: Simply go to Global Theme
-# Press Breeze or Breeze-Dark, select BOTH checkboxes and hit apply. Wait and then it will correctly apply
-# This will also persist on reboots as well. 
+# This is also the way to fix if the taskbar (panel) appears on the wrong monitor: 
+# Right click on desktop and click Display Configuration. 
+# Go to "Change Screen Priorities" and move with arrows up the monitor you want
+# the panel on. Then press OK.
 ```
 
 ---
