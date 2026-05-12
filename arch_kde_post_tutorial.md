@@ -1259,42 +1259,72 @@ To turn on spellchecking you have to open System Settings and go to:
 
 ______
 
-# EXTRA TUTORIAL: How to add a new Drive/SSD to GPT-Auto Setups
+# EXTRA TUTORIAL: How to add a new Drive/SSD to GPT-Auto Setups with systemd-repart
 
+Name of drive will be `data`.
+Replace ALL instances of `data` in this guide if you don't want that name for your drive.
+And by all I mean ALL instances, even in the `.mount` and `.automount` files.
 
-- Name of drive will be `data`, 
-- Replace ALL instances of `data` in this guide if you don't want that name for your drive.
-- And by all I mean ALL instances, even in the .mount & .automount files
+## 0) Identify the new disk, double check before you write to it
 
-#### 0) Identify the new disk (double check before you write to it)
 ```zsh
 lsblk -e7 -o NAME,SIZE,TYPE,MOUNTPOINT,MODEL,SERIAL
 DEV=/dev/nvme1n1    # <-- set this to your new disk
 ```
-#### 1) Create a GPT partition and give it a PARTLABEL
+
+## 1) Create one GPT Linux data partition with systemd-repart
+
 ```zsh
-#    WARNING: the zap step is destructive. Save data on disk first.
-sudo sgdisk --zap-all "$DEV"
-sudo sgdisk -n1:0:0 -t1:8300 -c1:"data" "$DEV"   # one Linux partition named "data"
-```
-#### 2) Make a filesystem (example: ext4)
-```zsh
-sudo mkfs.ext4 -L data "${DEV}p1"   # remove p like in install if ur disk is 'sda' and not nvme
-```
-#### 3) Verify the persistent symlink created by udev, then wait if needed
-```zsh
-ls -l /dev/disk/by-partlabel/ | grep ' data$' || true
+# WARNING: --empty=force is destructive.
+# It creates a fresh partition table and existing partitions do not survive.
+# Save data on disk first.
+
+sudo rm -rf /tmp/repart-data.d
+sudo mkdir -p /tmp/repart-data.d
+
+sudo tee /tmp/repart-data.d/10-data.conf >/dev/null <<'EOF_REPART'
+[Partition]
+Type=linux-generic
+Label=data
+Format=ext4
+SizeMinBytes=1G
+EOF_REPART
+
+# Preview the plan first. Without --dry-run=no, systemd-repart only shows what it would do.
+sudo systemd-repart --definitions=/tmp/repart-data.d --empty=force "$DEV"
+
+# Apply it for real.
+sudo systemd-repart --definitions=/tmp/repart-data.d --dry-run=no --empty=force "$DEV"
+
+# Let udev create /dev/disk/by-* symlinks.
 sudo udevadm settle
 ```
-#### 4) Create the mount point
+
+## 2) Verify the partition and filesystem labels
+
+```zsh
+lsblk -f "$DEV"
+ls -l /dev/disk/by-partlabel/ | grep ' data$' || true
+ls -l /dev/disk/by-label/ | grep ' data$' || true
+```
+
+`systemd-repart` already made the ext4 filesystem because the repart file used `Format=ext4`, so do **not** run `mkfs.ext4` separately here.
+
+## 3) Create the mount point
+
 ```zsh
 sudo mkdir -p /mnt/data
 ```
-#### 5) Create a native systemd mount unit
+
+## 4) Create a native systemd mount unit
+
 ```zsh
 sudo nano /etc/systemd/system/mnt-data.mount
+```
 
-# add
+Add:
+
+```ini
 [Unit]
 Description=Data SSD via PARTLABEL
 
@@ -1307,11 +1337,16 @@ Options=noatime
 [Install]
 WantedBy=multi-user.target
 ```
-#### Create an automount for on-demand mounting
+
+## 5) Create an automount for on-demand mounting
+
 ```zsh
 sudo nano /etc/systemd/system/mnt-data.automount
+```
 
-# add
+Add:
+
+```ini
 [Unit]
 Description=Auto-mount /mnt/data
 
@@ -1321,14 +1356,19 @@ Where=/mnt/data
 [Install]
 WantedBy=multi-user.target
 ```
-#### 6) Enable it
+
+## 6) Enable it
+
 ```zsh
 sudo systemctl daemon-reload
 sudo systemctl enable --now mnt-data.automount
 ```
-#### 7) Test
+
+## 7) Test
+
 ```zsh
 systemctl status mnt-data.automount
 df -h /mnt/data
 touch /mnt/data/it-works
 ```
+
