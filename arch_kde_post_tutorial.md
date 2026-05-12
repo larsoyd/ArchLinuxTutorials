@@ -711,18 +711,6 @@ Those without AV1 hardware support may also want to disable AV1 decoders (e.g., 
 
 ### Configuring Firefox:
 
-#### Make Firefox follow your KDE default apps via mimeapps.list on Arch.
-```zsh
-# create if not already created
-mkdir -p ~/.local/share/applications
-
-# backup if a real file already exists
-[ -f ~/.local/share/applications/mimeapps.list ] && \
-  mv ~/.local/share/applications/mimeapps.list ~/.local/share/applications/mimeapps.list.bak
-
-# symlink
-ln -sf ~/.config/mimeapps.list ~/.local/share/applications/mimeapps.list
-```
 #### Add VA-API to Firefox (GPU accelerated video)
 ```zsh
 # Confirm VA-API support
@@ -738,6 +726,12 @@ media.hardware-video-decoding.force-enabled → true
 media.hardwaremediakeys.enabled → false
 ```
 
+
+#### Turn off Middle Click Paste on Firefox
+```zsh
+# open about:config and set
+middlemouse.paste → false
+```
 ---
 
 ### OPTIONAL: Remove the Close + Mute button on Vertical Tabs
