@@ -1259,20 +1259,20 @@ To turn on spellchecking you have to open System Settings and go to:
 
 ______
 
-# EXTRA TUTORIAL: How to add a new Drive/SSD to GPT-Auto Setups with systemd-repart
+## EXTRA TUTORIAL: How to add a new Drive/SSD to GPT-Auto Setups with systemd-repart
 
 Name of drive will be `data`.
 Replace ALL instances of `data` in this guide if you don't want that name for your drive.
 And by all I mean ALL instances, even in the `.mount` and `.automount` files.
 
-## 0) Identify the new disk, double check before you write to it
+#### 0) Identify the new disk, double check before you write to it
 
 ```zsh
 lsblk -e7 -o NAME,SIZE,TYPE,MOUNTPOINT,MODEL,SERIAL
 DEV=/dev/nvme1n1    # <-- set this to your new disk
 ```
 
-## 1) Create one GPT Linux data partition with systemd-repart
+#### 1) Create one GPT Linux data partition with systemd-repart
 
 ```zsh
 # WARNING: --empty=force is destructive.
@@ -1300,7 +1300,7 @@ sudo systemd-repart --definitions=/tmp/repart-data.d --dry-run=no --empty=force 
 sudo udevadm settle
 ```
 
-## 2) Verify the partition and filesystem labels
+#### 2) Verify the partition and filesystem labels
 
 ```zsh
 lsblk -f "$DEV"
@@ -1310,13 +1310,13 @@ ls -l /dev/disk/by-label/ | grep ' data$' || true
 
 `systemd-repart` already made the ext4 filesystem because the repart file used `Format=ext4`, so do **not** run `mkfs.ext4` separately here.
 
-## 3) Create the mount point
+#### 3) Create the mount point
 
 ```zsh
 sudo mkdir -p /mnt/data
 ```
 
-## 4) Create a native systemd mount unit
+#### 4) Create a native systemd mount unit
 
 ```zsh
 sudo nano /etc/systemd/system/mnt-data.mount
@@ -1338,7 +1338,7 @@ Options=noatime
 WantedBy=multi-user.target
 ```
 
-## 5) Create an automount for on-demand mounting
+#### 5) Create an automount for on-demand mounting
 
 ```zsh
 sudo nano /etc/systemd/system/mnt-data.automount
@@ -1357,14 +1357,14 @@ Where=/mnt/data
 WantedBy=multi-user.target
 ```
 
-## 6) Enable it
+#### 6) Enable it
 
 ```zsh
 sudo systemctl daemon-reload
 sudo systemctl enable --now mnt-data.automount
 ```
 
-## 7) Test
+#### 7) Test
 
 ```zsh
 systemctl status mnt-data.automount
