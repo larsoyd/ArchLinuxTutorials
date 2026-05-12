@@ -269,6 +269,9 @@ cd ArchLinuxTutorials
 # Make rice script executible
 chmod +x terminal.zsh
 
+# Run it
+./terminal.zsh
+
 # Go back to HOME
 cd
 ```
