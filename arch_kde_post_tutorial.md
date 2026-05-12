@@ -630,8 +630,8 @@ sudo true
 # essential stuff to have.
 yay -S --needed informant \
 gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly \
-systemd-timer-notify rebuild-detector aurutils \
-python-pip kdeconnect journalctl-desktop-notification
+rebuild-detector aurutils \
+python-pip kdeconnect
 
 # add yourself to group informant
 sudo usermod -aG informant $USER
@@ -661,16 +661,8 @@ On Arch with KDE Plasma, you should put environmental variables in Plasma’s se
 
 For SonicDE you have to replace `plasma-workspace` with `sonicde-workspace` instead.
 
-```zsh
-# While the libva-nvidia-driver implementation does enable hardware video decoding,
-# current limits for NVIDIA power management mean that with default settings
-# it actually consumes more power than CPU video decoding.
-# 
-# A workaround is possible using NVIDIA driver version 580.105.08 or newer, exporting the environment variable:
-export CUDA_DISABLE_PERF_BOOST=1
 
-# At the moment for NVIDIA you also need to add other variables.
-```
+### Hardware Acceleration on NVIDIA 
 
 ```zsh
 # Create the file:
@@ -678,12 +670,15 @@ nano ~/.config/plasma-workspace/env/libva-values.sh
 ```
 
 ```sh
-# Other options added to ensure hardware acceleration works
+# Options added to ensure hardware acceleration works
 # on NVIDIA.
-# nano ~/.config/plasma-workspace/env/libva-values.sh
+# ~/.config/plasma-workspace/env/libva-values.sh
 export LIBVA_DRIVER_NAME=nvidia
 export MOZ_DISABLE_RDD_SANDBOX=1
 export NVD_BACKEND=direct
+
+# Only if your NVIDIA driver is version
+# 580.105.08 or newer
 export CUDA_DISABLE_PERF_BOOST=1
 ```
 
