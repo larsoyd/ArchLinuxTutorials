@@ -493,6 +493,15 @@ media.hardwaremediakeys.enabled → false
 # open about:config and set
 middlemouse.paste → false
 ```
+
+#### Turn off Middle Click Paste on KDE Plasma
+
+```zsh
+# You also need to set this globally.
+System Settings → Workspace → General Behavior → Middle Click: Paste selected text → Off
+```
+
+Then log out/in or restart for it to fully apply.
 ---
 
 ### OPTIONAL: Remove the Close + Mute button on Vertical Tabs
