@@ -73,6 +73,16 @@ map ctrl+shift+minus no_op
 map ctrl+shift+kp_subtract no_op
 ```
 
+### Increase Default Zoom & Allow Changing Kitty Config In Terminal
+
+```conf
+# Remote Control
+allow_remote_control yes
+
+# Font Size
+font_size 18
+```
+
 Then reload Kitty’s config with Ctrl+Shift+F5.
 
 ### Essential build tools, you already installed these during install but just to be sure
