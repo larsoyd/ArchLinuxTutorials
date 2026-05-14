@@ -168,6 +168,9 @@ CXXFLAGS="${CXXFLAGS/-march=x86-64/-march=native}"
 # LTO default if system config had !lto
 OPTIONS=("${OPTIONS[@]/!lto/lto}")
 
+# No Debug Packages
+OPTIONS+=(!debug)
+
 # Enable ccache in the build environment
 BUILDENV=("${BUILDENV[@]/!ccache/ccache}")
 
