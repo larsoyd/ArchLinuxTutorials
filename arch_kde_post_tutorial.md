@@ -151,7 +151,7 @@ cd
 nano ~/.makepkg.conf
 ```
 
-```sh
+```conf
 # ~/.makepkg.conf
 
 # Retarget both C and C++ to native while keeping Arch's hardening flags
@@ -168,13 +168,14 @@ CXXFLAGS="${CXXFLAGS/-march=x86-64/-march=native}"
 # LTO default if system config had !lto
 OPTIONS=("${OPTIONS[@]/!lto/lto}")
 
-# No Debug Packages
-OPTIONS+=(!debug)
+# No debug packages
+OPTIONS=("${OPTIONS[@]/debug/!debug}")
 
 # Enable ccache in the build environment
 BUILDENV=("${BUILDENV[@]/!ccache/ccache}")
 
 # mold default linker
+LDFLAGS="${LDFLAGS/-fuse-ld=mold/}"
 LDFLAGS+=" -fuse-ld=mold"
 
 # parallel builds
