@@ -748,6 +748,9 @@ install -m 0755 topgrade "$HOME/.local/bin/topgrade"
 # 9. Check version to ensure it worked.
 topgrade --version
 
+# 10. Go back HOME
+cd
+
 # ---
 
 # If you want you can add an alias to topgrade
@@ -773,6 +776,18 @@ topgrade
 #
 # If you don't do that when needed, it can lead to instability.
 checkrebuild
+
+# If you don't want to remember this, just run this once and then use it from history
+# every time you update. It simply runs topgrade and then after runs checkrebuild in
+# one command:
+topgrade && checkrebuild
+
+# Or for alias:
+
+pacup && checkrebuild
+
+# usually it doesn't list anything, that means you're good, but if it does you need to run
+# yay  -S <pkg> --rebuild
 ```
 
 Option 2) with yay:
@@ -787,6 +802,11 @@ yay
 #
 # If you don't do that when needed, it can lead to instability.
 checkrebuild
+
+# If you don't want to remember this, just run this once and then use it from history
+# every time you update. It simply updates and then after runs checkrebuild in
+# one command:
+yay && checkrebuild
 
 # usually it doesn't list anything, that means you're good, but if it does you need to run
 # yay  -S <pkg> --rebuild
