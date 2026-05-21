@@ -619,6 +619,14 @@ Credit to [this wonderful person](https://www.reddit.com/r/firefox/comments/1new
 }
 ```
 
+Then after adding symlink this to your chrome directory for Breeze. Replace profile id with yours:
+
+```zsh
+cd ~/.config/mozilla/firefox/PROFILE_ID_HERE.default-release/chrome
+
+ln -sfn ~/.config/gtk-3.0/assets buttons
+```
+
 ### OPTIONAL: Various Fixes for Firefox That Might Help You
 
 Sometimes after install Firefox looks odd, some buttons are off and incorrect. 
