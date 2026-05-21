@@ -619,7 +619,7 @@ Credit to [this wonderful person](https://www.reddit.com/r/firefox/comments/1new
 }
 ```
 
-Then after adding symlink this to your chrome directory for Breeze. Replace profile id with yours:
+Then after adding this, symlink this to your Firefox chrome directory. Replace profile id with yours:
 
 ```zsh
 cd ~/.config/mozilla/firefox/PROFILE_ID_HERE.default-release/chrome
