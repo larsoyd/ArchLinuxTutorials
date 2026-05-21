@@ -548,12 +548,82 @@ If you are like me you close tabs with middle mouse click and you don't care to 
 5. Go now to `about:config` in URL bar and then put in `toolkit.legacyUserProfileCustomizations.stylesheets` and set it to `true`
 6. Completely quit and restart Firefox for the changes to take effect. 
 
+### OPTIONAL: Fix The Appearance of The Firefox Buttons
 
-### OPTIONAL: Fixing Firefox:
+By default Firefox hardcodes it's own buttons regardless of your system theme. This makes Firefox look gross compared to other applications. To fix this you need to add this to your userChrome.css above. If you did not use the fix above and create it you must do so before applying this fix.
+Credit to (this wonderful person)[https://www.reddit.com/r/firefox/comments/1newm16/working_code_for_userchromecss_for_firefoxnightly/?utm_source=share&utm_medium=mweb3x&utm_name=mweb3xcss&utm_term=1] for figuring out how to do this.
+
+```css
+/* Minimize button */
+.titlebar-min > .toolbarbutton-icon {
+    background-image: url("buttons/minimize-normal.svg") !important;
+    background-repeat: no-repeat !important;
+    background-size: 18px 18px !important;
+    background-position: center !important;
+    background-color: transparent !important;
+    color: transparent !important;
+}
+.titlebar-min:hover > .toolbarbutton-icon {
+    background-image: url("buttons/minimize-hover.svg") !important;
+    background-color: transparent !important;
+    color: transparent !important;
+    background-size: 20px 20px !important;
+}
+
+/* Maximize button */
+.titlebar-max > .toolbarbutton-icon {
+    background-image: url("buttons/maximize-normal.svg") !important;
+    background-repeat: no-repeat !important;
+    background-size: 18px 18px !important;
+    background-position: center !important;
+    background-color: transparent !important;
+    color: transparent !important;
+}
+.titlebar-max:hover > .toolbarbutton-icon {
+    background-image: url("buttons/maximize-hover.svg") !important;
+    background-color: transparent !important;
+    color: transparent !important;
+    background-size: 20px 20px !important;
+}
+
+/* Restore button */
+.titlebar-restore > .toolbarbutton-icon {
+    background-image: url("buttons/maximized-normal.svg") !important;
+    background-repeat: no-repeat !important;
+    background-size: 18px 18px !important;
+    background-position: center !important;
+    background-color: transparent !important;
+    color: transparent !important;
+}
+.titlebar-restore:hover > .toolbarbutton-icon {
+    background-image: url("buttons/maximized-hover.svg") !important;
+    background-color: transparent !important;
+    color: transparent !important;
+    background-size: 20px 20px !important;
+}
+
+/* Close button */
+.titlebar-close > .toolbarbutton-icon {
+    background-image: url("buttons/close-normal.svg") !important;
+    background-repeat: no-repeat !important;
+    background-size: 18px 18px !important;
+    background-position: center !important;
+    background-color: transparent !important;
+    color: transparent !important;
+}
+.titlebar-close:hover > .toolbarbutton-icon {
+    background-image: url("buttons/close-active.svg") !important;
+    background-color: transparent !important;
+    color: transparent !important;
+    background-size: 20px 20px !important;
+}
+```
+
+### OPTIONAL: Various Fixes for Firefox That Might Help You
 
 Sometimes after install Firefox looks odd, some buttons are off and incorrect. 
-These optional knobs are only if the GDK portal we set up in the install itself didn't work.
-Skip if whatever entry does not apply to Firefox on your system.
+**These optional knobs are only if the GDK portal we set up in the install itself didn't work.**
+**Skip** if whatever entry does not apply to Firefox on your system.
 The technical reason is a bit out of scope for this tutorial, but essentially it thinks that it is
 in another desktop environment. Portals are supposed to fix that, but if they don't you can try these
 fixes:
