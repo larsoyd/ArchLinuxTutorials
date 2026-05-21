@@ -550,8 +550,8 @@ If you are like me you close tabs with middle mouse click and you don't care to 
 
 ### OPTIONAL: Fix The Appearance of The Firefox Buttons
 
-By default Firefox hardcodes it's own buttons regardless of your system theme. This makes Firefox look gross compared to other applications. To fix this you need to add this to your userChrome.css above. If you did not use the fix above and create it you must do so before applying this fix.
-Credit to (this wonderful person)[https://www.reddit.com/r/firefox/comments/1newm16/working_code_for_userchromecss_for_firefoxnightly/?utm_source=share&utm_medium=mweb3x&utm_name=mweb3xcss&utm_term=1] for figuring out how to do this.
+By default Firefox hardcodes its own buttons regardless of your system theme. This makes Firefox look gross compared to other applications. To fix this you need to add this to your `userChrome.css`. If you skipped the previous step you must create it before applying this fix.
+Credit to [this wonderful person](https://www.reddit.com/r/firefox/comments/1newm16/working_code_for_userchromecss_for_firefoxnightly/?utm_source=share&utm_medium=mweb3x&utm_name=mweb3xcss&utm_term=1) for figuring out how to do this.
 
 ```css
 /* Minimize button */
