@@ -5,6 +5,10 @@
 ```zsh
 # Bring everything to the latest version
 sudo pacman -Syu
+
+# If you add the CachyOS repositories you have to do this
+# Install all database files for all your newer repositories
+sudo pacman -Fy
 ```
 
 ---
