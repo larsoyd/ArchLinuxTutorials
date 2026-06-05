@@ -6,7 +6,7 @@
 # Bring everything to the latest version
 sudo pacman -Syu
 
-# If you add the CachyOS repositories you have to do this
+# If you add any new repositories you have to do this
 # Install all database files for all your newer repositories
 sudo pacman -Fy
 ```
@@ -755,11 +755,14 @@ topgrade --version
 # 10. Go back HOME
 cd
 
-# ---
+# --- OPTIONAL ALIAS:
 
-# If you want you can add an alias to topgrade
-# so that you better remember it and it fits more
-# in line with the other commands that start with "pac".
+# If you want you can add an alias to run topgrade with a
+# better command name
+#
+# worth it so that you better remember it and to make it fit
+# more in line with the other commands that start with "pac".
+#
 # First edit:
 nano ~/.zshrc
 
@@ -774,6 +777,8 @@ pacup
 
 # or if you didn't add the alias:
 topgrade
+
+# ---
 
 # This is a good time to teach you the habit of running `checkrebuild` after updates.
 # 'checkrebuild' checks if you need to rebuild any packages towards new dependencies.
@@ -844,6 +849,27 @@ Add this:
 # /usr/lib/modules-load.d/ntsync.conf
 ntsync
 ```
+
+### Make Shader Pre-Compilation Faster
+
+When running games under Proton the shader compilation can legitimately hit high CPU usage because it is parallel work. This can create runtime stuttering if done during play. To mitigate this shader preprocessing is set on by default beforehand. This usually takes seconds, but sometimes under certain circumstances™ shader pre-compilation may only use one core for w/e reason and that is when people usually get frustrated by it and learn bad habits like skipping, however this flaw can be overridden by the user by adding a conf file that makes Steam always use more cores for shader comp. Example number is 8 cores, modify the number depending your own CPU and workload. Shader comp is heavy on the CPU so if you are doing other things like streaming or w/e you might want to set a lower number than all the cores. Restart Steam afterwards if it was already running:
+
+
+Here is how to set it:
+
+
+```zsh
+mkdir -p ~/.steam/steam
+printf 'unShaderBackgroundProcessingThreads 8\n' > ~/.steam/steam/steam_dev.cfg
+```
+
+This is how ~/.steam/steam/steam_dev.cfg will look like afterwards when correctly done:
+
+```cfg
+unShaderBackgroundProcessingThreads 8
+```
+
+
 
 ### 4.2.6 plocate - Quickly find any file or folder on your Arch Linux system
 ```zsh
