@@ -1308,15 +1308,9 @@ yay -S --needed lucidglyph ttf-dejavu-nerd
 text_composition_strategy 1.7 0
 ```
 
-## Enable iPhone Fast Charging on Linux with a udev Rule
+## OPTIONAL: Enable iPhone Fast Charging on Linux with a udev Rule
 
-This guide sets up Linux to request fast charging for an iPhone or another supported Apple iOS device using the kernel's `apple-mfi-fastcharge` driver.
-
-The fix works by writing `Fast` to the kernel power-supply attribute:
-
-```text
-/sys/class/power_supply/apple_mfi_fastcharge*/charge_type
-```
+What many do not know is that Linux is capable of fast charging iOS devices. This is set off by default, so here is how you can set up Linux to request fast charging for an iPhone or another supported Apple iOS device using the kernel's `apple-mfi-fastcharge` driver automatically with an udev rule.
 
 ### What this checks
 
@@ -1331,9 +1325,16 @@ Fast
 - `Fast` means Linux has requested fast charging.
 - This does not measure real watts or amps. Use an inline USB power meter if you want to verify actual electrical draw.
 
+
+The fix works by writing `Fast` to the kernel power-supply attribute:
+
+```text
+/sys/class/power_supply/apple_mfi_fastcharge*/charge_type
+```
+
 ### 1. Plug in the iPhone
 
-Plug the iPhone into a USB data-capable port.
+First plug the iPhone into a USB data-capable port. Open your phone and trust the computer.
 
 Wait a few seconds.
 
@@ -1501,7 +1502,7 @@ Expected result:
 /sys/class/power_supply/apple_mfi_fastcharge_1-12/charge_type: Fast
 ```
 
-### Troubleshooting
+### General Troubleshooting
 
 #### No `apple_mfi_fastcharge` path exists
 
