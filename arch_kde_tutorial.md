@@ -931,6 +931,8 @@ mkdir -p /etc/bluetooth
 nano /etc/bluetooth/main.conf
 ```
 
+Find & Uncomment FastConnectable and change 'false' to 'true':
+
 ```conf
 # Permanently enables the Fast Connectable setting for adapters that
 # support it. When enabled other devices can connect faster to us,
