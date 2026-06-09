@@ -833,6 +833,17 @@ yay -S --needed steam xorg-fonts-misc
 steam
 ```
 
+### Fix Steam MP4 Playback
+By default MP4 playthrough in Steam Chat is broken under Linux. To fix this you need to run Steam’s H.264 decoder unlock for the Linux web component. Run this with Steam fully closed:
+
+```zsh
+
+steam steam://unlockh264/
+
+```
+
+Then let Steam finish whatever it opens/downloads, quit Steam again, and start it normally. 
+
 ### Enable ntsync by default
 ```zsh
 # ntsync is an experimental Linux kernel driver mimicking Windows synchronization mechanisms.
