@@ -538,10 +538,11 @@ Finally, log out/in or restart for it to fully apply.
 
 If you are like me you close tabs with middle mouse click and you don't care to mute the tab has sound on it then you want to remove these buttons on the tabs since they get in the way. These changes removes those buttons then puts a light blue (`#1793d1`) border around the tab icon instead to indicate what tab is playing audio. Why light blue? It harmonizes with the primary color of Arch Linux and KDE Plasma. Feel free to change it in the code if you like.
 
-1. To enable this write `about:support` in the URL bar and press enter.
-2. Go to `Profile Folder` section and press `Open Folder`
-3. Create a new folder in the directory called `chrome` (Yes I know, that is what it is called)
-4. Create a file in there called `userChrome.css` with these contents :
+1. First, go to `about:config` in URL bar and then put in `toolkit.legacyUserProfileCustomizations.stylesheets` and set it to `true`
+2. Then write `about:support` in the URL bar and press enter.
+3. Go to `Profile Folder` section and press `Open Folder`
+4. Create a new folder in the directory called `chrome` (Yes I know, that is what it is called)
+5. Create a file in there called `userChrome.css` with these contents :
 
 ```css
 /* Remove the tab close icon/button */
@@ -562,13 +563,21 @@ If you are like me you close tabs with middle mouse click and you don't care to 
 }
 ```
 
-5. Go now to `about:config` in URL bar and then put in `toolkit.legacyUserProfileCustomizations.stylesheets` and set it to `true`
 6. Completely quit and restart Firefox for the changes to take effect. 
+7. Enjoy!
 
 ### OPTIONAL: Fix The Appearance of The Firefox Buttons
 
 By default Firefox hardcodes its own buttons regardless of your system theme. This makes Firefox look gross compared to other applications. To fix this you need to add this to your `userChrome.css`. If you skipped the previous step you must create it before applying this fix.
 Credit to [this wonderful person](https://www.reddit.com/r/firefox/comments/1newm16/working_code_for_userchromecss_for_firefoxnightly/?utm_source=share&utm_medium=mweb3x&utm_name=mweb3xcss&utm_term=1) for figuring out how to do this.
+
+**If you skipped the previous step, do this first:**
+
+1. First, go to `about:config` in URL bar and then put in `toolkit.legacyUserProfileCustomizations.stylesheets` and set it to `true`
+2. Then write `about:support` in the URL bar and press enter.
+3. Go to `Profile Folder` section and press `Open Folder`
+4. Create a new folder in the directory called `chrome` (Yes I know, that is what it is called)
+5. Create a file in there called `userChrome.css` with these contents :
 
 ```css
 /* Minimize button */
@@ -643,6 +652,8 @@ cd ~/.config/mozilla/firefox/PROFILE_ID_HERE.default-release/chrome
 
 ln -sfn ~/.config/gtk-3.0/assets buttons
 ```
+
+And finally restart Firefox.
 
 ### OPTIONAL: Various Fixes for Firefox That Might Help You
 
