@@ -536,7 +536,7 @@ Finally, log out/in or restart for it to fully apply.
 
 ### OPTIONAL: Remove the Close + Mute button on Tabs
 
-If you are like me you close tabs with middle mouse click and you don't care to mute the tab has sound on it then you want to remove these buttons on the tabs since they get in the way. These changes removes those buttons then puts a light blue border around the tab icon instead to indicate what tab is playing audio. Why light blue? It harmonizes with the primary color of Arch Linux and KDE Plasma.
+If you are like me you close tabs with middle mouse click and you don't care to mute the tab has sound on it then you want to remove these buttons on the tabs since they get in the way. These changes removes those buttons then puts a light blue (`#1793d1`) border around the tab icon instead to indicate what tab is playing audio. Why light blue? It harmonizes with the primary color of Arch Linux and KDE Plasma. Feel free to change it in the code if you like.
 
 1. To enable this write `about:support` in the URL bar and press enter.
 2. Go to `Profile Folder` section and press `Open Folder`
