@@ -486,6 +486,19 @@ export GST_PLUGIN_FEATURE_RANK=nvmpegvideodec:MAX,nvmpeg2videodec:MAX,nvmpeg4vid
 
 Those without AV1 hardware support may also want to disable AV1 decoders (e.g., for YouTube on webkit2gtk based browsers) by appending `avdec_av1:NONE` and `av1dec:NONE` to the list above. 
 
+### NVIDIA GLX Helper:
+
+Modern Linux systems use libglvnd, a vendor-neutral OpenGL dispatch layer. Its job is to choose whether OpenGL calls go to Mesa, NVIDIA, etc. By adding this you help many games and relevant apps use the NVIDIA driver instead of falling back to Mesa, llvmpipe, or the wrong GPU. If you do not set this explicitly and you happen to have this problem the games will run at single digit FPS and you have no idea why. Pretty fun.
+
+```zsh
+# Create the file:
+nano ~/.config/plasma-workspace/env/glx-nvidia-values.sh
+```
+
+```sh
+# ~/.config/plasma-workspace/env/glx-nvidia-values.sh
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+```
 
 ### Configuring Firefox:
 
