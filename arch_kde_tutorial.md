@@ -899,6 +899,8 @@ fs.inotify.max_user_watches = 524288
 sysctl --system
 ```
 
+---
+
 ### Udev rules
 
 udev is Linux’s device manager. It reacts to hardware events, such as a disk being added or changed, and applies matching rules from .rules files. Rule files are processed in lexical order, so the numeric prefix in `60-ioschedulers.rules` for example controls when this rule is evaluated relative to other udev rules. The ones without "OPTIONAL:" before them are strongly recommended on any system.
@@ -1038,6 +1040,8 @@ Why do it: this can help avoid SATA latency spikes, drive wake delays, or rare c
 
 What to expect: SATA disks and SSDs may respond more consistently after idle time. The downside is slightly higher power consumption, especially on laptops.
 
+OPTIONAL: Only for SATA SSDs and desktops, not laptops.
+
 ```zsh
 # Create folder
 mkdir -p /etc/udev/rules.d
@@ -1055,9 +1059,13 @@ ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", \
     ATTR{link_power_management_policy}="max_performance"
 ```
 
+---
+
 ### OPTIONAL: Allow Audio to Run on Max Priority
 
 This lets audio software such as JACK, PipeWire audio threads, Ardour, DAWs, synths, plugins, low-latency audio tools request realtime scheduling. That helps audio threads run on time, reducing crackles, dropouts, and latency under load. **Note:** in rare cases a badly behaved realtime process *might* make the desktop sluggish or, in extreme cases, difficult to recover, because realtime threads can outrank normal desktop/system work but the benefits outweigh the problems 99% of the time IMO.
+
+OPTIONAL: Only if you added yourself to the audio group and have enabled other low latency audio work.
 
 ```zsh
 # Create folder
