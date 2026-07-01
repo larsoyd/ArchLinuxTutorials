@@ -498,7 +498,7 @@ VariantList=
 # Save, then fix ownership
 # again change "lars" to your user:
 chown -R lars:lars /home/lars/.config
-chmod 644 /home/lars/.config/kxkbr
+chmod 644 /home/lars/.config/kxkbrc
 
 ```
 
