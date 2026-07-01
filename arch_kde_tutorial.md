@@ -882,9 +882,9 @@ fs.inotify.max_user_watches = 524288
 sysctl --system
 ```
 
-### Allow Audio to Run on Max Priority
+### OPTIONAL: Allow Audio to Run on Max Priority
 
-This lets audio software such as JACK, PipeWire audio threads, Ardour, DAWs, synths, plugins, low-latency audio tools request realtime scheduling. That helps audio threads run on time, reducing crackles, dropouts, and latency under load. Note that in rare cases a badly behaved realtime process can make the desktop sluggish or, in extreme cases, difficult to recover, because realtime threads can outrank normal desktop/system work but the benefits usually outweigh the problems.
+This lets audio software such as JACK, PipeWire audio threads, Ardour, DAWs, synths, plugins, low-latency audio tools request realtime scheduling. That helps audio threads run on time, reducing crackles, dropouts, and latency under load. **Note:** in rare cases a badly behaved realtime process *might* make the desktop sluggish or, in extreme cases, difficult to recover, because realtime threads can outrank normal desktop/system work but the benefits outweigh the problems 99% of the time IMO.
 
 ```zsh
 # Create folder
@@ -895,6 +895,7 @@ nano /etc/security/limits.d/20-audio.conf
 ```
 
 ```conf
+# /etc/security/limits.d/20-audio.conf
 @audio - rtprio 99
 ```
 
