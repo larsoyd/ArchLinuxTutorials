@@ -363,7 +363,7 @@ pacman -S --needed zsh git
 passwd
 
 # Create user with necessary groups
-useradd -m -G wheel lars
+useradd -m -G wheel,audio lars
 passwd lars
 
 # Set zsh as default shell for user
