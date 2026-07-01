@@ -561,21 +561,6 @@ ark is a KDE developed method to unzip archive files on your computer. "Optional
 
 ## **NOT INCLUDED IN THE STEP BUT YOU MAY WANT TO INCLUDE:**
 
-### wireless-regdb
-If you use wireless then an **essential package** is also `wireless-regdb`. It installs regulatory.db, a machine-readable table of Wi-Fi rules per country  that allows you to connect properly. If regulatory.db is missing or cannot be read, Linux falls back to the “world” regdomain 00. That profile is **intentionally conservative,** which means fewer channels and more restrictions. For example, world 00 marks many 5 GHz channels as passive-scan only and limits parts of 2.4 GHz (12–13 passive, 14 effectively off).
-
-```zsh
-# after install enable your region
-nano /etc/conf.d/wireless-regdom
-
-# For example, for the United States look for the one that says "US",
-# then uncomment the line by removing the # symbol at the beginning
-# so it looks exactly like this:
-WIRELESS_REGDOM="US"
-
-# then save
-```
-
 ### audiocd-kio
 This adds the audiocd:/ KIO worker so Dolphin and other KDE apps can read and rip audio CDs. Not needed on non-KDE Plasma systems, but KDE has their own thing for this. If you are on a laptop with a CD player and/or ever need to play audio CDs on your PC then you are going to want this.
 
@@ -648,6 +633,26 @@ pacman -S --needed \
   hunspell hunspell-en_us quota-tools usbutils \
   pacman-contrib git wget \
   base-devel
+```
+
+### OPTIONAL: wireless-regdb
+If you use wireless then an **essential package** is also `wireless-regdb`. It installs regulatory.db, a machine-readable table of Wi-Fi rules per country  that allows you to connect properly. If regulatory.db is missing or cannot be read, Linux falls back to the “world” regdomain 00. That profile is **intentionally conservative,** which means fewer channels and more restrictions. For example, world 00 marks many 5 GHz channels as passive-scan only and limits parts of 2.4 GHz (12–13 passive, 14 effectively off).
+
+OPTIONAL: Not needed if you only use Ethernet.
+
+```zsh
+# install
+pacman -S --needed wireless-regdb
+
+# after install enable your region
+nano /etc/conf.d/wireless-regdom
+
+# For example, for Norway look for the one that says "NO",
+# then uncomment the line by removing the # symbol at the beginning
+# so it looks exactly like this:
+WIRELESS_REGDOM="NO"
+
+# then save
 ```
 
 
