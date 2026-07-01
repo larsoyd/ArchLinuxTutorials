@@ -882,6 +882,154 @@ fs.inotify.max_user_watches = 524288
 sysctl --system
 ```
 
+### Udev rules
+
+udev is Linux’s device manager. It reacts to hardware events, such as a disk being added or changed, and applies matching rules from .rules files. Rule files are processed in lexical order, so the numeric prefix in `60-ioschedulers.rules` for example controls when this rule is evaluated relative to other udev rules. The ones without "OPTIONAL:" before them are strongly recommended on any system.
+
+#### 60-ioschedulers.rules
+
+This udev rule persistently sets Linux block-device I/O schedulers when storage devices are added or changed. An I/O scheduler controls how read and write requests are ordered before they reach a storage device. This example selects BFQ for rotational hard drives, mq-deadline for non-rotational SATA/eMMC storage, and Kyber for NVMe SSDs. The goal is better desktop responsiveness and more sensible latency behavior per drive type, instead of relying on one default for everything. Linux exposes schedulers such as mq-deadline, none, bfq, and kyber through /sys/block/<device>/queue/scheduler, depending on kernel and device support.
+
+```zsh
+# Create folder
+mkdir -p /etc/udev/rules.d
+
+# Add conf
+nano /etc/udev/rules.d/60-ioschedulers.rules
+```
+
+```conf
+# /etc/udev/rules.d/60-ioschedulers.rules
+# HDD
+ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", \
+    ATTR{queue/scheduler}="bfq"
+
+# SSD
+ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", \
+    ATTR{queue/scheduler}="mq-deadline"
+
+# NVMe SSD
+ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", \
+    ATTR{queue/scheduler}="kyber"
+```
+
+#### OPTIONAL: 71-nvidia.rules
+
+This rule enables PCI runtime power management for NVIDIA VGA/3D controller devices when the NVIDIA driver binds to the GPU, then switches it back to on when the driver unbinds. In practice, it allows a supported idle NVIDIA GPU to enter lower power states instead of staying fully awake all the time. This is most useful on hybrid/on-demand GPU setups, laptops, or desktops where the NVIDIA GPU is not constantly driving displays.
+
+What to expect: lower idle power and heat when the GPU is unused, but little or no benefit if your monitors are connected to the NVIDIA GPU, if a CUDA workload is running, or if desktop rendering keeps the GPU active. NVIDIA’s runtime D3 power management also depends on hardware, ACPI, kernel, and GPU support. NVIDIA documents support for Turing or newer GPUs, kernel 4.18 or newer, and working PCI runtime power management support.
+
+```zsh
+# Create folder
+mkdir -p /etc/udev/rules.d
+
+# Add conf
+nano /etc/udev/rules.d/71-nvidia.rules
+```
+
+```conf
+# /etc/udev/rules.d/71-nvidia.rules
+# Enable runtime PM for NVIDIA VGA/3D controller devices on driver bind
+ACTION=="add|bind", SUBSYSTEM=="pci", DRIVERS=="nvidia", \
+    ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", \
+    TEST=="power/control", ATTR{power/control}="auto"
+
+# Disable runtime PM for NVIDIA VGA/3D controller devices on driver unbind
+ACTION=="remove|unbind", SUBSYSTEM=="pci", DRIVERS=="nvidia", \
+    ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", \
+    TEST=="power/control", ATTR{power/control}="on"
+```
+
+#### 99-cpu-dma-latency.rules
+
+This rule changes the permissions for /dev/cpu_dma_latency so users in the audio group can use the kernel’s CPU latency QoS interface. This does not force low latency by itself. It simply allows audio software or helper tools to request that the CPU avoid deep sleep states while low-latency work is running.
+
+Why do it: deep CPU sleep states save power, but waking from them can add latency spikes. For realtime audio, those spikes can become crackles, dropouts, or unstable low buffer sizes. When a program opens /dev/cpu_dma_latency and keeps it open, the kernel treats that as an active latency request until the file is closed.
+
+What to expect: no visible desktop change on its own. When used by audio software, it may improve low-latency reliability under load, at the cost of somewhat higher power use and heat while the request is active.
+
+```zsh
+# Create folder
+mkdir -p /etc/udev/rules.d
+
+# Add conf
+nano /etc/udev/rules.d/99-cpu-dma-latency.rules
+```
+
+```conf
+# /etc/udev/rules.d/99-cpu-dma-latency.rules
+DEVPATH=="/devices/virtual/misc/cpu_dma_latency", OWNER="root", GROUP="audio", MODE="0660"
+```
+
+#### 40-hpet-permissions.rules
+
+This rule gives the audio group access to the system timer devices /dev/rtc0 and /dev/hpet. RTC means real-time clock, and HPET means High Precision Event Timer. Some older or specialized audio, MIDI, FireWire, and timing-sensitive tools may try to access these devices directly for precise timing.
+
+Why do it: on systems or tools that still need these timer devices, group access avoids running audio tools as root just to open a timing device. The Linux kernel documents RTC devices as hardware clocks that can provide alarms and interrupts, and HPET as a high precision timer interface with a userspace API similar to RTC.
+
+What to expect: usually nothing obvious on modern PipeWire/JACK systems unless a tool specifically needs RTC or HPET access. It is a compatibility/permissions rule.
+
+```zsh
+# Create folder
+mkdir -p /etc/udev/rules.d
+
+# Add conf
+nano /etc/udev/rules.d/40-hpet-permissions.rules
+```
+
+```conf
+# /etc/udev/rules.d/40-hpet-permissions.rules
+KERNEL=="rtc0", GROUP="audio"
+KERNEL=="hpet", GROUP="audio"
+```
+
+#### OPTIONAL: 69-hdparm.rules
+
+This rule applies hdparm settings to rotational ATA hard drives when they are added or changed. The -B 254 option sets Advanced Power Management to its highest performance-oriented value while still using the drive’s APM feature, and -S 0 disables the automatic standby/spindown timeout. In plain terms, it tells matching HDDs: prioritize responsiveness, do not aggressively park or spin down.
+
+Why do it: this can reduce annoying drive wake-up delays, avoid repeated spin-up/spin-down behavior, and help keep desktop or media workloads responsive. It may also reduce excessive load/unload cycles on drives that park too aggressively. The tradeoff is higher power use, more heat, and possibly more noise, because the disk is less likely to enter low-power states. hdparm documents -B as controlling Advanced Power Management, where higher values favor performance, and -S 0 as disabling the automatic standby timeout.
+
+What to expect: HDDs should feel more immediately available after idle periods. **This does not apply to SSDs or NVMe drives because the rule only targets rotational ATA disks.**
+
+```zsh
+# Create folder
+mkdir -p /etc/udev/rules.d
+
+# Add conf
+nano /etc/udev/rules.d/69-hdparm.rules
+```
+
+```conf
+# /etc/udev/rules.d/69-hdparm.rules
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", \
+    ATTRS{id/bus}=="ata", RUN+="/usr/bin/hdparm -B 254 -S 0 /dev/%k"
+```
+
+#### OPTIONAL: 50-sata.rules
+
+This rule sets SATA Active Link Power Management to max_performance for supported SATA host controllers. ALPM saves power by putting the SATA link into lower power states during idle periods, then waking it when I/O returns. Setting `max_performance` disables that link power saving and prioritizes latency and stability instead.
+
+Why do it: this can help avoid SATA latency spikes, drive wake delays, or rare compatibility issues caused by aggressive link power saving. It is most useful on desktops, workstations, audio systems, gaming systems, and always-plugged-in machines where responsiveness matters more than saving a small amount of power.
+
+What to expect: SATA disks and SSDs may respond more consistently after idle time. The downside is slightly higher power consumption, especially on laptops.
+
+```zsh
+# Create folder
+mkdir -p /etc/udev/rules.d
+
+# Add conf
+nano /etc/udev/rules.d/50-sata.rules
+```
+
+```conf
+# /etc/udev/rules.d/50-sata.rules
+# SATA Active Link Power Management
+ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", \
+    ATTR{link_power_management_supported}=="1", \
+    ATTR{link_power_management_policy}=="*", \
+    ATTR{link_power_management_policy}="max_performance"
+```
+
 ### OPTIONAL: Allow Audio to Run on Max Priority
 
 This lets audio software such as JACK, PipeWire audio threads, Ardour, DAWs, synths, plugins, low-latency audio tools request realtime scheduling. That helps audio threads run on time, reducing crackles, dropouts, and latency under load. **Note:** in rare cases a badly behaved realtime process *might* make the desktop sluggish or, in extreme cases, difficult to recover, because realtime threads can outrank normal desktop/system work but the benefits outweigh the problems 99% of the time IMO.
