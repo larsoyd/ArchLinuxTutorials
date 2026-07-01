@@ -362,8 +362,25 @@ pacman -S --needed zsh git
 # Set root password
 passwd
 
-# Create user with necessary groups
+# Create user with necessary groups, either:
+
+## ## Option 1 - Audio & Wheel
+# Add yourself to both audio and wheel
+# for sudo access (wheel) and for realtime
+# optimizations (audio). The latter is not
+# needed, but it is what I personally use.
 useradd -m -G wheel,audio lars
+passwd lars
+
+## Option 2 - Wheel only
+# If you do not wish to enable audio
+# optimizations you can leave yourself
+# out of audio group. It is not strictly
+# necessary and comes with a few minor
+# regressions in regards to multi-user
+# systems which most aren't running
+# anyways.
+useradd -m -G wheel lars
 passwd lars
 
 # Set zsh as default shell for user
@@ -919,6 +936,8 @@ This rule enables PCI runtime power management for NVIDIA VGA/3D controller devi
 
 What to expect: lower idle power and heat when the GPU is unused, but little or no benefit if your monitors are connected to the NVIDIA GPU, if a CUDA workload is running, or if desktop rendering keeps the GPU active. NVIDIA’s runtime D3 power management also depends on hardware, ACPI, kernel, and GPU support. NVIDIA documents support for Turing or newer GPUs, kernel 4.18 or newer, and working PCI runtime power management support.
 
+Optional: Only for NVIDIA users / Users with compatible NVIDIA cards
+
 ```zsh
 # Create folder
 mkdir -p /etc/udev/rules.d
@@ -940,13 +959,15 @@ ACTION=="remove|unbind", SUBSYSTEM=="pci", DRIVERS=="nvidia", \
     TEST=="power/control", ATTR{power/control}="on"
 ```
 
-#### 99-cpu-dma-latency.rules
+#### OPTIONAL: 99-cpu-dma-latency.rules
 
 This rule changes the permissions for /dev/cpu_dma_latency so users in the audio group can use the kernel’s CPU latency QoS interface. This does not force low latency by itself. It simply allows audio software or helper tools to request that the CPU avoid deep sleep states while low-latency work is running.
 
 Why do it: deep CPU sleep states save power, but waking from them can add latency spikes. For realtime audio, those spikes can become crackles, dropouts, or unstable low buffer sizes. When a program opens /dev/cpu_dma_latency and keeps it open, the kernel treats that as an active latency request until the file is closed.
 
 What to expect: no visible desktop change on its own. When used by audio software, it may improve low-latency reliability under load, at the cost of somewhat higher power use and heat while the request is active.
+
+OPTIONAL: Only if you added yourself to the audio group and have enabled other low latency audio work.
 
 ```zsh
 # Create folder
@@ -961,13 +982,15 @@ nano /etc/udev/rules.d/99-cpu-dma-latency.rules
 DEVPATH=="/devices/virtual/misc/cpu_dma_latency", OWNER="root", GROUP="audio", MODE="0660"
 ```
 
-#### 40-hpet-permissions.rules
+#### OPTIONAL: 40-hpet-permissions.rules
 
 This rule gives the audio group access to the system timer devices /dev/rtc0 and /dev/hpet. RTC means real-time clock, and HPET means High Precision Event Timer. Some older or specialized audio, MIDI, FireWire, and timing-sensitive tools may try to access these devices directly for precise timing.
 
 Why do it: on systems or tools that still need these timer devices, group access avoids running audio tools as root just to open a timing device. The Linux kernel documents RTC devices as hardware clocks that can provide alarms and interrupts, and HPET as a high precision timer interface with a userspace API similar to RTC.
 
 What to expect: usually nothing obvious on modern PipeWire/JACK systems unless a tool specifically needs RTC or HPET access. It is a compatibility/permissions rule.
+
+OPTIONAL: Only if you added yourself to the audio group and have enabled other low latency audio work.
 
 ```zsh
 # Create folder
@@ -990,6 +1013,8 @@ This rule applies hdparm settings to rotational ATA hard drives when they are ad
 Why do it: this can reduce annoying drive wake-up delays, avoid repeated spin-up/spin-down behavior, and help keep desktop or media workloads responsive. It may also reduce excessive load/unload cycles on drives that park too aggressively. The tradeoff is higher power use, more heat, and possibly more noise, because the disk is less likely to enter low-power states. hdparm documents -B as controlling Advanced Power Management, where higher values favor performance, and -S 0 as disabling the automatic standby timeout.
 
 What to expect: HDDs should feel more immediately available after idle periods. **This does not apply to SSDs or NVMe drives because the rule only targets rotational ATA disks.**
+
+OPTIONAL: Only for HDD users
 
 ```zsh
 # Create folder
