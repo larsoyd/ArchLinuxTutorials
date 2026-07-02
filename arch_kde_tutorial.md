@@ -901,21 +901,28 @@ fs.inotify.max_user_instances = 8192
 fs.inotify.max_user_watches = 524288
 ```
 
-* This is an optional but highly recommended tweak which enables all the Magic SysRq functions needed for **REISUB.** REISUB is a *last resort* fail safe to reboot a Linux system without using the power button if the system is completely unresponsive. **Do not use the power button to forcibly shut down ANY Linux system, every file system issue I have ever had was the result of me doing that.** This exists so that you don't have to do that.
+### OPTIONAL: THE MAGIC OF REISUB / Enable REISUB via sysctl
 
-* REISUB is activated by holding Alt + SysRq/Print Screen, then pressing R E I S U B one at a time, allowing a moment between S, U, and B. The kernel documents R as restoring keyboard mode, E and I as terminating processes, S as syncing filesystems, U as remounting read-only, and B as rebooting immediately.
+This is an optional but highly recommended tweak which enables all the Magic SysRq functions needed for **REISUB.** REISUB is a *last resort* fail safe to reboot a Linux system without using the power button if the system is completely unresponsive. **IF your system is ever frozen on Linux DO NOT EVER use the power button to forcibly shut it down, I am not joking when I say that literally every file system issue I have ever had on Linux was the result of me doing that.** This exists so that you don't have to mess up your system like I did before using this. - Here is what it is, how to use it, and why you should want to enable it despite the risks:
 
-* On Arch REISUB is not enabled by default due to upstream security considerations. Arch inherits the systemd default of `16`. Because Magic SysRq is handled directly by the kernel a malicious actor can use it to really mess with your day if they want to troll you. They can SIGTERM processes, remount file systems, reboot your system, or kill everything with SAK.
+* WHAT: REISUB is an emergency restart procedure for Linux. You use it when the computer appears completely frozen and normal options, such as closing programs, switching terminals, or choosing Restart, no longer work.
 
-* This sounds scary, but for a single user desktop computer it's not really a big deal, for a laptop that you will carry around a lot you might want to evaluate if the risk is worth it. I think it is, but maybe you don't think so.
+* HOW: REISUB is activated by holding Alt + SysRq/Print Screen, then pressing R E I S U B one at a time, allowing a moment between S, U, and B. The kernel documents R as restoring keyboard mode, E and I as terminating processes, S as syncing filesystems, U as remounting read-only, and B as rebooting immediately.
 
-* For your sake I have set it not to `1` which the Arch wiki recommends, as that enables *everything.* Instead I only enable what REISUB specifically needs to be able to do this.
+* WHY NOT: On Arch REISUB is not enabled by default due to upstream security considerations. Arch inherits the systemd default of `16`. Because Magic SysRq is handled directly by the kernel a malicious actor can use it to really mess with your day if they want to troll you. With what I enable they can remount file systems, & reboot your system without a security prompt.
+
+* WHY: This sounds scary, but for a single user desktop computer it's not really a big deal, for a laptop that you will carry around ayou might want to evaluate if the risk is worth it, but for the most part even there the risk is someone wants to be a dick for no reason. You could solve this by having the keyboard disabled or disable it when leaving it unattended. I think it is worth the risk, but YMMV
+
+* For your sake I will say I have **NOT** set it not to `1` which the Arch wiki for some reason recommends, as that enables *everything.* Instead I only enable what REISUB specifically needs to be able to do this.
 
 ```zsh
+# create file
 nano /etc/sysctl.d/99-sysrq.conf
 ```
 
 ```zsh
+# /etc/sysctl.d/99-sysrq.conf
+#
 # 244 is the sum of:
 # 4: keyboard control, used by R
 # 64: signal processes, used by E and I
@@ -1308,7 +1315,7 @@ If you did everything correct, **congrats you just installed Arch Linux!**
 
 ### TROUBLESHOOT 
 
-#### Panel/Taskbar not appearing! / on wrong monitor! 
+#### "My Panel/Taskbar is not appearing! / on wrong monitor!"
 
  1. Right click on desktop and click Display Configuration. 
  2. Go to "Change Screen Priorities" and click the arrows up in prio for the monitor you want
