@@ -903,7 +903,7 @@ fs.inotify.max_user_watches = 524288
 
 ### OPTIONAL: THE MAGIC OF REISUB / Enable REISUB via sysctl
 
-This is an optional but highly recommended tweak which enables all the Magic SysRq functions needed for **REISUB.** REISUB is a *last resort* fail safe to reboot a Linux system without using the power button if the system is completely unresponsive. **IF your system is ever frozen on Linux DO NOT EVER use the power button to forcibly shut it down, I am not joking when I say that literally every file system issue I have ever had on Linux was the result of me doing that.** This exists so that you don't have to mess up your system like I did before using this. - Here is what it is, how to use it, and why you should want to enable it despite the risks:
+This is an optional but highly recommended tweak which enables all the Magic SysRq functions needed for **REISUB.** REISUB is a *last resort* fail safe to reboot a Linux system without using the power button if the system is completely unresponsive. **IF your system is ever frozen on Linux DO NOT EVER use the power button to forcibly shut it down, I am not joking when I say that literally every file system issue I have ever had on Linux was the result of me doing that.** Now the problem is that without REISUB the rare times your system is completely unresponsive you have no choice but to risk it by using the power button. REISUB solves that so that you don't have to mess up your system like I did before using this. - Here is what it is, how to use it, and why you should want to enable it despite the risks:
 
 * WHAT: REISUB is an emergency restart procedure for Linux. You use it when the computer appears completely frozen and normal options, such as closing programs, switching terminals, or choosing Restart, no longer work.
 
@@ -911,9 +911,9 @@ This is an optional but highly recommended tweak which enables all the Magic Sys
 
 * WHY NOT: On Arch REISUB is not enabled by default due to upstream security considerations. Arch inherits the systemd default of `16`. Because Magic SysRq is handled directly by the kernel a malicious actor can use it to really mess with your day if they want to troll you. With what I enable they can remount file systems, & reboot your system without a security prompt.
 
-* WHY: This sounds scary, but for a single user desktop computer it's not really a big deal, for a laptop that you will carry around ayou might want to evaluate if the risk is worth it, but for the most part even there the risk is someone wants to be a dick for no reason. You could solve this by having the keyboard disabled or disable it when leaving it unattended. I think it is worth the risk, but YMMV
+* WHY: This sounds scary, but for a single user desktop computer it's not really a big deal, for a laptop that you will carry around ayou might want to evaluate if the risk is worth it, but for the most part even there the risk is someone wants to be a dick for no reason. Worth noting they can do some of that stuff via the power button anyways like shutdown and reboot. You could also solve this by disabling the keyboard when leaving your system unattended or saving your work and shutting it down yourself. I think it is worth the risk, but YMMV
 
-* For your sake I will say I have **NOT** set it not to `1` which the Arch wiki for some reason recommends, as that enables *everything.* Instead I only enable what REISUB specifically needs to be able to do this.
+* If it helps my case for enabling this, I will say I have **NOT** set it not to `1` which the Arch wiki for some reason recommends, as that enables *everything.* Instead I only enable what REISUB specifically needs to be able to do this.
 
 ```zsh
 # create file
