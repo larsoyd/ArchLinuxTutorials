@@ -1,6 +1,6 @@
 # Complete Arch Linux Tutorial (KDE Plasma + Wayland w/ Automounting Partitions)
 
-This is an **OPINIONATED** Arch installation guide for regular folks who just want a working system to game on that's straight forward with a DE that is most like Windows
+This is an **OPINIONATED** Arch installation guide for regular folks who just want a working system to game on that's straight forward & optimized with opinionated tweaks using a DE that is most like Windows
 and usually the one most people want to use because of that, at least for their first DE. I've used every DE and WM that is both trendy and some obscure,
 I started with KDE Plasma and Arch Linux. I always come back to both eventually. It's fun to try out new things, but KDE Plasma is OP at the moment I am writing 
 this. It's fully featured, they finally have a good process in eliminating bugs which plagued the DE before, and it's very easy to customize. Most DEs and WMs have
@@ -812,7 +812,9 @@ then:
 systemctl enable swapfile.swap
 ```
 
-### Kernel Optimizations :
+---
+
+## Kernel/sysctl Optimizations
 
 ```zsh
 # Clone repo first:
@@ -824,10 +826,10 @@ cd
 
 # These are a combination of CachyOS settings and other sources
 # Create sysctl.d folder
-mkdir -p /usr/lib/sysctl.d/
+mkdir -p /etc/sysctl.d/
 
 # copy from tmp
-cp /tmp/ArchLinuxTutorials/70-settings.conf /usr/lib/sysctl.d/70-settings.conf
+cp /tmp/ArchLinuxTutorials/70-settings.conf /etc/sysctl.d/sysctl.d/70-settings.conf
 ```
 
 ```conf
@@ -899,6 +901,30 @@ fs.inotify.max_user_instances = 8192
 fs.inotify.max_user_watches = 524288
 ```
 
+* This is an optional but highly recommended tweak which enables all the Magic SysRq functions needed for **REISUB.** REISUB is a *last resort* fail safe to reboot a Linux system without using the power button if the system is completely unresponsive. **Do not use the power button to forcibly shut down ANY Linux system, every file system issue I have ever had was the result of me doing that.** This exists so that you don't have to do that.
+
+* REISUB is activated by holding Alt + SysRq/Print Screen, then pressing R E I S U B one at a time, allowing a moment between S, U, and B. The kernel documents R as restoring keyboard mode, E and I as terminating processes, S as syncing filesystems, U as remounting read-only, and B as rebooting immediately.
+
+* On Arch REISUB is not enabled by default due to upstream security considerations. Arch inherits the systemd default of `16`. Because Magic SysRq is handled directly by the kernel a malicious actor can use it to really mess with your day if they want to troll you. They can SIGTERM processes, remount file systems, reboot your system, or kill everything with SAK.
+
+* This sounds scary, but for a single user desktop computer it's not really a big deal, for a laptop that you will carry around a lot you might want to evaluate if the risk is worth it. I think it is, but maybe you don't think so.
+
+* For your sake I have set it not to `1` which the Arch wiki recommends, as that enables *everything.* Instead I only enable what REISUB specifically needs to be able to do this.
+
+```zsh
+nano /etc/sysctl.d/99-sysrq.conf
+```
+
+```zsh
+# 244 is the sum of:
+# 4: keyboard control, used by R
+# 64: signal processes, used by E and I
+# 16: sync filesystems, used by S
+# 32: remount filesystems read-only, used by U
+# 128: reboot or power off, used by B
+kernel.sysrq = 244
+```
+
 ```zsh
 # Load settings from all system configuration files to configure kernel parameters at runtime.
 sysctl --system
@@ -912,13 +938,16 @@ udev is Linux’s device manager. It reacts to hardware events, such as a disk b
 
 #### 60-ioschedulers.rules
 
-This udev rule persistently sets Linux block-device I/O schedulers when storage devices are added or changed. An I/O scheduler controls how read and write requests are ordered before they reach a storage device. This example selects BFQ for rotational hard drives, mq-deadline for non-rotational SATA/eMMC storage, and Kyber for NVMe SSDs. The goal is better desktop responsiveness and more sensible latency behavior per drive type, instead of relying on one default for everything. Linux exposes schedulers such as mq-deadline, none, bfq, and kyber through /sys/block/<device>/queue/scheduler, depending on kernel and device support.
+This udev rule persistently sets Linux block-device I/O schedulers when storage devices are added or changed. An I/O scheduler controls how read and write requests are ordered before they reach a storage device. This example selects BFQ for rotational hard drives, mq-deadline for non-rotational SATA/eMMC storage, and Kyber for NVMe SSDs. The goal is better desktop responsiveness and more sensible latency behavior per drive type, instead of relying on one default for everything. Linux exposes schedulers such as mq-deadline, none, bfq, and kyber through /sys/block/<device>/queue/scheduler, depending on kernel and device support. **Not optional, good for any system to have.**
 
 ```zsh
 # Create folder
 mkdir -p /etc/udev/rules.d
 
-# Add conf
+# Auto (if repo cloned)
+cp /tmp/ArchLinuxTutorials/60-ioschedulers.rules /etc/udev/rules.d/60-ioschedulers.rules
+
+# Manually:
 nano /etc/udev/rules.d/60-ioschedulers.rules
 ```
 
@@ -949,6 +978,10 @@ Optional: Only for NVIDIA users / Users with compatible NVIDIA cards
 # Create folder
 mkdir -p /etc/udev/rules.d
 
+# Auto (if repo cloned)
+cp /tmp/ArchLinuxTutorials/71-nvidia.rules /etc/udev/rules.d/71-nvidia.rules
+
+# Manually:
 # Add conf
 nano /etc/udev/rules.d/71-nvidia.rules
 ```
@@ -980,6 +1013,10 @@ OPTIONAL: Only if you added yourself to the audio group and have enabled other l
 # Create folder
 mkdir -p /etc/udev/rules.d
 
+# Auto (if repo cloned)
+cp /tmp/ArchLinuxTutorials/99-cpu-dma-latency.rules /etc/udev/rules.d/99-cpu-dma-latency.rules
+
+# Manually:
 # Add conf
 nano /etc/udev/rules.d/99-cpu-dma-latency.rules
 ```
@@ -1000,9 +1037,13 @@ What to expect: usually nothing obvious on modern PipeWire/JACK systems unless a
 OPTIONAL: Only if you added yourself to the audio group and have enabled other low latency audio work.
 
 ```zsh
-# Create folder
+# Create folder if not already
 mkdir -p /etc/udev/rules.d
 
+# Auto (if repo cloned)
+cp /tmp/ArchLinuxTutorials/40-hpet-permissions.rules /etc/udev/rules.d/40-hpet-permissions.rules
+
+# Manually:
 # Add conf
 nano /etc/udev/rules.d/40-hpet-permissions.rules
 ```
@@ -1017,16 +1058,21 @@ KERNEL=="hpet", GROUP="audio"
 
 This rule applies hdparm settings to rotational ATA hard drives when they are added or changed. The -B 254 option sets Advanced Power Management to its highest performance-oriented value while still using the drive’s APM feature, and -S 0 disables the automatic standby/spindown timeout. In plain terms, it tells matching HDDs: prioritize responsiveness, do not aggressively park or spin down.
 
-Why do it: this can reduce annoying drive wake-up delays, avoid repeated spin-up/spin-down behavior, and help keep desktop or media workloads responsive. It may also reduce excessive load/unload cycles on drives that park too aggressively. The tradeoff is higher power use, more heat, and possibly more noise, because the disk is less likely to enter low-power states. hdparm documents -B as controlling Advanced Power Management, where higher values favor performance, and -S 0 as disabling the automatic standby timeout.
+Why do it: this can reduce annoying drive wake-up delays, avoid repeated spin-up/spin-down behavior, and help keep desktop or media workloads responsive on HDDs. It may also reduce excessive load/unload cycles on drives that park too aggressively. The tradeoff is higher power use, more heat, and possibly more noise, because the disk is less likely to enter low-power states. hdparm documents -B as controlling Advanced Power Management, where higher values favor performance, and -S 0 as disabling the automatic standby timeout.
 
 What to expect: HDDs should feel more immediately available after idle periods. **This does not apply to SSDs or NVMe drives because the rule only targets rotational ATA disks.**
 
-OPTIONAL: Only for HDD users
+**WARNING/OPTIONAL: Only for HDD users**
+
 
 ```zsh
-# Create folder
+# Create folder if not already
 mkdir -p /etc/udev/rules.d
 
+# Auto (if repo cloned)
+cp /tmp/ArchLinuxTutorials/69-hdparm.rules /etc/udev/rules.d/69-hdparm.rules
+
+# Manually:
 # Add conf
 nano /etc/udev/rules.d/69-hdparm.rules
 ```
@@ -1045,12 +1091,16 @@ Why do it: this can help avoid SATA latency spikes, drive wake delays, or rare c
 
 What to expect: SATA disks and SSDs may respond more consistently after idle time. The downside is slightly higher power consumption, especially on laptops.
 
-OPTIONAL: Only for SATA SSDs and desktops, not laptops.
+OPTIONAL: Only for SATA SSDs and desktops, **not laptops if you care about battery life.**
 
 ```zsh
-# Create folder
+# Create folder if not already
 mkdir -p /etc/udev/rules.d
 
+# Auto (if repo cloned)
+cp /tmp/ArchLinuxTutorials/50-sata.rules /etc/udev/rules.d/50-sata.rules
+
+# Manually:
 # Add conf
 nano /etc/udev/rules.d/50-sata.rules
 ```
@@ -1090,19 +1140,22 @@ nano /etc/security/limits.d/20-audio.conf
 ```zsh
 # These are optimizations as well.
 # Create folder
-mkdir -p /usr/lib/modprobe.d/
+mkdir -p /etc/modprobe.d/
 
 # These are pretty much verbatim lifted from CachyOS
-# Analyze them yourself if curious
+# Go and analyze them yourself before copying to ensure
+# you actually want their tweaks. Most of them are general
+# improvements that you won't notice any regression from,
+# but its still good to be certain.
 #
 # copy NVIDIA (if you have NVIDIA)
-cp /tmp/ArchLinuxTutorials/nvidia.conf /usr/lib/modprobe.d/nvidia.conf
+cp /tmp/ArchLinuxTutorials/nvidia.conf /etc/modprobe.d/20-nvidia.conf
 
 # copy AMDGPU (if you plan to use AMDGPU)
-cp /tmp/ArchLinuxTutorials/amdgpu.conf /usr/lib/modprobe.d/amdgpu.conf
+cp /tmp/ArchLinuxTutorials/amdgpu.conf /etc/modprobe.d/21-amdgpu.conf
 
 # copy blacklist
-cp /tmp/ArchLinuxTutorials/blacklist.conf /usr/lib/modprobe.d/blacklist.conf
+cp /tmp/ArchLinuxTutorials/blacklist.conf /etc/modprobe.d/22-blacklist.conf
 ```
 
 ### Force GTK to use Portals
@@ -1126,9 +1179,10 @@ GDK_DEBUG=portals
 # This is only if you are planning to use Bluetooth.
 # The Bluetooth configuration is able to use a way
 # to connect to Bluetooth hardware that is faster.
+#
 # The tradeoff is this is only for Bluetooth adapters
 # that support it, and can lead to increased power
-# usage. The benefit is faster connection.
+# usage. The benefit is way faster connection.
 #
 mkdir -p /etc/bluetooth
 nano /etc/bluetooth/main.conf
@@ -1148,9 +1202,10 @@ FastConnectable = true
 ### Fix Emojis rendering as black and white
 ```zsh
 # Qt does not support automatically looking up the best font for emojis
-# Therefore the user must manually add a color emoji font as a fallback.
-# This fix uses Noto-Fonts-Emoji, we installed it in the list of packages.
+# Therefore the user must manually add a color emoji font as a fallback
+# or they are sometimes rendered incorrectly.
 #
+# This fix uses Noto-Fonts-Emoji, we installed it in the list of packages.
 # If you later replace it with another Emoji package, make sure to update this
 # as well.
 #
@@ -1164,7 +1219,7 @@ cp /tmp/ArchLinuxTutorials/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-co
 
 ```zsh
 # This will set your Login theme so you aren't
-# met with an old login screen first boot
+# met with an old login screen when you first boot
 #
 # If you want to do this later that's okay
 mkdir -p /etc/plasmalogin.conf.d
@@ -1179,7 +1234,11 @@ Current=breeze
 
 ### Add a DNS Resolver (systemd-resolved)
 
-This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional `/etc/resolv.conf`, DNS is usually just a flat list of nameservers. With `systemd-resolved`, you get a local stub resolver at `127.0.0.53`, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration. `systemd-resolved` maintains `/run/systemd/resolve/stub-resolv.conf` for traditional programs, and that file should be used through a symlink from `/etc/resolv.conf`. 
+* This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional `/etc/resolv.conf`, DNS is usually just a flat list of nameservers. With `systemd-resolved`, you get a modern stub resolver at `127.0.0.53`, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration, i.e it has some features you may want to learn & use in the future. 
+
+* systemd-resolved` maintains `/run/systemd/resolve/stub-resolv.conf` for traditional programs, and that file should be used through a symlink from `/etc/resolv.conf`. 
+
+* **NOTE: It must be configured to use the resolver before you reboot into Arch due to the chroot environment. I show how to do that in the last step, but be very wary of not skipping it!**
 
 ```zsh
 # Create NetworkManager's local config directory
@@ -1218,7 +1277,7 @@ fstrim.timer reflector.timer pkgstats.timer
 
 ### OPTIONAL: SonicDE/XLibre Install Script (EXPERIMENTAL)
 
-- KDE Plasma is losing X11 support next major release to become a Wayland only DE. If you are new to Linux and dont know what any of that means then you can just skip this part to Step 5. 
+- KDE Plasma is losing X11 support next major release to become a Wayland only DE. If you are new to Linux and dont know what any of that means then **you can just skip this part to Step 5.** 
 
 - Go to sonicde-tutorial.md if you are absolutely sure you want X11 over Wayland for whatever reason.
 
@@ -1228,34 +1287,41 @@ fstrim.timer reflector.timer pkgstats.timer
 # Exit environment
 exit
 
-# NOTE: ENSURE you do this before umounting:
 # Make /etc/resolv.conf use systemd-resolved's stub resolver.
+#
+# ! ENSURE you do this here before umounting !
+#
 # This is what makes traditional DNS clients use 127.0.0.53 correctly.
 ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
-# Then unmount all partitions
+# When done and confirmed done, then unmount all partitions
 umount -R /mnt
 
-# Reboot into new system
+# And shut down system.
 shutdown now
-
-# Remove ArchISO USB from computer then boot back into it
-#
-# This is also the way to fix if the taskbar (panel) appears on the wrong monitor: 
-# Right click on desktop and click Display Configuration. 
-# Go to "Change Screen Priorities" and move with arrows up the monitor you want
-# the panel on. Then press OK.
 ```
+
+Remove ArchISO USB from computer then boot back into it via power button.
+If you did everything correct, **congrats you just installed Arch Linux!**
+
+---
+
+### TROUBLESHOOT 
+
+#### Panel/Taskbar not appearing! / on wrong monitor! 
+
+ 1. Right click on desktop and click Display Configuration. 
+ 2. Go to "Change Screen Priorities" and click the arrows up in prio for the monitor you want
+ the panel on.
+ 3. Then press OK. It should refresh and show panel on your primary now. This persists on reboot. 
+   
+   This happens to me every time I install KDE on my desktop with three monitors.  I have no idea why.
+
 
 ---
 
 # 1) Post-Install Tutorial
-Head to `arch_kde_post_tutorial.md` to do the post-install tutorial. This is not optional.
+Head to `arch_kde_post_tutorial.md` to do the post-install tutorial. I teach you many things you should know when using Arch so I do not consider it to be optional, but technically after this tutorial is over you have a bootable system with KDE on Arch so if you want to trial and error instead be my guest.
 
 ---
 
-# 2) OPTIONAL: How to fix those annoying 'missing firmware' warnings in mkinitcpio
-
-* NOTE: This is only if you do have the `fallback` option on the UKIs which we removed in the guide, but if you kept it this will annoy you.
-* Whenever you write `mkinitcpio -P` you might notice it keeps warning you about firmware that you are supposedly missing.
-* If this bothers you, check out my tutorial, `mkinitcpio-fix.md` to fix this.
