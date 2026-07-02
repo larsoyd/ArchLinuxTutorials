@@ -8,7 +8,7 @@
 
 * This can be a bit tough to remember since you won't use this much or ever hopefully, so the best way to remember it is to write a text file called REISUB in your home folder and just have it there so you are reminded of it. After you reboot into your system you can go on my repo and simply download this file `REISUB.md` and put it in your user folder/home manually, that way you have the reminder *and* a guide.
   
-* You can also visualize Rei from Neon Genesis Evangelion eating a vegan subway sandwich.
+* You can also visualize Rei from Neon Genesis Evangelion eating a vegan subway sandwich, I know it sounds dumb but visual metaphors help you remember things.
 
 ---
 
