@@ -910,7 +910,7 @@ This is an optional but highly recommended tweak which enables all the Magic Sys
 
 * **WHAT:** REISUB is an emergency restart procedure for Linux. You use it when the computer appears completely frozen and normal options, such as closing programs, switching terminals, or choosing Restart, no longer work.
 
-* **HOW:** REISUB is activated by holding Alt + SysRq/Print Screen, then pressing R E I S U B one at a time, allowing a moment between S, U, and B. The kernel documents R as restoring keyboard mode, E and I as terminating processes, S as syncing filesystems, U as remounting read-only, and B as rebooting immediately.
+* **HOW:** REISUB is activated by holding Alt + SysRq/Print Screen, then pressing R E I S U B one at a time, allowing a moment between S, U, and B. The kernel documents R as restoring keyboard mode, E and I as terminating processes, S as syncing filesystems, U as remounting read-only, and B as rebooting immediately. This can be a bit tough to remember since you won't use this much or ever hopefully, so the best way to remember it is to write a text file called REISUB in your home folder and just have it there so you are reminded of it. - You can also visualize Rei from Neon Genesis Evangelion eating a vegan subway sandwich.
 
 * **WHY ITS NOT ENABLED:** On Arch REISUB is not enabled by default due to upstream security considerations. Arch inherits the systemd default of `16`. Because Magic SysRq is handled directly by the kernel a malicious actor can use it to really mess with your day if they want to troll you. With what I enable they can remount file systems, & reboot your system without a security prompt.
 
