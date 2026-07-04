@@ -3,7 +3,7 @@
 ## 1 · Chaotic-AUR
 ```zsh
 # Chaotic-AUR is a repository that provides a large number of packages for Arch Linux.
-# Its a closed repository that builds packages from the AUR on Arch. This is good if
+# Its a binary repository that builds packages from the AUR on Arch. This is good if
 # you don't want to compile packages and if you do not trust yourself to read PKGBUILDs
 # Not required, but I recommend adding it.
 #
