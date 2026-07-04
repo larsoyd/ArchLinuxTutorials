@@ -353,24 +353,7 @@ pacman -S --needed zsh git
 # Set root password
 passwd
 
-# Create user with necessary groups, either:
-
-## ## Option 1 - Audio & Wheel
-# Add yourself to both audio and wheel
-# for sudo access (wheel) and for realtime
-# optimizations (audio). The latter is not
-# needed, but it is what I personally use.
-useradd -m -G wheel,audio lars
-passwd lars
-
-## Option 2 - Wheel only
-# If you do not wish to enable audio
-# optimizations you can leave yourself
-# out of audio group. It is not strictly
-# necessary and comes with a few minor
-# regressions in regards to multi-user
-# systems which most aren't running
-# anyways.
+# Create user with admin privileges (wheel):
 useradd -m -G wheel lars
 passwd lars
 
@@ -811,24 +794,6 @@ udev is Linux’s device manager.  It reacts to hardware events, such as a disk 
 
 ---
 
-### OPTIONAL: Allow Audio to Run on Max Priority
-
-This lets audio software such as JACK, PipeWire audio threads, Ardour, DAWs, synths, plugins, low-latency audio tools request realtime scheduling. That helps audio threads run on time, reducing crackles, dropouts, and latency under load. **Note:** in rare cases a badly behaved realtime process *might* make the desktop sluggish or, in extreme cases, difficult to recover, because realtime threads can outrank normal desktop/system work but the benefits outweigh the problems 99% of the time IMO.
-
-OPTIONAL: Only if you added yourself to the audio group and have enabled other low latency audio work.
-
-```zsh
-# Create folder
-mkdir -p /etc/security/limits.d/
-
-# Add conf
-nano /etc/security/limits.d/20-audio.conf
-```
-
-```conf
-# /etc/security/limits.d/20-audio.conf
-@audio - rtprio 99
-```
 
 ### modprobe.d optimizations 
 
@@ -857,7 +822,8 @@ cp /tmp/ArchLinuxTutorials/blacklist.conf /etc/modprobe.d/22-blacklist.conf
 ```zsh
 # This is important for file pickers and GTK windows on KDE
 # This may mean nothing to you now, but basically its the
-# difference between having a maximize button on Firefox and not.
+# difference between either having a maximize button on
+# the titlebar of Firefox or not.
 #
 mkdir -p /etc/environment.d
 nano /etc/environment.d/99-portal.conf 
