@@ -1,15 +1,39 @@
 # Post-Install Tutorial (KDE)
 
-## 1 · Update Base System
+## 1 · Chaotic-AUR
+```zsh
+# Chaotic-AUR is a repository that provides a large number of packages for Arch Linux.
+# Its a closed repository that builds packages from the AUR on Arch. This is good if
+# you don't want to compile packages and if you do not trust yourself to read PKGBUILDs
+# Not required, but I recommend adding it.
+#
+# First, retrieve the primary key to enable
+# the installation of Chaotic-AUR's keyring and mirror list:
+sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+sudo pacman-key --lsign-key 3056513887B78AEB
+
+# This allows you to install Chaotic-AUR's
+# chaotic-keyring and chaotic-mirrorlist packages:
+sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+
+# Finally add the mirrorlist to the end of /etc/pacman.conf:
+sudo nano /etc/pacman.conf
+```
+
+```conf
+[chaotic-aur]
+Include = /etc/pacman.d/chaotic-mirrorlist
+```
 
 ```zsh
-# Bring everything to the latest version
+# Then dync the mirrorlist:
 sudo pacman -Syu
 
-# If you add any new repositories you have to do this
-# Install all database files for all your newer repositories
+# And finally install all database files for new repository
+# This needs to be done after adding any new repo
+# like if you want to use CachyOS's repos for example:
 sudo pacman -Fy
-```
 
 ---
 
