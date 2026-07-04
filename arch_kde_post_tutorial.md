@@ -22,6 +22,7 @@ sudo nano /etc/pacman.conf
 ```
 
 ```conf
+# /etc/pacman.conf
 [chaotic-aur]
 Include = /etc/pacman.d/chaotic-mirrorlist
 ```
@@ -34,6 +35,7 @@ sudo pacman -Syu
 # This needs to be done after adding any new repo
 # like if you want to use CachyOS's repos for example:
 sudo pacman -Fy
+```
 
 ---
 
