@@ -809,6 +809,8 @@ udev is Linux’s device manager.  It reacts to hardware events, such as a disk 
 
 [**Here's**](udev-rules.md) the list of the ones I use. You may pick and choose which ones seem best for your system, though the first one applies well on any setup due to its dynamic nature.
 
+---
+
 ### OPTIONAL: Allow Audio to Run on Max Priority
 
 This lets audio software such as JACK, PipeWire audio threads, Ardour, DAWs, synths, plugins, low-latency audio tools request realtime scheduling. That helps audio threads run on time, reducing crackles, dropouts, and latency under load. **Note:** in rare cases a badly behaved realtime process *might* make the desktop sluggish or, in extreme cases, difficult to recover, because realtime threads can outrank normal desktop/system work but the benefits outweigh the problems 99% of the time IMO.
