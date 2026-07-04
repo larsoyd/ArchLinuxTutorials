@@ -16,19 +16,19 @@ sudo pacman-key --lsign-key 3056513887B78AEB
 # chaotic-keyring and chaotic-mirrorlist packages:
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
-
-# Finally add the mirrorlist to the end of /etc/pacman.conf:
-sudo nano /etc/pacman.conf
 ```
 
 ```conf
+# Add the mirrorlist to the end of /etc/pacman.conf:
+sudo nano /etc/pacman.conf
+
 # /etc/pacman.conf
 [chaotic-aur]
 Include = /etc/pacman.d/chaotic-mirrorlist
 ```
 
 ```zsh
-# Then dync the mirrorlist:
+# Then sync the mirrorlist:
 sudo pacman -Syu
 
 # And finally install all database files for new repository
