@@ -102,6 +102,8 @@ If you use an English lang keyboard you can ignore all of it, but it's worth kno
 - If the step to partition with systemd-repart fails due to a device being "in use", you can write `partprobe` on the disk from `lsblk -l` that you are partitioning. E.g: `partprobe /dev/nvme0n1` or simply run the command again and it should work.
 - **NOTE:** Pre-chroot reflector step will fail on SystemRescue as the distro does not ship with `reflector`. You can simply proceed without doing this until you chroot in, from inside your system run `pacman -S reflector` and then do the step there instead, or if you want you can install it to SystemRescue with: `pacman --config=/etc/pacman-rolling.conf -S reflector` and do it before as the tutorial recommends for ArchISO users but it's largely unnecessary unless you have mirror problems.
 
+- **If you do choose SystemRescue, again, remember to write `pacman --config=/etc/pacman-rolling.conf -Sy` in the terminal before starting.**
+
 ---
 
 
@@ -298,6 +300,8 @@ So for me it's Norway,Sweden,Denmark then Germany,Netherlands:
 
 ```zsh
 # Update mirrorlist before install so you install with fastest mirrors
+# If on SystemRescue you must run this command before Reflector can be used:
+# pacman --config=/etc/pacman-rolling.conf -S reflector`
 #
 # PROTIP: "\" is a pipe, it basically is a fancy way to add a space to a command.
 # So essentially just write each line until there isnt a "\" and it will run it all as one command.
@@ -324,6 +328,9 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 ```zsh
 # and then **Install the base of Arch Linux!** :
 pacstrap /mnt base nano sudo
+
+# Or if you use SystemRescue:
+pacstrap -C /etc/pacman-rolling.conf -K /mnt base nano sudo
 ```
 
 ## Step 4: System Configuration
@@ -451,16 +458,11 @@ LC_TIME=nb_NO.UTF-8 # LC_TIME for date & time to my specific LANG default
 nano /etc/vconsole.conf
 
 # add
-KEYMAP=no-latin1 # Skip this if US keyboard
-FONT=ter-118n  # But add this.
-               # This is a console font which makes it larger,
-               # and more easily readable on boot
+KEYMAP=no-latin1 # Keyboard layout for the administrative console
+FONT=ter-118n  # This is a console font which makes boot font larger,
+               # and more easily readable.
 ---
 
-# NOTE: This is for anyone without an US keyboard!
-# I use a Norwegian keyboard as mentioned, find out what
-# yours is and change any country code from "no" to yours.
-# 
 # set system keymaps
 #
 localectl set-keymap no-latin1
@@ -526,9 +528,8 @@ nano /etc/hosts
 I have taken the liberty to make some decisions for a few packages you will install, some of them are technically "optional" but
 all of them are in my opinion essential to the well functioning of a KDE Plasma desktop. 
 
-[**Here's**](pkgchoices.md) why I included those. **Review them before installing.**
+[**Here's**](pkgchoices.md) why I included those. **Please review them before installing.**
 
----
 
 NVIDIA: 
 ```zsh
