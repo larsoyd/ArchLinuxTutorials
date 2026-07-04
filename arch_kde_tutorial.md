@@ -285,23 +285,7 @@ mkdir -p /mnt/efi
 mount -o fmask=0177,dmask=0077,noexec,nodev,nosuid /dev/disk/by-label/EFI /mnt/efi
 ```
 
-### Here is some information on why I am mounting EFI like this:
-
-```md
-Those options are a security-friendly way to mount the EFI System Partition.
-They won’t get in your way for normal use.
-
-fmask=0177 and dmask=0077: VFAT does not store Unix permissions.
-These masks tell the kernel how to fake them: files become 600 (owner read/write, no exec),
-directories 700 (owner only).
-
-In other words, only root can read or write there, and files are not marked executable.
-They are the right defaults for an EFI partition and won’t interfere with normal operation.
-
-noexec: blocks running programs from that filesystem. 
-nodev: device files on that filesystem are not treated as devices. 
-nosuid: any setuid or setgid bit is ignored, so binaries there cannot gain elevated privileges. 
-```
+**Here is some information on why I use these options for mounting the EFI**
 
 ---
 
@@ -535,52 +519,16 @@ nano /etc/hosts
 ::1       localhost
 ```
 
-## 4.5.5 Package Choice
 
-### Info:
-I have taken the liberty to make some decisions for a few packages you will install, some of them are technically "optional" but
-all of them are in my opinion essential to the well functioning of a KDE Plasma desktop. 
-
-Here's why I included those:
-
-
-### pkgstats 
-pkstats is a super harmless way to help out the Arch developers that work hard and mostly for free to make our wonderful distro.
-It basically just advertises a list of your core and extra packages that you use to them  so they can know what packages to 
-prioritize in testing and for other things. If you are extremely paranoid then you can leave it out.
-
-### kitty 
-kitty is a terminal that I think is the best sort of default terminal on Linux. It's easy to use, GPU accelerated, fast enough and hassle free.
-It allows you to zoom in by pressing `CTRL + SHIFT and +` and zoom out by `CTRL + SHIFT and -` It doesn't look terrible like some terminals do.
-konsole is included as a backup. If you want to use another terminal as your main, replace it.
-
-### ark
-ark is a KDE developed method to unzip archive files on your computer. "Optional" but you are going to want this. It supports various optional additions included like `7zip` and `unrar` .7Z and .RAR format support respectively. 
-
----
-
-## **NOT INCLUDED IN THE STEP BUT YOU MAY WANT TO INCLUDE:**
-
-### audiocd-kio
-This adds the audiocd:/ KIO worker so Dolphin and other KDE apps can read and rip audio CDs. Not needed on non-KDE Plasma systems, but KDE has their own thing for this. If you are on a laptop with a CD player and/or ever need to play audio CDs on your PC then you are going to want this.
-
-### libdvdread, libdvdnav, and libdvdcss
-This is the same as above but for DVD playback. 
-
-### libbluray and libaacs
-Same for Blu-Rays. After you have installed the system and configured an AUR helper you may also wish to install **libbdplus** from the AUR if you want for BD+ playback. From there you will have to set it up with KEYS which is shown on the Arch Wiki about Blu-Ray.
-
-### bluez and bluez-utils
-For Bluetooth support if you use Bluetooth. You will also need to enable `bluetooth.service` then at the end of the tutorial.
-
-### cups & cups-pdf (Optional: bluez-cups for Bluetooth printers)
-If you need printer support. You will also need to enable `cups.service` at the end of the tutorial. For GUI support you need to also install `system-config-printer` & `cups-pk-helper`.
-
----
 
 # 4.6 Install the System
 
-**EITHER**
+I have taken the liberty to make some decisions for a few packages you will install, some of them are technically "optional" but
+all of them are in my opinion essential to the well functioning of a KDE Plasma desktop. 
+
+[**Here's**](pkgchoices.md) why I included those. **Review them before installing.**
+
+---
 
 NVIDIA: 
 ```zsh
@@ -687,19 +635,9 @@ MODULES=(amdgpu radeon)
 HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block filesystems fsck)
 
 # Key changes:
-# - MUST use 'systemd' instead of 'udev' - UPDATE: Arch now defaults to systemd instead of udev,
-#   so here you just need to check if it's right.
+# - Remove consolefont since it is already satisfied by 'sd-vconsole'
+# - NVIDIA: Remove 'kms' from HOOKS=() if you use nvidia, AMDGPU can ignore this however
 #
-# - Use 'sd-vconsole' instead of 'keymap' and 'consolefont'
-# - Remove 'kms' from HOOKS=() also if you use nvidia, AMDGPU can ignore this however
-# - Ensure microcode is in HOOKS=()
-#
-# NOTE: IF you do not remove udev and if you do not replace it with systemd,
-# THEN YOUR SYSTEM WILL NOT BOOT.
-# This is the only pitfall with systemd-gpt-auto-generator,
-#
-# It's worth doublechecking.
-# Check this again if your system isn't booting post-install.
 
 ```
 
@@ -821,83 +759,13 @@ git clone https://github.com/larsoyd/ArchLinuxTutorials.git
 
 # Then leave tmp directory
 cd
-
-# These are a combination of CachyOS settings and other sources
 # Create sysctl.d folder
 mkdir -p /etc/sysctl.d/
 
 # copy from tmp
 cp /tmp/ArchLinuxTutorials/70-settings.conf /etc/sysctl.d/sysctl.d/70-settings.conf
 ```
-
-```conf
-# The value controls the tendency of the kernel to reclaim the memory.
-# It's used for caching of directory and inode objects (VFS cache).
-# Lowering it from the default value of 100 makes the kernel less inclined -
-# - to reclaim VFS cache (do not set it to 0, this may produce out-of-memory conditions)
-vm.vfs_cache_pressure = 50
-
-# Contains, as bytes, the number of pages at which a process which is
-# generating disk writes will itself start writing out dirty data.
-vm.dirty_bytes = 268435456
-
-# page-cluster controls the number of pages up to which consecutive pages are read in from swap in a single attempt.
-# This is the swap counterpart to page cache readahead. The mentioned consecutivity is not in terms of virtual/physical addresses,
-# but consecutive on swap space - that means they were swapped out together. (Default is 3)
-# increase this value to 1 or 2 if you are using physical swap (1 if ssd, 2 if hdd)
-vm.page-cluster = 1
-
-# Contains, as bytes, the number of pages at which the background kernel
-# flusher threads will start writing out dirty data.
-vm.dirty_background_bytes = 67108864
-
-# The kernel flusher threads will periodically wake up and write old data out to disk.  This
-# tunable expresses the interval between those wakeups, in 100'ths of a second (Default is 500).
-vm.dirty_writeback_centisecs = 1500
-
-# This action will speed up your boot and shutdown, because one less module is loaded.
-# Additionally disabling watchdog timers increases performance and lowers power consumption
-# Disable NMI watchdog
-kernel.nmi_watchdog = 0
-
-# Enable the sysctl setting kernel.unprivileged_userns_clone to allow normal users to run unprivileged containers.
-kernel.unprivileged_userns_clone = 1
-
-# To hide any kernel messages from the console
-kernel.printk = 3 3 3 3
-
-# Restricting access to kernel pointers in the proc filesystem
-kernel.kptr_restrict = 2
-
-# Disable kexec as a security measure
-kernel.kexec_load_disabled=1
-
-# Many Windows games need this disabled to run properly.
-# They abuse split locks
-kernel.split_lock_mitigate = 0
-
-# Increase netdev receive queue
-# May help prevent losing packets
-net.core.netdev_max_backlog = 4096
-
-# Set size of file handles and inode cache
-fs.file-max = 2097152
-
-# Use 'bbr' to achieve higher throughput when sending to high-latency destinations.
-# Also 'fq' to prevent one greedy app from causing lag (bufferbloat) for everything else.
-# `bbr` relies on pacing, and thus performs better with the `fq` qdisc.
-net.ipv4.tcp_congestion_control = bbr
-net.core.default_qdisc = fq
-
-# The sysctl swappiness parameter determines the kernel's preference for pushing anonymous pages or page cache to disk in memory-starved situations.
-# A low value causes the kernel to prefer freeing up open files (page cache), a high value causes the kernel to try to use swap space,
-# and a value of 100 means IO cost is assumed to be equal.
-vm.swappiness = 100
-
-# Ensure that applications don't break/complain from hitting the limit
-fs.inotify.max_user_instances = 8192
-fs.inotify.max_user_watches = 524288
-```
+These are a combination of CachyOS settings and other sources. To read what they do, click [**here.**](70-settings.conf)
 
 ```zsh
 # Load settings from all system configuration files to configure kernel parameters at runtime.
