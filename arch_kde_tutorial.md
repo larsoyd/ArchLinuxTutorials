@@ -287,7 +287,7 @@ mkdir -p /mnt/efi
 mount -o fmask=0177,dmask=0077,noexec,nodev,nosuid /dev/disk/by-label/EFI /mnt/efi
 ```
 
-**Here is some information on why I use these options for mounting the EFI**
+[**Here**](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/why-EFI-options.md) is some information on why I use these options for mounting the EFI
 
 ---
 
