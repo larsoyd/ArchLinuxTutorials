@@ -1,6 +1,6 @@
 ## REISUB - WHAT? HOW? WHY?
 
-* REISUB is an emergency restart procedure for Linux. You use it when the computer appears completely frozen and normal options, such as closing programs, switching terminals, or choosing Restart, no longer work.
+* REISUB is an emergency restart procedure for Linux. You use it when the computer appears completely frozen and normal options, such as closing programs, switching to a virtual terminal with **CTRL + ALT and then pressing F4,** or choosing Restart in the GUI, no longer works. The only option without this left is to use the power button, **which is not recommended on Linux as it can easily lead to file system corruption.**
 
 ---
 
