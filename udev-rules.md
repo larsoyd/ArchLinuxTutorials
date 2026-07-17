@@ -38,33 +38,6 @@ ACTION=="remove|unbind", SUBSYSTEM=="pci", DRIVERS=="nvidia", \
     TEST=="power/control", ATTR{power/control}="on"
 ```
 
-#### OPTIONAL: 99-cpu-dma-latency.rules
-
-This rule changes the permissions for /dev/cpu_dma_latency so users in the audio group can use the kernel’s CPU latency QoS interface. This does not force low latency by itself. It simply allows audio software or helper tools to request that the CPU avoid deep sleep states while low-latency work is running.
-
-Why do it: deep CPU sleep states save power, but waking from them can add latency spikes. For realtime audio, those spikes can become crackles, dropouts, or unstable low buffer sizes. When a program opens /dev/cpu_dma_latency and keeps it open, the kernel treats that as an active latency request until the file is closed.
-
-What to expect: no visible desktop change on its own. When used by audio software, it may improve low-latency reliability under load, at the cost of somewhat higher power use and heat while the request is active.
-
-OPTIONAL: Only if you added yourself to the audio group and have enabled other low latency audio work.
-
-```zsh
-# Create folder
-mkdir -p /etc/udev/rules.d
-
-# Auto (if repo cloned)
-cp /tmp/ArchLinuxTutorials/99-cpu-dma-latency.rules /etc/udev/rules.d/99-cpu-dma-latency.rules
-
-# Manually:
-# Add conf
-nano /etc/udev/rules.d/99-cpu-dma-latency.rules
-```
-
-```conf
-# /etc/udev/rules.d/99-cpu-dma-latency.rules
-DEVPATH=="/devices/virtual/misc/cpu_dma_latency", OWNER="root", GROUP="audio", MODE="0660"
-```
-
 #### OPTIONAL: 40-hpet-permissions.rules
 
 This rule gives the audio group access to the system timer devices /dev/rtc0 and /dev/hpet. RTC means real-time clock, and HPET means High Precision Event Timer. Some older or specialized audio, MIDI, FireWire, and timing-sensitive tools may try to access these devices directly for precise timing.
