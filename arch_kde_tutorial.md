@@ -417,11 +417,15 @@ hwclock --systohc
 # but my time and date will be set as it is in Norway.
 # So an English system with a DD/MM/YYYY and 00:00 "military clock".
 #
+# I also want to default my measurement units to what my language uses
+# so instead of Fahrenheit for temperature for example I want to use Celsius.
+# If you do not set this, it will default to imperial units.
+#
 nano /etc/locale.gen
 
 # Go down the list and uncomment both:
-Uncomment: en_US.UTF-8 UTF-8 # English
-Uncomment: nb_NO.UTF-8 UTF-8 # Bokmål Norwegian (replace with your own or leave out)
+Uncomment: en_US.UTF-8 UTF-8 # for U.S English
+Uncomment: nb_NO.UTF-8 UTF-8 # for Bokmål Norwegian (replace with your own or leave out)
 
 # Then generate locales
 locale-gen
@@ -434,6 +438,7 @@ nano /etc/locale.conf
 # add
 LANG=en_US.UTF-8    # LANG for system language
 LC_TIME=nb_NO.UTF-8 # LC_TIME for date & time to my specific LANG default
+LC_MEASUREMENT=nb_NO.UTF-8 # This defaults your measurement units to your LANG default
 
 ---
 
