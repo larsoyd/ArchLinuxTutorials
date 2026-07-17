@@ -1,39 +1,9 @@
 
-### Udev rules
+### Optional Udev rules
 
-udev is Linux’s device manager.  It reacts to hardware events, such as a disk being added or changed, and applies matching rules from .rules files. This can help tweak the system behavior to your liking. Rule files are processed in lexical order, so the numeric prefix in `60-ioschedulers.rules` for example controls when this rule is evaluated relative to other udev rules. The ones without "OPTIONAL:" before them are strongly recommended on any system. 
+udev is Linux’s device manager.  It reacts to hardware events, such as a disk being added or changed, and applies matching rules from .rules files. This can help tweak the system behavior to your liking. Rule files are processed in lexical order, so the numeric prefix in `60-ioschedulers.rules` for example controls when this rule is evaluated relative to other udev rules. 
 
-You can pick the ones you want or none of them.
-
-#### 60-ioschedulers.rules
-
-This udev rule persistently sets Linux block-device I/O schedulers when storage devices are added or changed. An I/O scheduler controls how read and write requests are ordered before they reach a storage device. This example selects BFQ for rotational hard drives, mq-deadline for non-rotational SATA/eMMC storage, and Kyber for NVMe SSDs. The goal is better desktop responsiveness and more sensible latency behavior per drive type, instead of relying on one default for everything. Linux exposes schedulers such as mq-deadline, none, bfq, and kyber through /sys/block/<device>/queue/scheduler, depending on kernel and device support. **Not optional, good for any system to have.**
-
-```zsh
-# Create folder
-mkdir -p /etc/udev/rules.d
-
-# Auto (if repo cloned)
-cp /tmp/ArchLinuxTutorials/60-ioschedulers.rules /etc/udev/rules.d/60-ioschedulers.rules
-
-# Manually:
-nano /etc/udev/rules.d/60-ioschedulers.rules
-```
-
-```conf
-# /etc/udev/rules.d/60-ioschedulers.rules
-# HDD
-ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", \
-    ATTR{queue/scheduler}="bfq"
-
-# SSD
-ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", \
-    ATTR{queue/scheduler}="mq-deadline"
-
-# NVMe SSD
-ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", \
-    ATTR{queue/scheduler}="kyber"
-```
+These are optional/hardware specific. You can pick the ones you want or none of them.
 
 #### OPTIONAL: 71-nvidia.rules
 
