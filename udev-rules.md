@@ -38,34 +38,6 @@ ACTION=="remove|unbind", SUBSYSTEM=="pci", DRIVERS=="nvidia", \
     TEST=="power/control", ATTR{power/control}="on"
 ```
 
-#### OPTIONAL: 40-hpet-permissions.rules
-
-This rule gives the audio group access to the system timer devices /dev/rtc0 and /dev/hpet. RTC means real-time clock, and HPET means High Precision Event Timer. Some older or specialized audio, MIDI, FireWire, and timing-sensitive tools may try to access these devices directly for precise timing.
-
-Why do it: on systems or tools that still need these timer devices, group access avoids running audio tools as root just to open a timing device. The Linux kernel documents RTC devices as hardware clocks that can provide alarms and interrupts, and HPET as a high precision timer interface with a userspace API similar to RTC.
-
-What to expect: usually nothing obvious on modern PipeWire/JACK systems unless a tool specifically needs RTC or HPET access. It is a compatibility/permissions rule.
-
-OPTIONAL: Only if you added yourself to the audio group and have enabled other low latency audio work.
-
-```zsh
-# Create folder if not already
-mkdir -p /etc/udev/rules.d
-
-# Auto (if repo cloned)
-cp /tmp/ArchLinuxTutorials/40-hpet-permissions.rules /etc/udev/rules.d/40-hpet-permissions.rules
-
-# Manually:
-# Add conf
-nano /etc/udev/rules.d/40-hpet-permissions.rules
-```
-
-```conf
-# /etc/udev/rules.d/40-hpet-permissions.rules
-KERNEL=="rtc0", GROUP="audio"
-KERNEL=="hpet", GROUP="audio"
-```
-
 #### OPTIONAL: 69-hdparm.rules
 
 This rule applies hdparm settings to rotational ATA hard drives when they are added or changed. The -B 254 option sets Advanced Power Management to its highest performance-oriented value while still using the drive’s APM feature, and -S 0 disables the automatic standby/spindown timeout. In plain terms, it tells matching HDDs: prioritize responsiveness, do not aggressively park or spin down.
