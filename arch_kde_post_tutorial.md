@@ -1756,31 +1756,25 @@ Secure Boot makes the firmware reject untrusted or modified EFI boot files. In t
 ---
 
 
-### 0) INTRO: If Dual-Booting Windows with Secure Boot
+### OPTIONAL: If Dual-Booting Windows with Secure Boot
 
-If you followed my tutorial but also have Windows installed on another partition or drive, read this part before you start the tutorial.
+This is an optional first step of the tutorial that is only relevant to users who followed my tutorial but also have Windows installed on another partition or drive with SecureBoot enabled, you must read & do this part before you start the tutorial.
 
-When clearing the keys you will not render your Windows partition unbootable. Windows does not require the original OEM Platform Key. You can replace the Platform Key with your custom sbctl key while retaining Microsoft’s certificates in `KEK` and `db` - More on what that is later.
-
-But that means this command is therefore mandatory for a Windows dual-boot system:
+You may wonder if changing your SecureBoot keys while an OS already exists on another drive would render that install forever unbootable. This is an understandable fear, but unless something went wrong it **won't.** Windows does not require the original OEM Platform Key to boot with SecureBoot enabled, meaning you can replace the Platform Key with your custom sbctl key while retaining Microsoft’s certificates in `KEK` and `db`. To do this you must simply ensure that you always enroll the keys with Microsoft's certs by using the `--microsoft` flag like we do in this tutorial:
 
 ```zsh
 sudo sbctl enroll-keys --microsoft
 ```
 
-Do **NOT** use:
+It is a good rule of thumb to always include it with this command regardless if you are dual booting or not. The reason why the flag should always be included is because a custom-only enrollment on Windows can cause firmware to reject Windows Boot Manager when Secure Boot is enabled.
 
-```zsh
-sudo sbctl enroll-keys
-```
+___
 
-The first command is already used by default in the tutorial so its not something you need to remember necessarily, but if you are on your own in the future you must ensure you never enroll keys without the `--microsoft` flag. A custom-only enrollment can cause firmware to reject Windows Boot Manager when Secure Boot is enabled.
+#### Windows Housekeeping
 
-#### Before clearing any Secure Boot keys
+Before starting the tutorial if you are dual booting with Windows boot into Windows, before you do ensure you have re-enabled SecureBoot in firmware which had to be disabled during the Arch install.
 
-Before starting the tutorial, re-enable SecureBoot in firmware and boot into your Windows partition.
-
-Open **Command Prompt as Administrator** and check whether BitLocker or Windows Device Encryption protects the Windows system drive:
+Open **Command Prompt as Administrator** (`cmd`) and check whether BitLocker or Windows Device Encryption protects the Windows system drive:
 
 ```bat
 manage-bde -status C:
