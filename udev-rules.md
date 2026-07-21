@@ -20,7 +20,7 @@ Optional: Only for NVIDIA users / Users with compatible NVIDIA cards
 mkdir -p /etc/udev/rules.d
 
 # Auto (if repo cloned)
-cp /tmp/ArchLinuxTutorials/71-nvidia.rules /etc/udev/rules.d/71-nvidia.rules
+cp /tmp/ArchLinuxTutorials/rules.d/71-nvidia.rules /etc/udev/rules.d/71-nvidia.rules
 
 # Manually:
 # Add conf
@@ -58,7 +58,7 @@ What to expect: HDDs should feel more immediately available after idle periods. 
 mkdir -p /etc/udev/rules.d
 
 # Auto (if repo cloned)
-cp /tmp/ArchLinuxTutorials/69-hdparm.rules /etc/udev/rules.d/69-hdparm.rules
+cp /tmp/ArchLinuxTutorials/rules.d/69-hdparm.rules /etc/udev/rules.d/69-hdparm.rules
 
 # Manually:
 # Add conf
@@ -88,7 +88,7 @@ OPTIONAL: Only for SATA SSDs and desktops, **not laptops if you care about batte
 mkdir -p /etc/udev/rules.d
 
 # Auto (if repo cloned)
-cp /tmp/ArchLinuxTutorials/50-sata.rules /etc/udev/rules.d/50-sata.rules
+cp /tmp/ArchLinuxTutorials/rules.d/50-sata.rules /etc/udev/rules.d/50-sata.rules
 
 # Manually:
 # Add conf
@@ -125,7 +125,7 @@ cat /sys/module/snd_hda_intel/parameters/power_save 2>/dev/null || echo "Not rel
 mkdir -p /etc/udev/rules.d
 
 # Auto (if repo cloned)
-cp /tmp/ArchLinuxTutorials/20-audio-pm.rules /etc/udev/rules.d/20-audio-pm.rules
+cp /tmp/ArchLinuxTutorials/rules.d/20-audio-pm.rules /etc/udev/rules.d/20-audio-pm.rules
 
 # Manually:
 # Add conf
