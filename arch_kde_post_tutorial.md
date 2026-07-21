@@ -1,5 +1,48 @@
 # Post-Install Tutorial (KDE)
 
+Welcome to the post-install tutorial, before we begin here is a list of optional misc. settings you might want to turn off/on:
+
+### (OPTIONAL) Misc. System Defaults You May Want To Change:
+
+By default KDE Plasma saves your desktop session before you shut it off by default. This is undesirable for many users. To turn it off open System Settings then:
+
+* Go to System -> Desktop Session and then under "System Restore" check the "Start with an empry session" box.
+
+______
+
+By default KDE Plasma grows your cursor if you shake it, this is an intended behavior to make it easier to find your cursor. If you find it annoying you can turn it off like so:
+
+* Go to Input & Output -> Accessibility -> Shake Cursor and then uncheck "Enable" under Shake pointer to find it
+
+______
+
+By default KDE Plasma has an annoying beep when you raise and lower your volume. This is intended. To turn it off:
+
+* Go to System Settings > Sound > Configure Volume Controls... and under Play audio feedback for changes to: disable Audio volume.
+
+______
+
+By default KDE Plasma will zoom & magnify your screen if you hit a hotkey by accident (Windows Key + CTRL IIRC) which can seriously mess your day up if you don't know about it.
+Here is how to turn it off:
+
+* Go to Input & Output -> Accessibility -> Zoom & Magnifier and then check "Disabled"
+
+______
+
+By default KDE's taskbar (panel) will float if no windows are on the screen. You can turn this off by:
+
+Right Click the Taskbar -> "Show Panel Configuration" -> Look For the "Floating" option in the Window On The Right -> Change Dropdown Menu Option to "Disabled"
+
+______
+
+By default even though we installed Hunspell for spellchecking in the Install phase, KDE will not have turned it on by default. 
+To turn on spellchecking you have to open System Settings and go to:
+
+1. Language & Time -> Preferred Languages -> American English (United States) and choose the large option -> Apply
+2. Check "Automatic Spell Checking enabled by default"
+
+---
+
 ## 1 · Chaotic-AUR
 ```zsh
 # Chaotic-AUR is a repository that provides a large number of packages for Arch Linux.
@@ -1711,46 +1754,9 @@ fastfetch
 # save it
 ```
 
-### (OPTIONAL) Misc. System Defaults You May Want To Change:
+---
 
-By default KDE Plasma saves your desktop session before you shut it off by default. This is undesirable for many users. To turn it off open System Settings then:
-
-* Go to System -> Desktop Session and then under "System Restore" check the "Start with an empry session" box.
-
-______
-
-By default KDE Plasma grows your cursor if you shake it, this is an intended behavior to make it easier to find your cursor. If you find it annoying you can turn it off like so:
-
-* Go to Input & Output -> Accessibility -> Shake Cursor and then uncheck "Enable" under Shake pointer to find it
-
-______
-
-By default KDE Plasma has an annoying beep when you raise and lower your volume. This is intended. To turn it off, go to System Settings > Sound > Configure Volume Controls... and under Play audio feedback for changes to: disable Audio volume.
-
-______
-
-By default KDE Plasma will zoom & magnify your screen if you hit a hotkey by accident (Windows Key + CTRL IIRC) which can seriously mess your day up if you don't know about it.
-Here is how to turn it off:
-
-* Go to Input & Output -> Accessibility -> Zoom & Magnifier and then check "Disabled"
-
-______
-
-By default KDE's taskbar (panel) will float if no windows are on the screen. You can turn this off by:
-
-Right Click the Taskbar -> "Show Panel Configuration" -> Look For the "Floating" option in the Window On The Right -> Change Dropdown Menu Option to "Disabled"
-
-______
-
-By default even though we installed Hunspell for spellchecking in the Install phase, KDE will not have turned it on by default. 
-To turn on spellchecking you have to open System Settings and go to:
-
-1. Language & Time -> Preferred Languages -> American English (United States) and choose the large option -> Apply
-2. Check "Automatic Spell Checking enabled by default"
-
-______
-
-## EXTRA TUTORIAL: Enable Secure Boot with systemd-boot + UKIs + sbctl
+### EXTRA TUTORIAL: Enable Secure Boot with systemd-boot + UKIs + sbctl
 
 This tutorial uses:
 
@@ -1770,7 +1776,7 @@ Secure Boot makes the firmware reject untrusted or modified EFI boot files. In t
 
 **Secure Boot does not encrypt your files.** For protection against someone removing the SSD and reading it from another computer, you also need LUKS encryption.
 
-_____
+---
 
 
 ### 0) INTRO: If Dual-Booting Windows with Secure Boot
@@ -1825,6 +1831,7 @@ manage-bde -protectors -disable C: -rebootcount 0
 
 This does **not** decrypt the Windows partition and does not remove its BitLocker protectors. All it does is temporarily stop the TPM from blocking access because the Secure Boot measurements changed. You may now reboot back into the firmware, turn off SecureBoot again and boot into Arch to begin the process. 
 
+---
 
 ### IMPORTANT WARNING BEFORE STARTING
 
@@ -1863,7 +1870,7 @@ What each package does:
 
 The Arch `sbctl` package also installs integration for `kernel-install`, mkinitcpio, and pacman transactions.
 
-
+---
 
 ### 2) Confirm that this is the correct boot setup
 
@@ -1979,7 +1986,7 @@ Do not continue until it reports that Setup Mode is enabled.
 
 The sbctl documentation requires Setup Mode for live key enrollment and recommends retaining Microsoft trust certificates because some firmware and Option ROM components depend on them.
 
-
+---
 
 ### 4) Inspect the current firmware key databases
 
@@ -2003,7 +2010,7 @@ When the firmware is in Setup Mode, `PK` should have no entries.
 
 `dbx` may contain a massive list of hashes. That is normal. It is the Secure Boot revocation database.
 
-
+---
 
 ### 5) Create your Secure Boot keys
 
@@ -2039,7 +2046,7 @@ Do not upload that directory or put it in a public repository.
 
 After everything is working, make an encrypted offline backup of `/var/lib/sbctl`. Someone who obtains your private database key can sign a modified UKI that your computer will trust.
 
-
+---
 
 ### 6) Create a signed systemd-boot source file
 
@@ -2061,7 +2068,7 @@ sudo bootctl update
 
 This should install or update the signed systemd-boot binaries under `/efi/EFI/`.
 
-
+---
 
 ### 7) Sign every currently installed UKI
 
@@ -2112,7 +2119,7 @@ sudo sbctl verify
 
 Repeat until every boot file belonging to this installation is signed.
 
-
+---
 
 ### 9) Enroll your keys and Microsoft’s certificates
 
@@ -2190,6 +2197,7 @@ Do **NOT** choose any of these after enrolling with sbctl:
 
 Those options may replace or remove the custom key that signs your Arch UKIs.
 
+---
 
 ### 12) Verify Secure Boot after Arch starts
 
@@ -2282,7 +2290,7 @@ sudo sbctl verify
 
 **Never blindly assume that an automatic hook succeeded.**
 
-
+---
 
 ### 14) Add a Secure Boot check to Topgrade
 
@@ -2330,10 +2338,11 @@ sudo sbctl verify
 
 Only reboot after it reports that every required EFI file is signed.
 
+---
 
-#### Resume BitLocker after Windows boots successfully
+#### 16a) Resume BitLocker after Windows boots successfully
 
-Now you can reboot back into the Windows partition with SecureBoot on. After confirming that Windows boots with the new Secure Boot configuration, open an Administrator Command Prompt **ONLY** if you had BitLocker on and disabled it:
+This step is only if you have another partition with Windows on it, if not skip to 16b. You may now reboot back into the Windows partition with SecureBoot on to confirm that it works. If you use BitLocker and turned it off at the beginning you must launch `cmd` as an Administrator and re-enable it, but again, **ONLY** if you had BitLocker on and disabled it:
 
 ```bat
 manage-bde -protectors -enable C:
@@ -2351,9 +2360,9 @@ You want the Windows drive to report:
 Protection Status: Protection On
 ```
 
-When protection is resumed, BitLocker seals its key against the new valid boot measurements.
+**When protection is resumed, BitLocker seals its key against the new valid boot measurements.**
 
-#### If Windows asks for the recovery key
+#### TROUBLESHOOT: If Windows asks for the recovery key
 
 This does not necessarily mean Windows or the encryption is broken.
 
@@ -2365,7 +2374,7 @@ Once Windows starts, resume or reset BitLocker protection so that it accepts the
 manage-bde -protectors -enable C:
 ```
 
-#### If Windows is rejected by the firmware
+#### TROUBLESHOOT: If Windows is rejected by the firmware
 
 Enter the firmware and temporarily **disable Secure Boot only**.
 
@@ -2383,23 +2392,11 @@ If Microsoft certificates are absent, return the firmware to Setup Mode and enro
 sudo sbctl enroll-keys --microsoft
 ```
 
-Do not modify or privately re-sign `bootmgfw.efi`. Windows Boot Manager should remain signed and serviced by Microsoft.
+**DO NOT** manually modify or privately re-sign `bootmgfw.efi`. Windows Boot Manager should remain signed, maintained and serviced by Microsoft.
 
-#### OEM recovery tools
+---
 
-Replacing the OEM Secure Boot hierarchy may affect a laptop vendor's recovery utility or another manufacturer-specific EFI application if it relies on an OEM certificate that was removed.
-
-This does not normally affect Windows itself when Microsoft certificates remain enrolled, but it is another reason to:
-
-* Keep recovery media available
-* Preserve the BitLocker recovery password
-* Avoid deleting firmware variables manually
-* Avoid removing Microsoft certificates
-* Avoid using a custom-only Secure Boot database on a Windows dual-boot machine
-
-
-
-### 16) OPTIONAL: Update the Secure Boot dbx revocation database
+### 16b) OPTIONAL: Update the Secure Boot dbx revocation database
 
 The `dbx` database prevents known vulnerable EFI programs and bootloaders from starting. After you enable SecureBoot on Linux you may see a new firmware update available when running fwupd for SecureBoot.
 
@@ -2427,6 +2424,8 @@ sudo sbctl verify
 
 #### Check the battery and charger state
 
+If you are on a laptop the firmware update might refuse to continue if the battery is under a certain treshold, regardless of if you are charging or not.
+
 ```zsh
 sudo fwupdtool get-report-metadata 2>/dev/null |
     grep -E '^(BatteryLevel|BatteryThreshold|PowerState):'
@@ -2437,9 +2436,9 @@ You want:
 * `PowerState: ac`
 * `BatteryLevel` equal to or higher than `BatteryThreshold`
 
-Keep the charging cable connected during the update.
+When that is met you can proceed to install, just keep the charging cable connected during the update. Power failures during firmware updates is a good way to brick your computer.
 
-If you choose to install this firmware update, then install and apply it like this:
+Now you can evaluate if you want this update or not. If you choose to install this firmware update, then install and apply it like this:
 
 ```zsh
 sudo fwupdmgr update
