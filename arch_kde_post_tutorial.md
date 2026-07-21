@@ -1811,10 +1811,6 @@ manage-bde -protectors -get C:
 
 Store the recovery password somewhere that is **not located only on this computer**.
 
-You can also use:
-
-**Control Panel → System and Security → BitLocker Drive Encryption → Back up your recovery key**
-
 Do not continue until the recovery key has been saved somewhere accessible.
 
 #### Suspend BitLocker before changing Secure Boot keys
