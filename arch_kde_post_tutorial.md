@@ -1777,7 +1777,7 @@ Have these ready:
 * A recent backup of important files
 * Your Arch installation USB or another Linux recovery USB
 * Access to your firmware/BIOS setup
-* The laptop connected to power
+* The laptop (if used) ideally connected to AC power
 
 Do **NOT** use any option called:
 
