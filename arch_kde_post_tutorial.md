@@ -230,13 +230,28 @@ LLMs can help in parsing them if you are new, but *try* to learn how to read the
 What you are looking out for are malicious links or anything else out of the ordinary.
 ```
 
-### Build and install yay
+### Either build yay from AUR or install it via Chaotic-AUR
 ```zsh
-cd /tmp                                      # go to the temporary directory
-git clone https://aur.archlinux.org/yay.git  # clone the yay pkgbuild from the aur
-cd yay                                       # enter the cloned folder
-makepkg -si                                  # build the package, then install it and deps
-cd ~ && rm -rf /tmp/yay                      # go home, remove the temporary build folder
+# If you enabled Chaotic-AUR you can just install it like so:
+sudo pacman -S --needed yay
+
+# But if you want to build it from the AUR
+# without installing from Chaotic-AUR:
+#
+# go to the temporary directory
+cd /tmp
+
+# clone the yay pkgbuild from the aur                                      
+git clone https://aur.archlinux.org/yay.git
+
+# enter the cloned folder
+cd yay
+
+# build the package, then install it and deps
+makepkg -si
+
+# go home, remove the temporary build folder
+cd ~ && rm -rf /tmp/yay                      
 
 yay --version  # quick test | NOTE: Whenever you run any 'yay' command, do not use 'sudo' before it.
 ```
