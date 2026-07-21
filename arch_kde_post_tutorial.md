@@ -2215,13 +2215,13 @@ Signed UKI
 
 ### 13) Confirm that future kernel updates will be signed
 
-The Arch sbctl package installs a `kernel-install` plugin named:
+One thing that may worry a technical minded user is if the signing of kernels to work with SecureBoot can be relied upon to persist on new kernel installs & updates automatically. In short, yes it should. Arch's sbctl package comes with a `kernel-install` plugin named:
 
 ```text
 91-sbctl.install
 ```
 
-Check the complete local plugin chain:
+This is a hook that automatically signs your UKI with `sbctl` for you whenever a new kernel is installed, i.e via an update. To confirm that it exists you can check the complete local plugin chain:
 
 ```zsh
 sudo find /usr/lib/kernel/install.d /etc/kernel/install.d \
@@ -2234,7 +2234,7 @@ sudo find /usr/lib/kernel/install.d /etc/kernel/install.d \
 kernel-install inspect
 ```
 
-For this tutorial, you should see this general order:
+If you followed this tutorial, you should see this general order:
 
 ```text
 50-mkinitcpio.install
@@ -2243,7 +2243,7 @@ For this tutorial, you should see this general order:
 91-sbctl.install
 ```
 
-The update chain is:
+What this means is when `kernel-install` is initiated it should follow this chain:
 
 ```text
 Kernel package update
@@ -2257,9 +2257,9 @@ systemd-ukify assembles the UKI
 91-sbctl signs the installed UKI
 ```
 
-The final UKI filename contains the kernel version, so every kernel update creates a new filename. The sbctl `kernel-install` plugin signs that new file automatically.
+The final UKI filename contains the kernel version, so every kernel update creates a new filename. The sbctl `kernel-install` plugin then signs that new file automatically.
 
-However, you should still verify after every update before rebooting:
+However, you should always still verify after every update before rebooting:
 
 ```zsh
 sudo sbctl verify
@@ -2271,17 +2271,15 @@ sudo sbctl verify
 
 ### 14) Add a Secure Boot check to Topgrade
 
-Open your Topgrade configuration:
+This could be tedious to do with `yay` as you would always have to add `sudo sbctl verify` to the end of the command after `&&` or with an alias. The better way to do this is to use Topgrade and add it as a `post_command` which runs after your updates are done. To do this, first open your Topgrade configuration:
 
 ```zsh
 topgrade --edit-config
 ```
 
-Locate the existing `[post_commands]` section.
+Then locate the existing `[post_commands]` section and uncomment it. **Do not create a second `[post_commands]` header if one already exists.**
 
-Do not create a second `[post_commands]` header if one already exists.
-
-Add:
+Add underneath `[post_commands]` after uncommenting it:
 
 ```toml
 [post_commands]
@@ -2298,7 +2296,7 @@ If verification fails, do not reboot until you fix the unsigned file.
 
 ---
 
-### 15) What to do if a future UKI is unsigned
+### 15) TROUBLESHOOT: What to do if a future UKI is unsigned
 
 Run:
 
@@ -2317,9 +2315,9 @@ Only reboot after it reports that every required EFI file is signed.
 
 ---
 
-#### 16a) Resume BitLocker after Windows boots successfully
+### 16a) Resume BitLocker after Windows boots successfully
 
-This step is only if you have another partition with Windows on it, if not skip to 16b. You may now reboot back into the Windows partition with SecureBoot on to confirm that it works. If you use BitLocker and turned it off at the beginning you must launch `cmd` as an Administrator and re-enable it, but again, **ONLY** if you had BitLocker on and disabled it:
+This step is ONLY if you have another partition with Windows on it, if not skip to 16b. You may now reboot back into the Windows partition with SecureBoot on to confirm that it works. If you use BitLocker and turned it off at the beginning you must launch `cmd` as an Administrator and re-enable it, but again, **ONLY** if you had BitLocker on and disabled it:
 
 ```bat
 manage-bde -protectors -enable C:
@@ -2337,19 +2335,23 @@ You want the Windows drive to report:
 Protection Status: Protection On
 ```
 
-**When protection is resumed, BitLocker seals its key against the new valid boot measurements.**
+**When protection is resumed, BitLocker seals its key against the new valid boot measurements.** If everything is okay then you may go back to Arch Linux. If not, here is a list of common troubleshooting:
+
+___
 
 #### TROUBLESHOOT: If Windows asks for the recovery key
 
-This does not necessarily mean Windows or the encryption is broken.
+Don't panic. This does not necessarily mean Windows or the encryption is broken.
 
-Changing the Secure Boot configuration can change the TPM measurements that BitLocker uses to validate the boot environment. Enter the previously saved 48-digit recovery password.
+Changing the Secure Boot configuration can sometimes change the TPM measurements that BitLocker uses to validate the boot environment. All you have to do is enter the previously saved 48-digit recovery password.
 
-Once Windows starts, resume or reset BitLocker protection so that it accepts the new Secure Boot measurements:
+Once Windows starts, resume or reset BitLocker protection as normal so that it accepts the new Secure Boot measurements:
 
 ```bat
 manage-bde -protectors -enable C:
 ```
+
+___
 
 #### TROUBLESHOOT: If Windows is rejected by the firmware
 
