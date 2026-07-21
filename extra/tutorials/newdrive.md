@@ -1,17 +1,19 @@
 ## EXTRA TUTORIAL: How to add a new Drive/SSD to GPT-Auto Setups with systemd-repart
 
-Name of drive will be `REPLACE_THIS`.
-Replace ALL instances of `REPLACE_THIS` in this guide if you don't want that stupid name for your drive that is.
-And by all I mean ALL instances, even in the `.mount` and `.automount` files.
+This is how you add a new SSD to an install with systemd-gpt-auto-mount without fstab. The example name of the drive in the tutorial is `REPLACE_THIS` but it can obv be anything you like.
 
-#### 0) Identify the new disk, double check before you write to it
+Replace ALL instances of `REPLACE_THIS` in this guide with your own name, that is if you don't want that stupid name for your drive which I hope you don't.
+And by all I mean in ALL instances, even in the `.mount` and `.automount` files.
+
+#### 0) First identify your new drive & double check before you write to it
 
 ```zsh
-# First identify the drive you want to mount
+# First identify the drive you want to format & mount like in the original tutorial
 lsblk -e7 -o NAME,SIZE,TYPE,MOUNTPOINT,MODEL,SERdIAL
 
-# Then ensure you have the right one and write the identifier for it.
-# for example: sdb for SATA, hdb for HDD, nvme1n1 for NVME: 
+# Then write out the DEV=/dev/ command with the correct identifier afterwards.
+# ensure you have the right one and write the identifier for it.
+# for example: sdb for SATA, hdb for HDD, or nvme1n1 for NVME.
 DEV=/dev/drive_identifier_here
 ```
 
