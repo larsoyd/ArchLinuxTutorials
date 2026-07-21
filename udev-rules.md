@@ -5,6 +5,8 @@ udev is Linux’s device manager.  It reacts to hardware events, such as a disk 
 
 These are optional/hardware specific. You can pick the ones you want or none of them.
 
+---
+
 #### OPTIONAL: 71-nvidia.rules
 
 This rule enables PCI runtime power management for NVIDIA VGA/3D controller devices when the NVIDIA driver binds to the GPU, then switches it back to on when the driver unbinds. In practice, it allows a supported idle NVIDIA GPU to enter lower power states instead of staying fully awake all the time. This is most useful on hybrid/on-demand GPU setups, laptops, or desktops where the NVIDIA GPU is not constantly driving displays.
@@ -38,6 +40,8 @@ ACTION=="remove|unbind", SUBSYSTEM=="pci", DRIVERS=="nvidia", \
     TEST=="power/control", ATTR{power/control}="on"
 ```
 
+---
+
 #### OPTIONAL: 69-hdparm.rules
 
 This rule applies hdparm settings to rotational ATA hard drives when they are added or changed. The -B 254 option sets Advanced Power Management to its highest performance-oriented value while still using the drive’s APM feature, and -S 0 disables the automatic standby/spindown timeout. In plain terms, it tells matching HDDs: prioritize responsiveness, do not aggressively park or spin down.
@@ -66,6 +70,8 @@ nano /etc/udev/rules.d/69-hdparm.rules
 ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", \
     ATTRS{id/bus}=="ata", RUN+="/usr/bin/hdparm -B 254 -S 0 /dev/%k"
 ```
+
+---
 
 #### OPTIONAL: 50-sata.rules
 
@@ -98,11 +104,13 @@ ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", \
     ATTR{link_power_management_policy}="max_performance"
 ```
 
+---
+
 #### OPTIONAL: 20-audio-pm.rules
 
-This rule changes the `snd_hda_intel` audio power-saving timeout depending on whether the system is connected to external power. FYI: Even though it says "intel" in it's name it is unrelated to if you use an AMD or Intel CPU/GPU or not. You can check if your computer uses this timeout mechanism with: `cat /sys/module/snd_hda_intel/parameters/power_save 2>/dev/null || echo "Not relevant"`. If it returns `Not Relevant` you may skip this rule. 
+There is currently a bug with a kernel module that causes crackling audio. It is due to a faulty power saving mechanism and it is enough to drive you mad if you do not know what it is that is causing it. When the HDA audio device is first detected while the system is not discharging, the rule saves the current `power_save` value under `/run/udev/` and sets it to `0`. A value of `0` disables automatic audio codec power-down. When external power is disconnected, the rule restores the previously saved timeout, or uses a fallback of 10 seconds if no value was saved. When external power returns, it saves any active non-zero timeout and disables power saving again.
 
-When the HDA audio device is first detected while the system is not discharging, the rule saves the current `power_save` value under `/run/udev/` and sets it to `0`. A value of `0` disables automatic audio codec power-down. When external power is disconnected, the rule restores the previously saved timeout, or uses a fallback of 10 seconds if no value was saved. When external power returns, it saves any active non-zero timeout and disables power saving again.
+This rule changes the `snd_hda_intel` audio power-saving timeout depending on whether the system is connected to external power. - Also this might be obvious to some, but don't feel bad if it isn't to you **FYI:** Even though it says "Intel" in it's name it has nothing to do with if you have Intel hardware or not. - To check if this is relevant to you, simply run: `cat /sys/module/snd_hda_intel/parameters/power_save 2>/dev/null || echo "Not relevant"` If it returns `Not Relevant` you may skip this rule. 
 
 Why do it: `snd_hda_intel` can power down an idle audio codec to reduce energy use. However, waking the codec again may introduce a short delay or audible clicking and popping on some hardware. If you have this classic type of issue on Linux which is an audio issue it drives you nuts trying to fix it. This can be an issue on both desktops and laptops, but the issue is on laptops if this is turned off by default it affects battery life, so this rule provides a good compromise: keep the audio device awake for consistent responsiveness while plugged in, while retaining the system's previous power-saving timeout on battery.
 
