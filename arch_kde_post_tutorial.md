@@ -2,8 +2,6 @@
 
 Welcome to the post-install tutorial, before we begin here is a list of optional misc. settings you might want to turn off/on:
 
-### (OPTIONAL) Misc. System Defaults You May Want To Change:
-
 By default KDE Plasma saves your desktop session before you shut it off by default. This is undesirable for many users. To turn it off open System Settings then:
 
 * Go to System -> Desktop Session and then under "System Restore" check the "Start with an empry session" box.
