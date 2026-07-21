@@ -1770,16 +1770,76 @@ Secure Boot makes the firmware reject untrusted or modified EFI boot files. In t
 
 **Secure Boot does not encrypt your files.** For protection against someone removing the SSD and reading it from another computer, you also need LUKS encryption.
 
+_____
+
+
+### 0) INTRO: If Dual-Booting Windows with Secure Boot
+
+If you followed my tutorial but also have Windows installed on another partition or drive, read this part before you start the tutorial.
+
+When clearing the keys you will not render your Windows partition unbootable. Windows does not require the original OEM Platform Key. You can replace the Platform Key with your custom sbctl key while retaining Microsoft’s certificates in `KEK` and `db` - More on what that is later.
+
+But that means this command is therefore mandatory for a Windows dual-boot system:
+
+```zsh
+sudo sbctl enroll-keys --microsoft
+```
+
+Do **NOT** use:
+
+```zsh
+sudo sbctl enroll-keys
+```
+
+The first command is already used by default in the tutorial so its not something you need to remember necessarily, but if you are on your own in the future you must ensure you never enroll keys without the `--microsoft` flag. A custom-only enrollment can cause firmware to reject Windows Boot Manager when Secure Boot is enabled.
+
+#### Before clearing any Secure Boot keys
+
+Before starting the tutorial, re-enable SecureBoot in firmware and boot into your Windows partition.
+
+Open **Command Prompt as Administrator** and check whether BitLocker or Windows Device Encryption protects the Windows system drive:
+
+```bat
+manage-bde -status C:
+```
+
+If protection is enabled, make sure you possess the 48-digit BitLocker recovery password:
+
+```bat
+manage-bde -protectors -get C:
+```
+
+Store the recovery password somewhere that is **not located only on this computer**.
+
+You can also use:
+
+**Control Panel → System and Security → BitLocker Drive Encryption → Back up your recovery key**
+
+Do not continue until the recovery key has been saved somewhere accessible.
+
+#### Suspend BitLocker before changing Secure Boot keys
+
+From an Administrator Command Prompt:
+
+```bat
+manage-bde -protectors -disable C: -rebootcount 0
+```
+
+`-rebootcount 0` keeps protection suspended until you manually enable it again. This is useful because setting up custom Secure Boot keys may require several reboots between Windows, Arch, and the firmware settings.
+
+This does **not** decrypt the Windows partition and does not remove its BitLocker protectors. All it does is temporarily stop the TPM from blocking access because the Secure Boot measurements changed. You may now reboot back into the firmware, turn off SecureBoot again and boot into Arch to begin the process. 
+
+
 ### IMPORTANT WARNING BEFORE STARTING
 
-Have these ready:
+Now that you are back in Arch, do some housekeeping before starting. First ensure you have these ready:
 
 * A recent backup of important files
 * Your Arch installation USB or another Linux recovery USB
 * Access to your firmware/BIOS setup
-* The laptop (if used) ideally connected to AC power
+* The laptop (if used) connected to AC power
 
-Do **NOT** use any option called:
+**NEVER** use any option/flag called:
 
 * `--yolo`
 * `--yes-this-might-brick-my-machine`
@@ -1787,11 +1847,13 @@ Do **NOT** use any option called:
 * Clear keys after finishing
 * Restore factory keys after finishing
 
-If Arch fails to boot after enabling Secure Boot, go back into the firmware and **disable Secure Boot only**. Do not clear the keys.
+If Arch fails to boot after enabling Secure Boot, always go back into the firmware and **only disable Secure Boot**. Do not clear the keys.
 
 ---
 
 ### 1) Install the Secure Boot tools
+
+Let's begin the tutorial then, first install the necessary tools:
 
 ```zsh
 sudo pacman -S --needed sbctl efitools mokutil
@@ -1805,7 +1867,7 @@ What each package does:
 
 The Arch `sbctl` package also installs integration for `kernel-install`, mkinitcpio, and pacman transactions.
 
----
+
 
 ### 2) Confirm that this is the correct boot setup
 
@@ -1921,7 +1983,7 @@ Do not continue until it reports that Setup Mode is enabled.
 
 The sbctl documentation requires Setup Mode for live key enrollment and recommends retaining Microsoft trust certificates because some firmware and Option ROM components depend on them.
 
----
+
 
 ### 4) Inspect the current firmware key databases
 
@@ -1945,7 +2007,7 @@ When the firmware is in Setup Mode, `PK` should have no entries.
 
 `dbx` may contain a massive list of hashes. That is normal. It is the Secure Boot revocation database.
 
----
+
 
 ### 5) Create your Secure Boot keys
 
@@ -1981,7 +2043,7 @@ Do not upload that directory or put it in a public repository.
 
 After everything is working, make an encrypted offline backup of `/var/lib/sbctl`. Someone who obtains your private database key can sign a modified UKI that your computer will trust.
 
----
+
 
 ### 6) Create a signed systemd-boot source file
 
@@ -2003,7 +2065,7 @@ sudo bootctl update
 
 This should install or update the signed systemd-boot binaries under `/efi/EFI/`.
 
----
+
 
 ### 7) Sign every currently installed UKI
 
@@ -2054,7 +2116,7 @@ sudo sbctl verify
 
 Repeat until every boot file belonging to this installation is signed.
 
----
+
 
 ### 9) Enroll your keys and Microsoft’s certificates
 
@@ -2087,7 +2149,6 @@ Setup Mode should now be disabled because your new Platform Key has been enrolle
 
 Secure Boot will remain disabled until you enable it in the firmware.
 
----
 
 ### 10) Confirm that the keys were actually enrolled
 
@@ -2104,7 +2165,7 @@ You should see:
 * Your custom key plus Microsoft certificates in `KEK`
 * Your custom database certificate plus Microsoft certificates in `db`
 
-Current sbctl versions include Microsoft’s newer Secure Boot certificate generation when using `--microsoft`.
+Current sbctl versions include Microsoft’s newer Secure Boot certificate generation when using `--microsoft`. When this is present and confirmed your Windows partition should boot with SecureBoot enabled.
 
 ---
 
@@ -2133,7 +2194,6 @@ Do **NOT** choose any of these after enrolling with sbctl:
 
 Those options may replace or remove the custom key that signs your Arch UKIs.
 
----
 
 ### 12) Verify Secure Boot after Arch starts
 
@@ -2224,9 +2284,9 @@ However, you should still verify after every update before rebooting:
 sudo sbctl verify
 ```
 
-Never blindly assume that an automatic hook succeeded.
+**Never blindly assume that an automatic hook succeeded.**
 
----
+
 
 ### 14) Add a Secure Boot check to Topgrade
 
@@ -2274,15 +2334,82 @@ sudo sbctl verify
 
 Only reboot after it reports that every required EFI file is signed.
 
----
+
+#### Resume BitLocker after Windows boots successfully
+
+Now you can reboot back into the Windows partition with SecureBoot on. After confirming that Windows boots with the new Secure Boot configuration, open an Administrator Command Prompt **ONLY** if you had BitLocker on and disabled it:
+
+```bat
+manage-bde -protectors -enable C:
+```
+
+Then confirm:
+
+```bat
+manage-bde -status C:
+```
+
+You want the Windows drive to report:
+
+```text
+Protection Status: Protection On
+```
+
+When protection is resumed, BitLocker seals its key against the new valid boot measurements.
+
+#### If Windows asks for the recovery key
+
+This does not necessarily mean Windows or the encryption is broken.
+
+Changing the Secure Boot configuration can change the TPM measurements that BitLocker uses to validate the boot environment. Enter the previously saved 48-digit recovery password.
+
+Once Windows starts, resume or reset BitLocker protection so that it accepts the new Secure Boot measurements:
+
+```bat
+manage-bde -protectors -enable C:
+```
+
+#### If Windows is rejected by the firmware
+
+Enter the firmware and temporarily **disable Secure Boot only**.
+
+Do not clear the keys again.
+
+Boot Arch and inspect the trusted database:
+
+```zsh
+sudo efi-readvar -v db
+```
+
+If Microsoft certificates are absent, return the firmware to Setup Mode and enroll again using:
+
+```zsh
+sudo sbctl enroll-keys --microsoft
+```
+
+Do not modify or privately re-sign `bootmgfw.efi`. Windows Boot Manager should remain signed and serviced by Microsoft.
+
+#### OEM recovery tools
+
+Replacing the OEM Secure Boot hierarchy may affect a laptop vendor's recovery utility or another manufacturer-specific EFI application if it relies on an OEM certificate that was removed.
+
+This does not normally affect Windows itself when Microsoft certificates remain enrolled, but it is another reason to:
+
+* Keep recovery media available
+* Preserve the BitLocker recovery password
+* Avoid deleting firmware variables manually
+* Avoid removing Microsoft certificates
+* Avoid using a custom-only Secure Boot database on a Windows dual-boot machine
+
+
 
 ### 16) OPTIONAL: Update the Secure Boot dbx revocation database
 
-The `dbx` database prevents known vulnerable EFI programs and bootloaders from starting.
+The `dbx` database prevents known vulnerable EFI programs and bootloaders from starting. After you enable SecureBoot on Linux you may see a new firmware update available when running fwupd for SecureBoot.
 
-Your firmware may have an old dbx even if your BIOS itself has no available update.
+This is because your firmware may have an old dbx even if your BIOS itself has no available update.
 
-Install and start fwupd if you have not already:
+To check, install and start fwupd if you have not already:
 
 ```zsh
 sudo pacman -S --needed fwupd
@@ -2316,13 +2443,13 @@ You want:
 
 Keep the charging cable connected during the update.
 
-Apply the update:
+If you choose to install this firmware update, then install and apply it like this:
 
 ```zsh
 sudo fwupdmgr update
 ```
 
-Read the update description before accepting it. Ensure it is the UEFI dbx update you expected.
+Read the update description CAREFULLY before accepting it. Ensure it is the UEFI dbx update you expected.
 
 Reboot when requested:
 
@@ -2362,23 +2489,23 @@ The dbx payload is written while Linux is running but becomes active after resta
 
 ---
 
-### 17) Older computers and limited EFI NVRAM
+### 17) TROUBLESHOOT: Older computers and limited EFI NVRAM
 
-The EFI System Partition and EFI variable storage are completely different things:
+Sometimes after a `dbx` update if your computer is very old it may say it "failed" due to hitting a limit on the size requirements of your EFI variable storage. This storage is **NOT** your EFI System Partition, as confusing as that may be. The EFI System Partition and EFI variable storage are two completely different things:
 
 ```text
 /efi
 ```
 
-is a normal partition on the SSD.
+is a normal partition on your SSD.
 
 ```text
 /sys/firmware/efi/efivars
 ```
 
-exposes a small amount of nonvolatile storage built into the motherboard firmware.
+while this is a small amount of nonvolatile storage built into your motherboard firmware.
 
-Making `/efi` larger will not increase the firmware’s variable storage.
+**Making your `/efi` larger will not increase the firmware’s variable storage.**
 
 Check the firmware-reported usage with:
 
@@ -2389,25 +2516,25 @@ sudo fwupdtool get-report-metadata 2>/dev/null |
 
 If fwupd reports that there is not enough efivarfs space:
 
-* Do not delete random files from `/sys/firmware/efi/efivars`
-* Do not delete `dbx`
-* Do not clear your Secure Boot keys
-* Do not force the update
-* Do not resize the ESP expecting it to help
+* **Do not delete random files from `/sys/firmware/efi/efivars`**
+* **Do not delete `dbx`**
+* **Do not clear your Secure Boot keys**
+* **Do not force the update**
+* **Do not resize the ESP expecting it to help**
 
-A complete shutdown and cold power cycle may allow old firmware to garbage-collect replaced EFI variables:
+A complete shutdown and cold power cycle may allow old firmware to garbage-collect replaced EFI variables. Shut your laptop down with:
 
 ```zsh
 systemctl poweroff
 ```
 
-Wait until the machine is fully powered off, then start it again and recheck the free space.
+Then wait until the machine is fully powered off, and finally start it again and recheck the free space. This is not a guarantee however, and it is probable that it will still report size issues and an "update failure"
 
-If a dbx update reports success and the new version is shown after reboot, the update worked even if fwupd warns that there is not enough space for another future write.
+But this "failure" report should not be taken as gospel, since if a dbx update still reports success and the new version is shown after reboot, the update worked even if fwupd warns that there is not enough space for another future write. Yes its very annoying, however in the future `dbx` updates will most likely fail due to space requirements. The sad report to give here is that there is really nothing you can do about this. The last `dbx` should be treated as the ceiling for the security of w/e hardware you are using. Take whatever precautions necessary in response, which includes getting a new laptop.
 
----
 
-### Troubleshooting
+
+### Troubleshooting For Secure Boot In General
 
 #### Secure Boot is gray in the BIOS
 
