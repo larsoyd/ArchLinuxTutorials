@@ -1,6 +1,6 @@
 ## EXTRA TUTORIAL: How to add a new Drive/SSD to GPT-Auto Setups with systemd-repart
 
-This is how you add a new SSD to an install with systemd-gpt-auto-mount without fstab. The example name of the drive in the tutorial is `REPLACE_THIS` but it can obv be anything you like.
+This is how you add a new SSD to an install with systemd-gpt-auto-mount without fstab. It is a bit different but way more simple IMO. The example name of the drive in the tutorial is `REPLACE_THIS` but it can obv be anything you like.
 
 Replace ALL instances of `REPLACE_THIS` in this guide with your own name, that is if you don't want that stupid name for your drive which I hope you don't.
 And by all I mean in ALL instances, even in the `.mount` and `.automount` files.
