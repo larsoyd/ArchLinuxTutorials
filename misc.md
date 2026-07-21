@@ -27,12 +27,11 @@ ____
 
 5. By default KDE's taskbar (panel) will float if no windows are on the screen. You can turn this off by:
 
-Right Click the Taskbar -> "Show Panel Configuration" -> Look For the "Floating" option in the Window On The Right -> Change Dropdown Menu Option to "Disabled"
+* Right Click the Taskbar -> "Show Panel Configuration" -> Look For the "Floating" option in the Window On The Right -> Change Dropdown Menu Option to "Disabled"
 
 ____
 
 6. And finally, by default even though we installed Hunspell for spellchecking in the Install phase, KDE will not have turned it on by default. 
 To turn on spellchecking you have to open System Settings and go to:
 
-1. Language & Time -> Preferred Languages -> American English (United States) and choose the large option -> Apply
-2. Check "Automatic Spell Checking enabled by default"
+* Language & Time -> Preferred Languages -> American English (United States) and choose the large option -> Apply. Then check "Automatic Spell Checking enabled by default"
