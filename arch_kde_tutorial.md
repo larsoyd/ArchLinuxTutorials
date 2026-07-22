@@ -724,11 +724,11 @@ These are a combination of CachyOS settings and other sources. To read what they
 sysctl --system
 ```
 
+---
+
 ### Enable REISUB via sysctl
 
 * This is an optional but highly recommended tweak which enables all the Magic SysRq functions needed for **REISUB.** This is a way to safely shut down your system if it ever freezes without having to use the power button which carries the inherent risk of corrupting your file system. - [**Read this document**](REISUB.md) carefully to understand what it is, how to use it, and why you should want to enable it despite the risks.
-
-* If it helps my case for why you should enable this, I will say I have **NOT** set it to `1` which the Arch wiki for some reason recommends, as that enables *everything.* Instead I have only enabled what REISUB specifically needs to be able to do this. Read the comments on what each number does so you are on the up and up on what is enabled.
 
 ```zsh
 # create file
@@ -816,6 +816,8 @@ cp /tmp/ArchLinuxTutorials/amdgpu.conf /etc/modprobe.d/21-amdgpu.conf
 cp /tmp/ArchLinuxTutorials/blacklist.conf /etc/modprobe.d/22-blacklist.conf
 ```
 
+---
+
 ### Force GTK to use Portals
 ```zsh
 # This is important for file pickers and GTK windows on KDE
@@ -833,46 +835,7 @@ GTK_USE_PORTAL=1
 GDK_DEBUG=portals
 ```
 
-### OPTIONAL: Enable Fast Connect for Bluetooth
-```zsh
-# This is only if you are planning to use Bluetooth.
-# The Bluetooth configuration is able to use a way
-# to connect to Bluetooth hardware that is faster.
-#
-# The tradeoff is this is only for Bluetooth adapters
-# that support it, and can lead to increased power
-# usage. The benefit is way faster connection.
-#
-mkdir -p /etc/bluetooth
-nano /etc/bluetooth/main.conf
-```
-
-Find & Uncomment FastConnectable and change 'false' to 'true':
-
-```conf
-# Permanently enables the Fast Connectable setting for adapters that
-# support it. When enabled other devices can connect faster to us,
-# however the tradeoff is increased power consumptions. This feature
-# will fully work only on kernel version 4.1 and newer. Defaults to
-# 'false'.
-FastConnectable = true
-```
-
-### Fix Emojis rendering as black and white
-```zsh
-# Qt does not support automatically looking up the best font for emojis
-# Therefore the user must manually add a color emoji font as a fallback
-# or they are sometimes rendered incorrectly.
-#
-# This fix uses Noto-Fonts-Emoji, we installed it in the list of packages.
-# If you later replace it with another Emoji package, make sure to update this
-# as well.
-#
-mkdir -p /etc/fonts/conf.d
-
-# copy from tmp
-cp /tmp/ArchLinuxTutorials/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
-```
+---
 
 ### Optional: Set Login Theme Before Reboot
 
