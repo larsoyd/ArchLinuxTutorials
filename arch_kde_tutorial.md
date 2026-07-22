@@ -818,6 +818,24 @@ cp /tmp/ArchLinuxTutorials/blacklist.conf /etc/modprobe.d/22-blacklist.conf
 
 ---
 
+### Fix Emojis rendering as black and white
+```zsh
+# Qt does not support automatically looking up the best font for emojis
+# Therefore the user must manually add a color emoji font as a fallback
+# or they are sometimes rendered incorrectly.
+#
+# This fix uses Noto-Fonts-Emoji, we installed it in the list of packages.
+# If you later replace it with another Emoji package, make sure to update this
+# as well.
+#
+mkdir -p /etc/fonts/conf.d
+
+# copy it from tmp
+cp /tmp/ArchLinuxTutorials/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
+```
+
+---
+
 ### Force GTK to use Portals
 ```zsh
 # This is important for file pickers and GTK windows on KDE
