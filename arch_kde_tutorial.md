@@ -341,7 +341,7 @@ EDITOR=nano visudo
 
 ### 5.5 Install Packages
 ```zsh
-# linux-zen is a tuned kernel, should work on any CPU.
+# linux-zen is a tuned kernel for desktop use.
 # it has nothing to do with the Zen architecture by AMD FYI.
 pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
 
