@@ -73,7 +73,7 @@ If you use an English lang keyboard you can ignore all of it, but it's worth kno
 
 ### OPTIONAL: Using SystemRescue To Install
 
-- While in this tutorial I will be assuming you are using the official ArchISO Installation Medium, I must concede that after installing Arch via the official medium for years I now instead opt for a live environment for my own convenience. Basically what this means is that I install Arch from another distro, and I choose the LiveISO maintenance distro [SystemRescue](https://www.system-rescue.org/) which is based on Arch and comes with the installation scripts and now since 13.1 reflector pre-installed for maximum convenience. This is only if you already have a gist on how to install Arch and you don't want to use the TUI. - [Here](extra/misc/systemrescue.md) is more on this if you are interested.
+- While in this tutorial I will be assuming you are using the official ArchISO Installation Medium, I must concede that after installing Arch via the official medium for years I now instead opt for a live environment for my own convenience. Basically what this means is that I install Arch from another distro, and I choose the LiveISO maintenance distro [SystemRescue](https://www.system-rescue.org/) which is based on Arch and comes with the installation scripts and reflector pre-installed for maximum convenience. This is only if you already have a gist on how to install Arch and you don't want to use the TUI. - [Here](extra/misc/systemrescue.md) is more on this if you are interested.
 
 ---
 
