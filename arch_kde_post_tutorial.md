@@ -755,6 +755,55 @@ $ fwupdmgr update
 
 ```
 
+
+### OPTIONAL: Enable Fast Connect for Bluetooth
+```zsh
+# This is only if you use Bluetooth.
+# The Bluetooth configuration is able to use a way
+# to connect to Bluetooth hardware that is faster.
+#
+# The tradeoff is this is only for Bluetooth adapters
+# that support it, and can lead to increased power
+# usage. The benefit is way faster connection.
+#
+sudo mkdir -p /etc/bluetooth
+sudo nano /etc/bluetooth/main.conf
+```
+
+Find & Uncomment FastConnectable and change 'false' to 'true':
+
+```conf
+# Permanently enables the Fast Connectable setting for adapters that
+# support it. When enabled other devices can connect faster to us,
+# however the tradeoff is increased power consumptions. This feature
+# will fully work only on kernel version 4.1 and newer. Defaults to
+# 'false'.
+FastConnectable = true
+```
+
+---
+
+### Fix Emojis rendering as black and white
+```zsh
+# Qt does not support automatically looking up the best font for emojis
+# Therefore the user must manually add a color emoji font as a fallback
+# or they are sometimes rendered incorrectly.
+#
+# This fix uses Noto-Fonts-Emoji, we installed it in the list of packages.
+# If you later replace it with another Emoji package, make sure to update this
+# as well.
+#
+sudo mkdir -p /etc/fonts/conf.d
+
+# clone my repo and copy it from tmp
+cd /tmp
+git clone https://github.com/larsoyd/ArchLinuxTutorials
+cp /tmp/ArchLinuxTutorials/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
+
+# then go back to home
+cd
+```
+
 ### 4.1 Firewall
 ```zsh
 sudo pacman -S --needed firewalld firewall-applet
