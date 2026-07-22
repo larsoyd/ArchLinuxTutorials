@@ -902,23 +902,19 @@ rc-manager=auto
 systemctl enable systemd-resolved.service
 ```
 
-
-### 4.10 Enable Essential Services
-
-```zsh
-# Enable network, display manager, and timesyncd
-# Include cups.service if you are using printer
-# Include bluetooth.service for Bluetooth if you installed bluez and bluez-utils
-systemctl enable NetworkManager plasmalogin systemd-timesyncd systemd-boot-update.service \
-fstrim.timer reflector.timer pkgstats.timer
-```
-
 ---
 
 
 ## Step 5: Complete Installation
 
 ```zsh
+# Enable Essential Services
+# 
+# Include cups.service if you are using printer
+# Include bluetooth.service for Bluetooth if you installed bluez and bluez-utils
+systemctl enable NetworkManager plasmalogin systemd-timesyncd systemd-boot-update.service \
+fstrim.timer reflector.timer pkgstats.timer
+
 # Exit environment
 exit
 
