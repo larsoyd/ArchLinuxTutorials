@@ -782,7 +782,7 @@ This udev rule persistently & dynamically sets Linux block-device I/O schedulers
 mkdir -p /etc/udev/rules.d
 
 # Auto (if repo cloned)
-cp /tmp/ArchLinuxTutorials/60-ioschedulers.rules /etc/udev/rules.d/60-ioschedulers.rules
+cp /tmp/ArchLinuxTutorials/rules.d/60-ioschedulers.rules /etc/udev/rules.d/60-ioschedulers.rules
 
 # Manually:
 nano /etc/udev/rules.d/60-ioschedulers.rules
