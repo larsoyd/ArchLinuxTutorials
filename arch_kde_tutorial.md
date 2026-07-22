@@ -484,10 +484,11 @@ nano /etc/hosts
 
 # 4.6 Install the System
 
-I have taken the liberty to make some decisions for a few packages you will install, some of them are technically "optional" but
-all of them are in my opinion essential to the well functioning of a KDE Plasma desktop. 
+These are all the packages needed for a complete & functional KDE Plasma desktop environment.
 
-[**Here's**](pkgchoices.md) why I included those. **Please review them before installing.**
+What is included is the complete KDE Plasma desktop stack, networking, various helpers like `usbutils`, the Dolphin file manager and its plugins, PipeWire sound support, and fonts. 
+
+Any other package included is technically optional, but I strongly reccommend them. [**Here's**](pkgchoices.md) why I included those. **Please review them before installing.**
 
 
 NVIDIA: 
