@@ -1,39 +1,17 @@
 # Complete Arch Linux Tutorial (KDE Plasma + Wayland w/ Automounting Partitions)
 
-This is an **OPINIONATED** Arch installation guide for regular folks who just want a working system to game on that's straight forward & optimized with opinionated tweaks using a DE that is most like Windows
+This is an Arch installation guide for regular folks who just want a working system to game on that's straight forward & optimized with a few opinionated tweaks using a DE that is most like Windows
 and usually the one most people want to use because of that, at least for their first DE. I've used every DE and WM that is both trendy and some obscure,
 I started with KDE Plasma and Arch Linux. I always come back to both eventually. It's fun to try out new things, but KDE Plasma is OP at the moment I am writing 
-this. It's fully featured, they finally have a good process in eliminating bugs which plagued the DE before, and it's very easy to customize. Most DEs and WMs have
-some caveat, KDE Plasma does not with the exception of one thing for some users. KDE Plasma is losing Xorg/X11 support soon, the only way forward for users who want to use X11 is to use SonicDE (A fork of KDE Plasma X11) and XLibre. An experimental script will be provided for this on the bottom. **Installing SonicDE will replace KDE Plasma, you can only use one of these sessions.**
+this. It's fully featured, and they finally have a good process in eliminating bugs which plagued the DE before.
 
-
-## NOTE (ACTUALLY READ THIS): 
-
-So, I like to use something called `systemd-gpt-auto-generator`. I acknowledge that this is a super opinionated decision for a noob tutorial, and I debated whether or not to use it in this tutorial, but I feel it's so cromulent and underrated that I decided to make a big decision to teach you how to use it as well. If you follow this guide correctly and use it you'll see why it's very convenient.
-It is not usually done on Linux and it is kind of new(?), at least relative to `fstab`, however it is a modern way of mounting partitions that are also used by other operating systems you may already be familiar with. 
-
----
 
 # INTRODUCTION - How GPT Auto-Mounting Works
 
-Modern systemd uses `systemd-gpt-auto-generator` to automatically discover and mount partitions based on specific 128-bit **UUIDs,** eliminating the need for manual `/etc/fstab` entries. This system is useful for centralizing file system configuration in the partition table and making configuration in `/etc/fstab` or on the kernel command line unnecessary. This is similar to the OS you probably switched away from and are more familiar with; Windows. - Windows identifies volumes by what they call "GUIDs" (Volume{GUID} paths). Now for your sake all you need to know is that a GUID is functionally the same thing as the specific 128-bit UUIDs that we will use on Linux, but instead of mounting to `boot` or `root` they mount their "GUIDs" to set drives defined by a letter, so `C:` drives and `D:` drives. That is why some letters are reserved for largely depreciated functions, as mounting on Windows is identified by a set identifier just like your system's UUIDs will do.
+Modern systemd uses `systemd-gpt-auto-generator` to automatically discover and mount partitions based on specific 128-bit **UUIDs**. Your drive partitions like `boot` and `root` will not be mounted by `fstab`, instead they will automount entirely by themselves. This system is useful for centralizing file system configuration in the partition table and making configuration in `/etc/fstab` or on the kernel command line unnecessary.
 
-Your drive partitions like `boot` and `root` will not be mounted by `fstab`, instead they will automount entirely by using UUIDs by using `systemd-gpt-auto-generator`. This is preferable in my opinion to `fstab` which feels like a hack and places too much control of system reliance upon a single text based config. This is anecdotal, but I have heard of what happens when some package or update randomly decides to destroy your `fstab` and it is **NOT** fun to troubleshoot if it happens. It's often difficult to know what is going wrong and many hours will be wasted until you realize your fstab for whatever reason is empty or has some typos.
+This is still unconventional, so it's worth familiarizing yourself with how this works before following my guide. I will add a small tutorial on how you would go about adding a new SSD later on with this, it's a *tiny* bit different but very easy to do. -- **PLEASE NOTE:** that there are extra steps to subvolumes if you choose to use this with **BTRFS,** since subvolumes like snapshots usually require `fstab`. I might write a small tutorial on what you need to do with BTRFS for this type of system if I ever decide to use that filesystem, but essentially instead of `fstab` you just use systemd service for each instead which is also what you will do for new drives. 
 
-Now this is still unconventional which is part of the fun of using this as it justifies the manual install, but since it is unique it's worth familiarizing yourself with how this works before following my guide. I will add a small tutorial on how you would go about adding a new SSD later on with this, it's a *tiny* bit different but still very easy to do. -- **PLEASE NOTE:** that there are extra steps to subvolumes if you choose to use this with **BTRFS,** since subvolumes like snapshots usually require `fstab`. I might write a small tutorial on what you need to do with BTRFS for this type of system if I ever decide to use that filesystem, but essentially instead of `fstab` you just use systemd service for each instead which is also what you will do for new drives. 
-
-## The UUIDs
-
-- `EF00` (EFI System Partition)
-- `8304` (Linux x86-64 root)  
-
-systemd automatically creates mount units based on these partition type UUIDs. Each hex code corresponds to a specific 128-bit UUID that tells the system exactly what that partition is for. The system recognizes these GUIDs and then mounts accordingly, just like a modern system should. This approach is similar to how partitioning works on other systems.
-For extra storage you can use the generic Linux filesystem code:
-- `8300`
-
-systemd won't auto-mount these, giving you control over when and where they mount which again to me is ideal, if need be you can mount them on boot with a systemd service. This allows you to avoid `fstab` issues forever. No more random issues where it's suddenly overwritten for some reason or anything else, mounting is seperate and automated.
-
----
 
 # - CONS: -
 
@@ -970,12 +948,6 @@ fstrim.timer reflector.timer pkgstats.timer
 
 ---
 
-
-### OPTIONAL: SonicDE/XLibre Install Script (EXPERIMENTAL)
-
-- KDE Plasma is losing X11 support next major release to become a Wayland only DE. If you are new to Linux and dont know what any of that means then **you can just skip this part to Step 5.** 
-
-- Go to sonicde-tutorial.md if you are absolutely sure you want X11 over Wayland for whatever reason.
 
 ## Step 5: Complete Installation
 
