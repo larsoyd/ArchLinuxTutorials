@@ -486,7 +486,7 @@ nano /etc/hosts
 
 These are all the packages needed for a complete & functional KDE Plasma desktop environment.
 
-What is included is the complete KDE Plasma desktop stack, networking, various helpers like `usbutils`, the Dolphin file manager and its plugins, PipeWire sound support, and fonts. 
+What is included is the complete KDE Plasma desktop stack, English spell check, graphics drivers with hardware acceleration drivers, CUDA (NVIDIA), networking, various helpers for other packages like `usbutils` and `tessaract`, the Dolphin file manager and its plugins, PipeWire sound support, and fonts. 
 
 Any other package included is technically optional, but I strongly reccommend them. [**Here's**](pkgchoices.md) why I included those. **Please review them before installing.**
 
