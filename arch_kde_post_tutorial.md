@@ -783,27 +783,6 @@ FastConnectable = true
 
 ---
 
-### Fix Emojis rendering as black and white
-```zsh
-# Qt does not support automatically looking up the best font for emojis
-# Therefore the user must manually add a color emoji font as a fallback
-# or they are sometimes rendered incorrectly.
-#
-# This fix uses Noto-Fonts-Emoji, we installed it in the list of packages.
-# If you later replace it with another Emoji package, make sure to update this
-# as well.
-#
-sudo mkdir -p /etc/fonts/conf.d
-
-# clone my repo and copy it from tmp
-cd /tmp
-git clone https://github.com/larsoyd/ArchLinuxTutorials
-cp /tmp/ArchLinuxTutorials/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
-
-# then go back to home
-cd
-```
-
 ### 4.1 Firewall
 ```zsh
 sudo pacman -S --needed firewalld firewall-applet
