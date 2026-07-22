@@ -8,9 +8,9 @@ this. It's fully featured, and they finally have a good process in eliminating b
 
 # INTRODUCTION - How GPT Auto-Mounting Works
 
-Modern systemd uses `systemd-gpt-auto-generator` to automatically discover and mount partitions based on specific 128-bit **UUIDs** which is what I will be showing you how to set up in this tutorial. Your drive partitions like `boot` and `root` will not be mounted by `fstab`, instead they will automount entirely by themselves. This system is useful for centralizing file system configuration in the partition table and making configuration in `/etc/fstab` or on the kernel command line unnecessary.
+In this tutorial I will be using `systemd-gpt-auto-generator` to automatically discover and mount partitions based on specific 128-bit **UUIDs**. What that means is that your drive partitions like `boot` and `root` will not be mounted by `fstab`, instead they will automount basically by themselves. This system is useful for centralizing file system configuration in the partition table and in making configuration in `/etc/fstab` or on the kernel command line completely unnecessary.
 
-This is still unconventional, so it's worth familiarizing yourself with how this works before following my guide. I will add a small tutorial on how you would go about adding a new SSD later on with this, it's a *tiny* bit different but very easy to do. -- **PLEASE NOTE:** that there are extra steps to subvolumes if you choose to use this with **BTRFS,** since subvolumes like snapshots usually require `fstab`. I might write a small tutorial on what you need to do with BTRFS for this type of system if I ever decide to use that filesystem, but essentially instead of `fstab` you just use systemd service for each instead which is also what you will do for new drives. 
+This is still very unconventional, so it's worth familiarizing yourself with how this works before following my guide. Some things are different like mounting a new SSD drive for example, which I show how to do in [**this**](extra/tutorials/newdrive.md) guide. 
 
 
 # - CONS: -
