@@ -546,7 +546,7 @@ pacman -S --needed \
 ### OPTIONAL: wireless-regdb
 If you use wireless then an **essential package** is also `wireless-regdb`. It installs regulatory.db, a machine-readable table of Wi-Fi rules per country  that allows you to connect properly. If regulatory.db is missing or cannot be read, Linux falls back to the “world” regdomain 00. That profile is **intentionally conservative,** which means fewer channels and more restrictions. For example, world 00 marks many 5 GHz channels as passive-scan only and limits parts of 2.4 GHz (12–13 passive, 14 effectively off).
 
-OPTIONAL: Not needed if you only use Ethernet.
+This is not needed if you only use Ethernet.
 
 ```zsh
 # install
@@ -760,7 +760,7 @@ udev is Linux’s device manager.  It reacts to hardware events, such as a disk 
 
 #### 60-ioschedulers.rules
 
-This udev rule persistently & dynamically sets Linux block-device I/O schedulers when storage devices are added or changed based on the best scheduler for w/e you have. An I/O scheduler controls how read and write requests are ordered before they reach a storage device. This example selects BFQ for rotational hard drives, mq-deadline for non-rotational SATA/eMMC storage, and Kyber for NVMe SSDs. The goal is better desktop responsiveness and more sensible latency behavior per drive type, instead of relying on one default for everything. Linux exposes schedulers such as mq-deadline, none, bfq, and kyber through /sys/block/<device>/queue/scheduler, depending on kernel and device support. **Great for any system to have.**
+This udev rule persistently & dynamically sets Linux block-device I/O schedulers when storage devices are added or changed based on the best scheduler for w/e you have. An I/O scheduler controls how read and write requests are ordered before they reach a storage device. The goal is better desktop responsiveness and more sensible latency behavior per drive type, instead of relying on one default for everything.
 
 ```zsh
 # Create folder
