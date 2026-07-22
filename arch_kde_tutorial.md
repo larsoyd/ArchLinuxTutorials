@@ -569,8 +569,8 @@ WIRELESS_REGDOM="NO"
 
 ```zsh
 # Edit mkinitcpio configuration, you will have to edit both MODULES & HOOKS
-# Modules loads drivers early on which prevents race issues which plague NVIDIA on Linux
-# NVIDIA users also need to remove 'kms' from hooks because of this.
+# Modules loads drivers early on which prevents the race issues that plague NVIDIA on Linux
+# NVIDIA users are also required to remove 'kms' from HOOKS because of this.
 nano /etc/mkinitcpio.conf
 
 ---
