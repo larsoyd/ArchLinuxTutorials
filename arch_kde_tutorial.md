@@ -575,36 +575,28 @@ WIRELESS_REGDOM="NO"
 ### 4.6 Configure Initramfs
 
 ```zsh
-# Edit mkinitcpio configuration
+# Edit mkinitcpio configuration, you will have to edit both MODULES & HOOKS
+# Modules loads drivers early on which prevents race issues which plague NVIDIA on Linux
+# NVIDIA users also need to remove 'kms' from hooks because of this.
 nano /etc/mkinitcpio.conf
 
 ---
 
-# Example for MODULES if you use nvidia:
+# MODULES
+#
+# For amdgpu just put 'amdgpu' in modules
+# NVIDIA on the other hand is as always a bit more involved:
 MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 
 ---
 
-# Example for MODULES if you use amdgpu
+# HOOKS
 #
-# The amdgpu kernel driver needs to be loaded before the radeon one.
-# You can check which kernel driver is loaded by running lspci -k.
-#
-MODULES=(amdgpu)
+# - Remove consolefont since it is redundant. The feature is already satisfied by 'sd-vconsole'
+# - IMPORTANT: Again, you must remove 'kms' from HOOKS=() if you use nvidia, AMDGPU can ignore this however
 
-# or if you have radeon as well
-# do this so amdgpu loads first:
-MODULES=(amdgpu radeon)
-
----
-
-# Example for HOOKS
 HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block filesystems fsck)
 
-# Key changes:
-# - Remove consolefont since it is already satisfied by 'sd-vconsole'
-# - NVIDIA: Remove 'kms' from HOOKS=() if you use nvidia, AMDGPU can ignore this however
-#
 
 ```
 
