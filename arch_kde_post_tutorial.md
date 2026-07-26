@@ -12,12 +12,12 @@ Welcome to the post-install tutorial where we will set up your KDE Plasma instal
 # System -> kitty
 
 # When you launch it you will be warned about your .zshrc config, don't
-# worry about that for now, we will deal with it later. Choose option 
-# to create an empty one for now.
+# worry about that, we will deal with it later. Choose option 
+# to create an empty one for the time being.
 
 # Then, retrieve the primary key to enable
-# the installation of Chaotic-AUR's keyring and mirror list. Write this
-# in the terminal window:
+# the installation of Chaotic-AUR's keyring and mirror list. Paste this
+# in the terminal window with CTRL + SHIFT + V:
 sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 sudo pacman-key --lsign-key 3056513887B78AEB
 
