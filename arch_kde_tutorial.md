@@ -702,7 +702,7 @@ cd
 mkdir -p /etc/sysctl.d/
 
 # copy from tmp
-cp /tmp/ArchLinuxTutorials/70-settings.conf /etc/sysctl.d/sysctl.d/70-settings.conf
+cp /tmp/ArchLinuxTutorials/70-settings.conf /etc/sysctl.d/70-settings.conf
 ```
 These are a combination of CachyOS settings and other sources. To read what they do, click [**here.**](70-settings.conf)
 
