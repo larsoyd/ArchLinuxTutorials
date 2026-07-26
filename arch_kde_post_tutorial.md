@@ -1071,8 +1071,9 @@ sudo nano /etc/systemd/journald.conf.d/00-journal-size.conf
 SystemMaxUse=50M
 ```
 ### Set Keymaps for X11
-This tutorial only covers how to install a Wayland only environment, but setting these in x11 should be done even if you are only using Wayland for compatibility if you are using a non-US keyboard.
-The default is still sourced from systemd-localed (locale1) and /etc/X11/xorg.conf.d/00-keyboard.conf which this command generates for you.
+This is only if you don't have an US keymap layout. While this tutorial primarily covers how to install a Wayland exclusive environment, setting the keymap in Xorg should still be done even if you are only using Wayland for compatibility reasons. This is not strictly necessary and may be redundant, but there is no harm in generating it so if you ever do hit a compatibility issue then you won't be surprised.
+
+The default X11 keymap is sourced through /etc/X11/xorg.conf.d/00-keyboard.conf which this command generates for you.
 
 All you have to do is run `set-x11-keymap` with your country code like in the main tutorial, and add a keyboard model after. `pc105` is what I have and its the default in most countries but in the US pc104 is also common. Check what model you use beforehand by using google for either. Best way to tell is on the shape of the Enter key.
 
