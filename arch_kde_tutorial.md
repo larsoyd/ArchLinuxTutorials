@@ -610,16 +610,20 @@ HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block file
 # might not appear in the firmware's boot menu...
 #
 bootctl install --esp-path=/efi --variables=yes
+```
 
 # Add a minimal cmdline with kernel option(s)
+```zsh
+# Open up cmdline and edit it
 nano /etc/kernel/cmdline
 ```
 
-These are the only kernel flags needed for this setup as with GPT Autoloader you do not need to specify UUIDs. Read more about the others [**here**](extra/misc/kernelflags.md).
 ```zsh
-## /etc/kernel/cmdline
+## add to /etc/kernel/cmdline :
 rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
 ```
+
+With GPT Autoloader you do not need to specify UUIDs of your drives, the only thing required here is `rw`. Read more about the other settings added [**here**](extra/misc/kernelflags.md).
 
 #### Make the ESP directory
 ```zsh
