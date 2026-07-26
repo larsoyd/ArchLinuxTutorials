@@ -655,6 +655,8 @@ editor no
 
 ### 4.9 Create swap file & Configure Zswap
 
+For swapping I always go with `zswap` instead of a swap partition or `zram`.  I used to use `zram` but I have read some write-ups done by much smarter people than myself who have come to the conclusion that for most users `zswap` is recommended. If you are curious yourself, you can read [**this**](https://chrisdown.name/2026/03/24/zswap-vs-zram-when-to-use-what.html) and also [**this**](https://linuxblog.io/zswap-better-than-zram/) on your own time.
+
 ```zsh
 # Create a 16 GiB swap file and initialize it in one step.
 #   --size 16G   -> allocate a 16 GiB file
