@@ -46,7 +46,7 @@ Open **Command Prompt as Administrator** (`cmd`) and check whether BitLocker or 
 manage-bde -status C:
 ```
 
-If protection is not enabled, you can scroll down and start the tutorial. If it *is* enabled, make sure you possess the 48-digit BitLocker recovery password:
+If protection is not enabled, you can reboot back into the firmware, turn off SecureBoot again and boot into Arch to begin the process. If it *is* enabled, make sure you possess the 48-digit BitLocker recovery password:
 
 ```bat
 manage-bde -protectors -get C:
