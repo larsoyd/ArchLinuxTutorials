@@ -387,6 +387,10 @@ hwclock --systohc
 
 ### 4.3 Configure Locale & Keyboard
 
+Now we are going to configure our system language. You may edit or skip depending on your language and what you want, but if usnsure here is what I usually go with: I am going to have my system be in English, but how my clock is displayed system wide and how my date is displayed will be set to be like is in Norway. So it will be an English system in every aspect except for a date format thats: DD/MM/YYYY instead of the erm, special way that the Americans do it, and 00:00 i.e what the Americans call "military time" instead of AM and PM. I also want to default my measurement units to what my language uses so instead of Fahrenheit for temperature I want to use Celsius. If you do not set this, it will default to freedom units for things like hardware sensors, so say you need an accurate assessment of your CPU temperature, then it won't be accurate since it will be in Fahrenheit.
+
+Using the country code in `locale.gen` with fine grained `locale.conf` settings achieves this, if you want this type of system too but with your own language/country defaults you can just use your own in place of the Norwegian one.
+
 ```zsh
 # Now we are going to configure our system language.
 # I am going to have my system be in English,
