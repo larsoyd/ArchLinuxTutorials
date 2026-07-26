@@ -387,9 +387,9 @@ hwclock --systohc
 
 ### 4.3 Configure Locale & Keyboard
 
-Now we are going to configure our system language. You may edit or skip depending on your language and what you want, but if usnsure here is what I usually go with: I am going to have my system be in English, but how my clock and my date will be displayed system wide is set to look and act like it is in my language and in the default way my country does it. 
+Now we are going to configure our system language. You may edit or skip depending on your language and what you want, but if unsure here is what I usually go with: 
 
-So for my country's defaults it will be an English system in every aspect except for a date format which will display as: DD/MM/YYYY with Norwegian names for days and months. The flawed American formatting for where the day and the month is placed will also be fixed with this change. The clock will be 00:00 i.e what the Americans call "military time" instead of 0:00 with AM and PM. I also want to default my measurement units to what my language uses since if you do not set this it will default to freedom units for things like hardware sensors, so say if you need an accurate assessment of your CPU temperature, if you don't set this to your country that uses Celsius then it won't be accurate since it will instead default to Fahrenheit.
+I am configuring a system that uses the English language in every aspect except for the date format, clock and measurement units. Dates will display with Norwegian names for both days and months and the flawed American formatting for where the day and the month is placed in DD/MM/YYYY will also be fixed with this change. The clock will display as 00:00 in what the Americans call "military time" instead of 0:00 with AM and PM. I also want my measurement units to default to what my language uses. If you do not set this your system will measure itself with freedom units for things like hardware sensors, so say if you need an accurate assessment of your CPU temperature, unless you set this it will default to Fahrenheit instead of Celsius.
 
 Using the country code in `locale.gen` with fine grained `locale.conf` settings achieves this, if you want this type of system too but with your own language/country defaults you can just use your own in place of the Norwegian one.
 
