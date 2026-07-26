@@ -1710,9 +1710,9 @@ done
 ## ADVANCED: Fix Low FPS in Qt6 Applications on Monitors Over 60Hz
 
 **WARNING! THIS WILL REPLACE THE QT6 BASE SYSTEM PACKAGE WHICH KDE PLASMA DEPENDS ON WITH A PATCHED qt6-base PACKAGE THATS MAINTAINED BY A THIRD PARTY**
-**WHILE IN THEORY IT SHOULD NOT BE A PROBLEM AND APPLY CLEANLY, THIS WILL STILL COME WITH THE RISK OF ISSUES IF SAID THIRD PARTY FAILS TO UPDATE THE PACKAGE, POTENTIALLY LEADING TO UNBOOTABLE SYSTEMS!**
+**THIS COMES WITH THE RISK OF ISSUES IF SAID THIRD PARTY FAILS TO UPDATE THE PACKAGE CORRECTLY, POTENTIALLY LEADING TO UNBOOTABLE SYSTEMS!**
 
-If you are okay with chrooting in and reversing a broken update and this issue matters enough to you as it does for me, then continue. If not, **DO NOT DO THIS.** However there is no other fix for this bug than doing this.
+If you are okay with chrooting in and reversing a broken update (usually by simply installing qt6-base from the Arch repos again and pressing Y when it asks you to replace your AUR package) and this issue matters enough to you as it does for me, then continue. If not, **DO NOT DO THIS.** - However there is no other fix for this bug other than doing this.
 
 So the problem is that there is a long-standing issue with Qt that makes animations such as Overview transitions and scrolling animations get capped at 60 frames per second on Qt based applications. on KDE Plasma the best way to see this in action is to open up Dolphin (File Manager) or System Settings and then scroll the list up & down on a monitor with a high refresh rate (over 60Hz)
 
