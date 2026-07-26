@@ -611,27 +611,12 @@ HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block file
 #
 bootctl install --esp-path=/efi --variables=yes
 
-# Minimal cmdline with kernel option(s)
+# Add a minimal cmdline with kernel option(s)
 nano /etc/kernel/cmdline
+```
 
-# These are the only kernel flags needed for this setup
-# With GPT Autoloader you do not need to specify UUIDs here
-#
-# rootflags add options to the root filesystem, like noatime
-# noatime is a typical optimization for EXT4 systems.
-# nowatchdog is also optimization. Both of them are unneeded for single use desktops.
-# they are on for "over-security"/kernel default reasons only.
-# many distros ship with nowatchdog and noatime, EOS for example.
-#
-# if you really are worried about if you need them (you probably dont) then you can
-# research them independently
-#
-# loglevel=3 just increases verbosity in logging.
-#
-# zswap.compressor=lz4 switches compressor to lz4 from zstd, lz4 is considered faster
-# All the other zswap kernel settings are default on Arch native kernels.
-# I included them to ensure they are loaded regardless.
-#
+These are the only kernel flags needed for this setup as with GPT Autoloader you do not need to specify UUIDs. Read more about the others [**here**](extra/misc/kernelflags.md).
+```zsh
 ## /etc/kernel/cmdline
 rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
 ```
