@@ -11,7 +11,7 @@ rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enable
 * `noatime` which is a typical optimization for EXT4 systems. 
 
 
-`nowatchdog` is also optimization, but not applied to just the filesystem, its a system tweak. Both of them are unneeded for single use desktops.
+`nowatchdog` is also optimization, but not applied to just the filesystem, its a system tweak. Both of them remove defaults that are unneeded for single use desktops.
 
 Basically, they are on by default for kernel default reasons only.
 Many distros ship with nowatchdog and noatime as a general rule, EndeavorOS for example.
