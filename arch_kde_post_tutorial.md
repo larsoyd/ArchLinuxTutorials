@@ -7,13 +7,17 @@ Welcome to the post-install tutorial where we will set up your KDE Plasma instal
 
 ## 1 · Chaotic-AUR
 ```zsh
-# Chaotic-AUR is a repository that provides a large number of packages for Arch Linux.
-# Its a binary repository that builds packages from the AUR on Arch. This is good if
-# you don't want to compile packages and if you do not trust yourself to read PKGBUILDs
-# Not required, but I recommend adding it.
-#
-# First, retrieve the primary key to enable
-# the installation of Chaotic-AUR's keyring and mirror list:
+# First launch your terminal from your Start Menu / Application Launcher
+# It's called 'kitty'. You can search for it or find it under:
+# System -> kitty
+
+# When you launch it you will be warned about your .zshrc config, don't
+# worry about that for now, we will deal with it later. Choose option 
+# to create an empty one for now.
+
+# Then, retrieve the primary key to enable
+# the installation of Chaotic-AUR's keyring and mirror list. Write this
+# in the terminal window:
 sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 sudo pacman-key --lsign-key 3056513887B78AEB
 
