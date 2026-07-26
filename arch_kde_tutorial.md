@@ -612,7 +612,7 @@ HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block file
 bootctl install --esp-path=/efi --variables=yes
 ```
 
-# Add a minimal cmdline with kernel option(s)
+#### Add a minimal cmdline with kernel option(s)
 ```zsh
 # Open up cmdline and edit it
 nano /etc/kernel/cmdline
