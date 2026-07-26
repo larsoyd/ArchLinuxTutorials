@@ -426,14 +426,6 @@ FONT=ter-118n  # This is a console font which makes boot font larger,
 #
 localectl set-keymap no-latin1
 
-# FYI, x11 should be done even if you are only using wayland
-# as the default is still sourced from systemd-localed (locale1) 
-# and the generated /etc/X11/xorg.conf.d/00-keyboard.conf
-#
-# Also note: pc105 is what I have and its the default in most countries
-# but in the US pc104 is the default. Check what model you use beforehand.
-localectl set-x11-keymap no pc105
-
 # One issue with kde is that it neither respects nor inherits
 # system level keymaps. It uses its own system for this.
 # So in order to not boot into a system with us keymap
