@@ -289,8 +289,8 @@ reflector \ # this is a line, press enter
       --save /etc/pacman.d/mirrorlist  # then when pressing enter here w/o "\" it will run all the lines
 
 # When you understand all of this you can use a faster version of this command.
-# This will NOT rate your mirrors by fastest,
-# instead it will just sort them countries:
+# This will NOT rate your mirrors by fastest mirrors by testing them,
+# instead it will just sort them based on the countries:
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 -l 10 --sort rate --save /etc/pacman.d/mirrorlist
 
