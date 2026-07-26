@@ -440,7 +440,7 @@ nano /home/lars/.config/kxkbrc
 ```
 
 ```ini
-# Put this in the file:
+# Put this in the file, but edit "no" to your own country code:
 
 [Layout]
 LayoutList=no
@@ -615,7 +615,7 @@ nano /etc/kernel/cmdline
 rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
 ```
 
-With GPT Autoloader you do not need to specify UUIDs of your drives, the only thing required here is `rw`. Read more about the other settings added [**here**](extra/misc/kernelflags.md).
+With `systemd-gpt-auto-generator` you do not need to specify UUIDs of your drives, the only thing required here is `rw`. Read more about the other settings added [**here**](extra/misc/kernelflags.md).
 
 #### Make the ESP directory
 ```zsh
