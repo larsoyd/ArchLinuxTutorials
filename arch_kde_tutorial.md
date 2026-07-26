@@ -288,12 +288,15 @@ reflector \ # this is a line, press enter
       --latest 10 \
       --save /etc/pacman.d/mirrorlist  # then when pressing enter here w/o "\" it will run all the lines
 
-# When you understand all of this you can use a faster version of this
-# that I like to use:
+# When you understand all of this you can use a faster version of this command.
+# This will NOT rate your mirrors by fastest,
+# instead it will just sort them countries:
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 -l 10 --sort rate --save /etc/pacman.d/mirrorlist
 
-# Or update reflector for fastest and longer timeout
+# Or update reflector with this for reflector to test the mirrors and then rate them
+# with a longer timeout. NOTE that this will take longer time, but may be worth it for you
+# if you want the absolute best mirrors:
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
 ```
