@@ -1070,6 +1070,17 @@ sudo nano /etc/systemd/journald.conf.d/00-journal-size.conf
 [Journal]
 SystemMaxUse=50M
 ```
+### Set Keymaps for X11
+This tutorial only covers how to install a Wayland only environment, but setting these in x11 should be done even if you are only using Wayland for compatibility if you are using a non-US keyboard.
+The default is still sourced from systemd-localed (locale1) and /etc/X11/xorg.conf.d/00-keyboard.conf which this command generates for you.
+
+All you have to do is run `set-x11-keymap` with your country code like in the main tutorial, and add a keyboard model after. `pc105` is what I have and its the default in most countries but in the US pc104 is also common. Check what model you use beforehand by using google for either. Best way to tell is on the shape of the Enter key.
+
+```zsh
+# When you have what you need and
+# have edited my defaults to yours, run:
+sudo localectl set-x11-keymap no pc105
+```
 
 ### USB autosuspend
 The Linux kernel automatically suspend USB devices when they are not in use. 
