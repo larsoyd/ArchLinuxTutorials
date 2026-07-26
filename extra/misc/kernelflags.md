@@ -7,7 +7,9 @@ This document explains my options in the tutorial.
 rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
 ```
 
-With systemd-gpt-auto-generator you need to use `rootflags=` in cmdline to add options to the root filesystem, for this I only have one which is:
+`rw` is necessary as said, but the other flags are ones I use as defaults on any system.
+
+With `systemd-gpt-auto-generator` you need to use `rootflags=` in cmdline to add options to the root filesystem which you would otherwise use `fstab` for, for this I only have one which is:
 * `noatime` which is a typical optimization for EXT4 systems. To add more in the future you seperate them with commas **without space**, like: `foo,bar` if foo and bar were two settings.
 
 
