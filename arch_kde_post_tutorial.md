@@ -6,6 +6,11 @@ Welcome to the post-install tutorial where we will set up your KDE Plasma instal
 
 
 ## 1 · Chaotic-AUR
+
+Chaotic-AUR is a repository that provides a large number of packages for Arch Linux. Its a binary repository that builds packages from the AUR on Arch. This is good if you don't want to compile packages and if you do not trust yourself to read PKGBUILDs.
+
+Technically not required, but I recommend adding it.
+
 ```zsh
 # First launch your terminal from your Start Menu / Application Launcher
 # It's called 'kitty'. You can search for it or find it under:
