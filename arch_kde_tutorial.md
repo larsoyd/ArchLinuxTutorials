@@ -394,15 +394,7 @@ I am configuring a system that uses the English language in every aspect except 
 Using the country code in `locale.gen` with fine grained `locale.conf` settings achieves this, if you want this type of system too but with your own language/country defaults you can just use your own in place of the Norwegian one.
 
 ```zsh
-# Now we are going to configure our system language.
-# I am going to have my system be in English,
-# but my time and date will be set as it is in Norway.
-# So an English system with a DD/MM/YYYY and 00:00 "military clock".
-#
-# I also want to default my measurement units to what my language uses
-# so instead of Fahrenheit for temperature for example I want to use Celsius.
-# If you do not set this, it will default to imperial units.
-#
+# Open up locale.gen in nano to see list of country codes
 nano /etc/locale.gen
 
 # Go down the list and uncomment both:
