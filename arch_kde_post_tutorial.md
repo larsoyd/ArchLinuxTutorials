@@ -1705,35 +1705,26 @@ for charge_file in /sys/class/power_supply/apple_mfi_fastcharge*/charge_type(N);
   print -r -- "$charge_file: $(<"$charge_file")"
 done
 ```
+---
 
 ## ADVANCED: Fix Low FPS in Qt6 Applications on Monitors Over 60Hz
+
+**WARNING! THIS WILL REPLACE THE QT6 BASE SYSTEM PACKAGE WHICH KDE PLASMA DEPENDS ON WITH A PATCHED qt6-base PACKAGE THATS MAINTAINED BY A THIRD PARTY**
+**WHILE IN THEORY IT SHOULD NOT BE A PROBLEM AND APPLY CLEANLY, THIS WILL STILL COME WITH THE RISK OF ISSUES IF SAID THIRD PARTY FAILS TO UPDATE THE PACKAGE, POTENTIALLY LEADING TO UNBOOTABLE SYSTEMS!**
+
+If you are okay with chrooting in and reversing a broken update and this issue matters enough to you as it does for me, then continue. If not, **DO NOT DO THIS.** However there is no other fix for this bug than doing this.
+
+So the problem is that there is a long-standing issue with Qt that makes animations such as Overview transitions and scrolling animations get capped at 60 frames per second on Qt based applications. on KDE Plasma the best way to see this in action is to open up Dolphin (File Manager) or System Settings and then scroll the list up & down on a monitor with a high refresh rate (over 60Hz)
+
+This is still unresolved after more than a year and a half due to the way animations are done in Qt. More information on this can be found [here](https://www.old.reddit.com/r/kde/comments/1p26pu0/highrefreshrate_users_were_working_on_removing/)
+
+Basically Qt6's animations are hard coded to only run at a certain refresh rate due to tech debt of the Qt Framework itself. As of now (2026) the only fix is to use a patched version of qt6-base from the AUR that lowers the hard coded number from 16 (around 60Hz) to 4.
+
 ```zsh
-# ---
-# !WARNING!: THIS WILL REPLACE A QT6 SYSTEM PACKAGE WHICH KDE PLASMA DEPENDS ON WITH
-# A PATCHED qt6-base PACKAGE MAINTAINED BY A THIRD PARTY
-# 
-# WHILE IN THEORY IT SHOULD NOT BE A PROBLEM AND APPLY CLEANLY,
-# THIS WILL STILL COME WITH THE RISK OF ISSUES IF SAID THIRD PARTY FAILS TO UPDATE
-# THE PACKAGE, POTENTIALLY LEADING TO UNBOOTABLE SYSTEMS! - If you are okay
-# with chrooting in and reversing a broken update and this issue matters enough to you as it
-# does for me, then continue. If not, DO NOT DO THIS. There is no other fix for this than
-# doing this.
-# ---
-#
-# There is a long-standing issue with Qt that makes animations such as Overview transitions and scrolling animations
-# get capped at 60 frames per second on Qt based applications. on KDE Plasma the best way to see this in action is
-# to open up Dolphin (File Manager) or System Settings and then scroll the list up & down on a monitor
-# with a high refresh rate (over 60Hz)
-#
-# This is still unresolved after more than a year and a half due to the way animations are done in Qt.
-# More information on this can be found here:
-# https://www.old.reddit.com/r/kde/comments/1p26pu0/highrefreshrate_users_were_working_on_removing/
-#
-# Basically Qt6's animations are hard coded to only run at a certain refresh rate due to tech debt of the Qt Framework itself.
-# As of now (2026) the only fix is to use a patched version of qt6-base from the AUR that lowers the hard coded number
-# from 16 (around 60Hz) to 4.
 yay -S --needed qt6-base-hifps
 ```
+
+---
 
 ## Final Reboot
 
