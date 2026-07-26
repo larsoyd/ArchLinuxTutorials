@@ -7,11 +7,11 @@ This document explains my options in the tutorial.
 rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
 ```
 
-`rootflags=` add options to the root filesystem, for this I only have one which is:
-* `noatime` which is a typical optimization for EXT4 systems. 
+With systemd-gpt-auto-generator you need to use `rootflags=` in cmdline to add options to the root filesystem, for this I only have one which is:
+* `noatime` which is a typical optimization for EXT4 systems. To add more in the future you seperate them with commas **without space**, like: `foo,bar` if foo and bar were two settings.
 
 
-`nowatchdog` is also optimization, but not applied to just the filesystem, its a system tweak. Both of them remove defaults that are unneeded for single use desktops.
+`nowatchdog` is also optimization, but its a system tweak. Both `noatime` and `nowatchdog` serve similar purposes though, they remove hardening defaults that are unneeded for single use desktops.
 
 Basically, they are on by default for kernel default reasons only.
 Many distros ship with nowatchdog and noatime as a general rule, EndeavorOS for example.
