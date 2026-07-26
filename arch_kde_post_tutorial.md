@@ -1157,17 +1157,20 @@ uv --version
 uv self update
 
 # Install yt-dlp via uv
-uv tool install yt-dlp
-
+# This also adds curl_cffi into yt-dlp's venv container
+# it is useful for yt-dlp when downloading
+# as certain pages may need the request to look like it's
+# coming from a real browser
+uv tool install yt-dlp --with curl_cffi
 --
 
 OPTION B)
 # From official repository
 #
-# If not using topgrade / don't want pipx, you can also get it from the
+# If not using topgrade / don't want uv, you can also get it from the
 # repositories, reason why its not reccomended is it may lag behind
-# the official package
-yay -S --needed yt-dlp
+# the official package. See why curl_cffi is included above.
+yay -S --needed yt-dlp python-curl_cffi
 
 ---
 
