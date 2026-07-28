@@ -214,13 +214,22 @@ Format=ext4
 
 ```zsh
 # Preview the plan 
-systemd-repart --definitions=/tmp/repart.d --empty=force "$d"
+systemd-repart \
+  --definitions=/tmp/repart.d \
+  --empty=force \
+  --discard=no \
+  "$d"
 
 # Apply the changes for real. Pick ONE of these options.
 #
 # OPTION A) Normally without fast_commit:
 #
-systemd-repart --definitions=/tmp/repart.d --dry-run=no --empty=force "$d"
+systemd-repart \
+  --definitions=/tmp/repart.d \
+  --dry-run=no \
+  --empty=force \
+  --discard=no \
+  "$d"
 
 ---
 
@@ -231,7 +240,12 @@ systemd-repart --definitions=/tmp/repart.d --dry-run=no --empty=force "$d"
 # According to the Arch wiki it significantly improves performance:
 #
 SYSTEMD_REPART_MKFS_OPTIONS_EXT4='-O fast_commit' \
-  systemd-repart --definitions=/tmp/repart.d --dry-run=no --empty=force "$d"
+  systemd-repart \
+    --definitions=/tmp/repart.d \
+    --dry-run=no \
+    --empty=force \
+    --discard=no \
+    "$d"
 
 ---
 
