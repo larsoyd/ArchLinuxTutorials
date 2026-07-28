@@ -1062,7 +1062,7 @@ sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ### Install & Enable Nohang:
 ```zsh
 # This is an OOM killer. DON'T SKIP. It's VITAL.
-yay -S --needed nohang-git 
+yay -S --needed nohang
 
 # Reason why it's vital is this:
 # If your system fills up it's swap and RAM then this will terminate offending processes before your system freeze up.
