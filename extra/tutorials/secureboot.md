@@ -230,7 +230,7 @@ The sbctl documentation requires Setup Mode for live key enrollment and recommen
 This step is read-only:
 
 ```zsh
-for sb_variable in PK KEK db dbx; do
+for sb_variable in PK KEK db; do
     printf '\n===== %s =====\n' "$sb_variable"
     sudo efi-readvar -v "$sb_variable" 2>&1
 done
@@ -241,11 +241,8 @@ The variables mean:
 * `PK` is the Platform Key that establishes ownership
 * `KEK` contains keys allowed to update the trusted and forbidden databases
 * `db` contains trusted certificates and hashes
-* `dbx` contains revoked certificates and hashes
 
 When the firmware is in Setup Mode, `PK` should have no entries.
-
-`dbx` may contain a massive list of hashes. That is normal. It is the Secure Boot revocation database.
 
 ---
 
@@ -543,7 +540,7 @@ Add underneath `[post_commands]` after uncommenting it:
 
 ```toml
 [post_commands]
-"Verify Secure Boot chain" = "sudo sbctl status && mokutil --sb-state && sudo sbctl verify || { printf '%s\n' 'SECURE BOOT VERIFICATION FAILED. DO NOT REBOOT.' >&2; exit 1; }"
+"Verify Secure Boot chain" = "sudo sbctl status && sudo sbctl verify"
 ```
 
 Now every Topgrade run will finish by checking:
