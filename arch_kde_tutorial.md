@@ -439,10 +439,6 @@ FONT=ter-118n  # This is a console font which makes boot font larger,
                # and more easily readable.
 ---
 
-# set system keymaps
-#
-localectl set-keymap no-latin1
-
 # One issue with kde is that it neither respects nor inherits
 # system level keymaps. It uses its own system for this.
 # So in order to not boot into a system with us keymap
