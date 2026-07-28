@@ -976,6 +976,8 @@ Here is how to set it:
 
 ```zsh
 mkdir -p ~/.steam/steam
+
+# Example number is 8 cores, modify the number depending your own CPU and workload.
 printf 'unShaderBackgroundProcessingThreads 8\n' > ~/.steam/steam/steam_dev.cfg
 ```
 
