@@ -852,23 +852,6 @@ GDK_DEBUG=portals
 
 ---
 
-### Optional: Set Login Theme Before Reboot
-
-```zsh
-# This will set your Login theme so you aren't
-# met with an old login screen when you first boot
-#
-# If you want to do this later that's okay
-mkdir -p /etc/plasmalogin.conf.d
-nano /etc/plasmalogin.conf.d/10-breeze.conf
-```
-
-```ini
-# 10-breeze.conf
-[Theme]
-Current=breeze
-```
-
 ### Add a DNS Resolver (systemd-resolved)
 
 * This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional `/etc/resolv.conf`, DNS is usually just a flat list of nameservers. With `systemd-resolved`, you get a modern stub resolver at `127.0.0.53`, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration, i.e it has some features you may want to learn & use in the future. 
