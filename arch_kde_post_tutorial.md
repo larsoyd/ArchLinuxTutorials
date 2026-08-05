@@ -1225,7 +1225,12 @@ uv self update
 # it is useful for yt-dlp when downloading
 # as certain pages may need the request to look like it's
 # coming from a real browser
-uv tool install yt-dlp --with curl_cffi
+#
+# Default is added to add a number of default things
+# that arent provided OOB like various ways to resolve
+# certain streams.
+uv tool install 'yt-dlp[default,curl-cffi]'
+
 --
 
 OPTION B)
