@@ -319,6 +319,47 @@ alias pacin='yay -S --needed'
 # Example: pacin firefox
 ```
 
+### Add Separator
+
+By default in most Linux terminals including the virtual console (vconsole) each command will not be separated in the terminal. This can make separating each command difficult as I am sure you noticed in the install tutorial. 
+
+The cleanest solution to separate commands is a precmd hook, which Zsh runs immediately before displaying each prompt. add-zsh-hook lets you add this without replacing hooks used by themes or plugins.
+
+
+```zsh
+autoload -Uz add-zsh-hook
+
+prompt_separator() {
+  local width=${COLUMNS:-80}
+  local line
+
+  # Avoid Kitty wrapping when the line reaches the final column.
+  (( width > 1 )) && (( width-- ))
+
+  printf -v line '%*s' "$width" ''
+  print -P "%F{244}${line// /─}%f"
+}
+
+# Prevent duplicates when ~/.zshrc is sourced repeatedly.
+add-zsh-hook -d precmd prompt_separator 2>/dev/null
+add-zsh-hook precmd prompt_separator
+```
+
+
+The result will resemble:
+
+```zsh
+───────────────────────────────────────────────────────────────
+
+[ArchLars] ~ $ checkupdates
+
+...
+
+───────────────────────────────────────────────────────────────
+
+[ArchLars] ~ $ pacman -Ss bibata
+```
+
 ### Reload & Guide
 ```zsh
 # Then reload zshrc like so:
@@ -968,7 +1009,7 @@ ntsync
 
 ### Make Shader Pre-Compilation Faster
 
-When running games under Proton the shader compilation can legitimately hit high CPU usage because it is parallel work. This can create runtime stuttering if done during play. To mitigate this shader preprocessing is set on by default beforehand. This usually takes seconds, but sometimes under certain circumstances™ shader pre-compilation may only use one core for w/e reason and that is when people usually get frustrated by it and learn bad habits like skipping, however this flaw can be overridden by the user by adding a conf file that makes Steam always use more cores for shader comp. Example number is 8 cores, modify the number depending your own CPU and workload. Shader comp is heavy on the CPU so if you are doing other things like streaming or w/e you might want to set a lower number than all the cores. Restart Steam afterwards if it was already running:
+When running games under Proton the shader compilation can legitimately hit high CPU usage because it is parallel work. This can create runtime stuttering if done during play. To mitigate this shader preprocessing is set on by default beforehand. This usually takes seconds, but sometimes under certain circumstances™ (CLASSIC) shader pre-compilation may only use one core for w/e reason and that is when people usually get frustrated by it and learn bad habits like skipping, however this flaw can be overridden by the user by adding a conf file that makes Steam always use more cores for shader comp. Example number is 8 cores, modify the number depending your own CPU and workload. Shader comp is heavy on the CPU so if you are doing other things like streaming or w/e you might want to set a lower number than all the cores. Restart Steam afterwards if it was already running:
 
 
 Here is how to set it:
