@@ -585,13 +585,13 @@ nano /etc/mkinitcpio.conf
 #
 # For amdgpu just put 'amdgpu' in modules
 # NVIDIA on the other hand is as always a bit more involved:
+
 MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 
 ---
 
 # HOOKS
 #
-# - Remove consolefont since it is redundant. The feature is already satisfied by 'sd-vconsole'
 # - IMPORTANT: Again, you must remove 'kms' from HOOKS=() if you use nvidia, AMDGPU can ignore this however
 
 HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block filesystems fsck)
