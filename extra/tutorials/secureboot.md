@@ -765,10 +765,8 @@ But this "failure" report should not be taken as gospel, since if a dbx update s
 
 ---
 
-#### "OK, so Secure Boot works, but is the root filesystem still readable from another computer?"
+### WARNING: THE ROOT OF YOUR SYSTEM IS STILL ACCESSIBLE FROM ANOTHER SYSTEM
 
-Yes, and that is expected.
+Even with SecureBoot, that is expected. Secure Boot **ONLY** verifies the boot chain. *It does not* encrypt the SSD.
 
-Secure Boot ONLY verifies the boot chain. It does not encrypt the SSD.
-
-For **ANY** computer you should also strongly consider using LUKS encryption for protection against offline access to your files. If you are wondering on how to do that, you may follow **this** tutorial (Currently writing it). Be advised however that LUKS protection does come with performance trade offs in regards to workload and gaming, at least according to [**this**](https://old.reddit.com/r/linux/comments/15wyukc/the_real_performance_impact_of_using_luks_disk/) report. YMMV, but make up your own mind if this is worth it for you.
+For **ANY** computer you should also strongly consider using LUKS encryption for protection against offline access to your files. If you are wondering on how to do that, you may follow **this** tutorial (Currently writing it). Be advised however that LUKS protection does come with performance trade offs in regards to workload and gaming, at least according to [**this**](https://old.reddit.com/r/linux/comments/15wyukc/the_real_performance_impact_of_using_luks_disk/) highly detailed report. According to some comments YMMV, but a regression seems to unfortunately be a guarantee, you may make up your own mind if this is worth it for you.
