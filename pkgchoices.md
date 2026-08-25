@@ -4,7 +4,7 @@
 ### pkgstats 
 **This** is the most "controversial" one, but here is why it shouldn't be: pkgstats is a super harmless way to help out the Arch developers that work hard and mostly for free to make our wonderful distro.
 It basically just advertises a list of your core and extra packages that you use to them  so they can know what packages to 
-prioritize in testing and for other things. If you are extremely paranoid then you can leave it out.
+prioritize in testing and for other things. It does not send anything else anywhere or to anyone else, but it is technically "telemetry". If you are extremely paranoid then you can leave it out.
 
 ### kitty 
 kitty is a terminal that I think is the best sort of default terminal on Linux. It's easy to use, GPU accelerated, fast enough and hassle free.
