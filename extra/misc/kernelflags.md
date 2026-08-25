@@ -10,7 +10,7 @@ This document explains my options in the tutorial. `rw` is necessary as said, bu
 rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
 ```
   
-* `noatime` - With `systemd-gpt-auto-generator` you need to use `rootflags=` in cmdline to add options to the root filesystem which you would otherwise use `fstab` for. `noatime` is the only root flag here, its a typical optimization for Linux systems that removes a security default which general users are not going to benefit from. To add more in the future you seperate them with commas **without space**, like: `foo,bar` if foo and bar were two settings.
+* `noatime` - With `systemd-gpt-auto-generator` you need to use `rootflags=` in cmdline to add options to the root filesystem which you would otherwise use `fstab` for. `noatime` is the only root flag here, its a typical optimization for Linux systems that removes a security default which general users are not going to benefit from. To add more in the future you seperate them with commas **without space**, like: `rootflags=foo,bar` if foo and bar were two settings.
 
 * `nowatchdog` - Also an optimization, but a system tweak. Both `noatime` and `nowatchdog` serve similar purposes though, they remove hardening defaults that are unneeded for single use desktops. - Basically, they are on by default for kernel default reasons only. Many distros ship with nowatchdog and noatime as a general rule, EndeavorOS for example. - If you really are worried about if you need them (you probably dont) then you can research them independently
 
