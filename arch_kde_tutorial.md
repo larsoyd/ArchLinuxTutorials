@@ -816,15 +816,13 @@ cp /tmp/ArchLinuxTutorials/blacklist.conf /etc/modprobe.d/22-blacklist.conf
 ---
 
 ### Fix Emojis rendering as black and white
+
+Several programs on Linux like Firefox are finicky when it comes to looking up the best font for emojis. Often they default to monochrome emojis instead of your color emojis. The best solution is just to add a color emoji font as an explicit fallback
+
+This fix uses Noto-Fonts-Emoji, we installed it in the list of packages. If you later replace it with another Emoji package, make sure to update this as well.
+
 ```zsh
-# Qt does not support automatically looking up the best font for emojis
-# Therefore the user must manually add a color emoji font as a fallback
-# or they are sometimes rendered incorrectly.
-#
-# This fix uses Noto-Fonts-Emoji, we installed it in the list of packages.
-# If you later replace it with another Emoji package, make sure to update this
-# as well.
-#
+# make dir if it doesn't already exist
 mkdir -p /etc/fonts/conf.d
 
 # copy it from tmp
