@@ -623,7 +623,9 @@ bootctl install --esp-path=/efi --variables=yes
 
 #### Add a minimal cmdline with kernel option(s)
 
-`/etc/kernel/cmdline` is a configuration file that stores the Linux kernel command-line parameters that should be used when generating boot entries or Unified Kernel Images (UKIs). It typically contains a single line with options such as `rw`, `quiet`, `loglevel=3`, NVIDIA parameters, zswap settings, and other kernel arguments. Tools such as `kernel-install` read this file so the same kernel parameters are automatically embedded or applied whenever a kernel image is rebuilt. - i.e Since we use UKIs this is where your Linux kernel settings will go.
+`/etc/kernel/cmdline` is a configuration file that stores the Linux kernel command-line parameters that should be used when generating boot entries or Unified Kernel Images (UKIs). It typically contains a single line with options such as `rw`, `quiet`, `loglevel=3`, NVIDIA parameters, zswap settings, and other kernel arguments. Tools such as `kernel-install` read this file so the same kernel parameters are automatically embedded or applied whenever a kernel image is rebuilt. 
+
+i.e Since we use UKIs this is where your Linux kernel settings will go but we will also place root filesystem settings in here due to using systemd-gpt-automount which doesn't use fstab for this and in general.
 
 ```zsh
 # Open up cmdline and edit it
