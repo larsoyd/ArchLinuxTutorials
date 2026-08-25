@@ -472,7 +472,7 @@ Signed UKI
 
 ### 13) Confirm that future kernel updates will be signed
 
-One thing that may worry a technical minded user is if the signing of kernels to work with SecureBoot can be relied upon to persist on new kernel installs & updates automatically. In short, yes it should. Arch's sbctl package comes with a `kernel-install` plugin named:
+One thing that may worry a technical minded user is if the signing of kernels to work with SecureBoot can be relied upon to persist on updates automatically. The fear being that if it doesn't then you might update your system one day, reboot and find yourself unable to enter your system due to a new kernel being unsigned. - In short, **yes it should**. Arch's sbctl package comes with a `kernel-install` plugin named:
 
 ```text
 91-sbctl.install
@@ -734,7 +734,7 @@ is a normal partition on your SSD.
 /sys/firmware/efi/efivars
 ```
 
-while this is a small amount of nonvolatile storage built into your motherboard firmware.
+is a small amount of nonvolatile storage built into your motherboard firmware.
 
 **Making your `/efi` larger will not increase the firmware’s variable storage.**
 
