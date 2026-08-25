@@ -18,3 +18,6 @@ They are the right defaults for an EFI partition and won’t interfere with norm
 noexec: blocks running programs from that filesystem. 
 nodev: device files on that filesystem are not treated as devices. 
 nosuid: any setuid or setgid bit is ignored, so binaries there cannot gain elevated privileges. 
+
+
+> Click [HERE](arch_kde_tutorial.md) to go back to the tutorial.
