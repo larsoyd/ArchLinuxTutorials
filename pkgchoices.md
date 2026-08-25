@@ -1,6 +1,8 @@
 
 > Click [HERE](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/arch_kde_tutorial.md#46-install-the-system) to go back to the tutorial.
 
+## **OPTIONAL PACKAGES INCLUDED:**
+
 ### pkgstats 
 **This** is the most "controversial" one, but here is why it shouldn't be: pkgstats is a super harmless way to help out the Arch developers that work hard and mostly for free to make our wonderful distro.
 It basically just advertises a list of your core and extra packages that you use to them  so they can know what packages to 
@@ -14,7 +16,7 @@ konsole is included as a backup. If you want to use another terminal as your mai
 ### ark
 ark is a KDE developed method to unzip archive files on your computer. "Optional" but you are going to want this. It supports various optional additions included like `7zip` and `unrar` .7Z and .RAR format support respectively. 
 
----
+
 
 ## **NOT INCLUDED IN THE STEP BUT YOU MAY WANT TO INCLUDE:**
 
