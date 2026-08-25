@@ -197,7 +197,6 @@ Important difference: this is not your Vulkan graphics driver.
 
 `nvidia-utils`, `vulkan-radeon` or `vulkan-intel` is what actually makes Vulkan applications run on your GPU. `vulkan-headers` is mainly useful for development and compiling software from source.
 
-So strictly speaking this is not essential for normal desktop use or gaming, but it is useful on an Arch machine where you are likely to compile things sooner or later.
 
 ### libva
 **AMD and Intel explicitly, NVIDIA gets it pulled in through the VA-API packages here anyway.** VA-API is an interface applications can use for hardware accelerated video decoding and encoding instead of making your CPU do all of the work.
@@ -271,7 +270,6 @@ This contains the Linux utilities for configuring and managing filesystem disk q
 
 Quotas allow you to limit how much disk space or how many files particular users or groups are allowed to consume.
 
-On a normal single-user gaming/desktop PC you may never use this. It is more relevant on multi-user machines, servers or setups where you deliberately configure filesystem quotas, so this is another package that is useful but not universally "essential".
 
 ### usbutils
 This installs basic USB inspection utilities.
