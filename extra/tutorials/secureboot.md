@@ -763,10 +763,12 @@ Then wait until the machine is fully powered off, and finally start it again and
 
 But this "failure" report should not be taken as gospel, since if a dbx update still reports success and the new version is shown after reboot, the update worked even if fwupd warns that there is not enough space for another future write. Yes its very annoying, however in the future `dbx` updates will most likely fail due to space requirements. The sad report to give here is that there is really nothing you can do about this. The last `dbx` should be treated as the ceiling for the security of w/e hardware you are using. Take whatever precautions necessary in response, which includes getting a new laptop.
 
-#### OK, so Secure Boot works, but is the root filesystem still readable from another computer?
+---
+
+#### "OK, so Secure Boot works, but is the root filesystem still readable from another computer?"
 
 Yes, and that is expected.
 
 Secure Boot ONLY verifies the boot chain. It does not encrypt the SSD.
 
-For a laptop you should also strongly consider using LUKS encryption for protection against offline access to your files. If you are wondering on how to do that, you may follow **this** tutorial (Currently writing it)
+For **ANY** computer you should also strongly consider using LUKS encryption for protection against offline access to your files. If you are wondering on how to do that, you may follow **this** tutorial (Currently writing it). Be advised however that LUKS protection does come with performance trade offs in regards to workload and gaming, at least according to (**this**)[https://old.reddit.com/r/linux/comments/15wyukc/the_real_performance_impact_of_using_luks_disk/] report. YMMV, but make up your own mind if this is worth it for you.
