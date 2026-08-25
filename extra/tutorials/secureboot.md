@@ -555,13 +555,13 @@ If verification fails, do not reboot until you fix the unsigned file.
 
 ### 15) TROUBLESHOOT: What to do if a future UKI is unsigned
 
-Run:
+**If a verification fails with an unsigned file,** run:
 
 ```zsh
 sudo sbctl verify
 ```
 
-Find the exact unsigned path in the output, then sign it:
+Find the exact unsigned path in the output, and then sign it:
 
 ```zsh
 sudo sbctl sign --save '/efi/EFI/Linux/EXACT-UNSIGNED-FILENAME.efi'
