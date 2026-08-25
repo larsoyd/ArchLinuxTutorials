@@ -763,61 +763,10 @@ Then wait until the machine is fully powered off, and finally start it again and
 
 But this "failure" report should not be taken as gospel, since if a dbx update still reports success and the new version is shown after reboot, the update worked even if fwupd warns that there is not enough space for another future write. Yes its very annoying, however in the future `dbx` updates will most likely fail due to space requirements. The sad report to give here is that there is really nothing you can do about this. The last `dbx` should be treated as the ceiling for the security of w/e hardware you are using. Take whatever precautions necessary in response, which includes getting a new laptop.
 
+#### OK, so Secure Boot works, but is the root filesystem still readable from another computer?
 
+Yes, and that is expected.
 
-### Troubleshooting For Secure Boot In General
+Secure Boot ONLY verifies the boot chain. It does not encrypt the SSD.
 
-#### Secure Boot is gray in the BIOS
-
-Disable Legacy Boot or CSM first.
-
-On some systems, the option is commonly called **Legacy Support**.
-
-#### `sbctl` says it is not installed after installing the package
-
-This normally means its key hierarchy has not been created yet:
-
-```zsh
-sudo sbctl create-keys
-```
-
-#### `sbctl verify` says `db.key` does not exist
-
-The keys have not been created yet:
-
-```zsh
-sudo sbctl create-keys
-```
-
-#### The machine will not boot after enabling Secure Boot
-
-Enter the firmware and disable Secure Boot.
-
-Do not clear the enrolled keys.
-
-Boot Arch, run:
-
-```zsh
-sudo sbctl verify
-```
-
-and sign whatever required file was missed.
-
-#### A kernel update finishes with an unsigned UKI
-
-Do not reboot.
-
-Sign the exact new UKI:
-
-```zsh
-sudo sbctl sign --save '/efi/EFI/Linux/EXACT-FILENAME.efi'
-sudo sbctl verify
-```
-
-#### Secure Boot works, but the root filesystem is still readable from another computer
-
-That is expected.
-
-Secure Boot verifies the boot chain. It does not encrypt the SSD.
-
-Use LUKS encryption for protection against offline access to your files. If you are wondering on how to do that, you may follow **this** tutorial (Currently writing it)
+For a laptop you should also strongly consider using LUKS encryption for protection against offline access to your files. If you are wondering on how to do that, you may follow **this** tutorial (Currently writing it)
