@@ -493,7 +493,7 @@ These are all the packages needed for a complete & functional KDE Plasma desktop
 
 What is included is the complete KDE Plasma desktop stack, English spell check, graphics drivers with hardware acceleration drivers, CUDA (NVIDIA), networking, various helpers for other packages like `usbutils` and `tessaract`, the Dolphin file manager and its plugins, PipeWire sound support, and fonts. 
 
-**Note:** A telemetry package that helps Arch Linux out by sending a list of the packages you use to the Arch devs is included here called `pkgstats`, other less "controversial" packages are also included and these can be left out if desired. - [**Here's**](pkgchoices.md) why I included those. **Please review them before installing.**
+**Note:** An official Arch Linux developed telemetry package that helps Arch Linux out by sending a list of the packages you use to the devs & maintainers of Arch is included here called `pkgstats`, other less "controversial" packages are also included and these can be left out if desired. - [**Here's**](pkgchoices.md) why I included those. **Please review them before installing.**
 
 
 NVIDIA: 
