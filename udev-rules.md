@@ -65,7 +65,7 @@ This rule enables PCI runtime power management for NVIDIA VGA/3D controller devi
 
 What to expect: lower idle power and heat when the GPU is unused, but little or no benefit if your monitors are connected to the NVIDIA GPU, if a CUDA workload is running, or if desktop rendering keeps the GPU active. NVIDIA’s runtime D3 power management also depends on hardware, ACPI, kernel, and GPU support. NVIDIA documents support for Turing or newer GPUs, kernel 4.18 or newer, and working PCI runtime power management support.
 
-Optional: Only for NVIDIA users / Users with compatible NVIDIA cards
+Optional: Only for NVIDIA users / Users with compatible NVIDIA cards. Only really applicable if your main card is separate card.
 
 ```zsh
 # Create folder
