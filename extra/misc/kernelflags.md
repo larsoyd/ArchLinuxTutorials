@@ -1,3 +1,5 @@
+> Click [HERE](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/arch_kde_tutorial.md#48-install-ukis-and-configure-bootloader) to go back to the tutorial.
+
 # Kernel cmdline Options
 
 This document explains my options in the tutorial.
