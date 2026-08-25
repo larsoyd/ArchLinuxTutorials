@@ -491,7 +491,7 @@ nano /etc/hosts
 
 These are all the packages needed for a complete & functional KDE Plasma desktop environment. 
 
-What is included is the complete KDE Plasma desktop stack, English spell check, graphics drivers with hardware acceleration drivers, CUDA (NVIDIA), networking, various helpers for other packages like `usbutils` and `tessaract`, the Dolphin file manager and its plugins, PipeWire sound support, and fonts. - [**Read More](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/pkgchoices.md#essential-packages-included)
+What is included is the complete KDE Plasma desktop stack, English spell check, graphics drivers with hardware acceleration drivers, CUDA (NVIDIA), networking, various helpers for other packages like `usbutils` and `tessaract`, the Dolphin file manager and its plugins, PipeWire sound support, and fonts. - For a detailed description of each package, you can read [**this**](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/pkgchoices.md#essential-packages-included)
 
 **Note:** An official Arch Linux developed telemetry package that helps Arch Linux out by sending a list of the packages you use to the devs & maintainers of Arch is included here called `pkgstats`, other less "controversial" packages are also included and these can be left out if desired. - [**Here's**](pkgchoices.md) why I included those. **Please review them before installing.**
 
