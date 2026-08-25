@@ -973,7 +973,11 @@ yay && checkrebuild
 # 
 # xorg-fonts-misc is an optional addition to Steam that was recently added.
 # It simply provides fonts for for non-latin locales. Neat to have.
-yay -S --needed steam xorg-fonts-misc
+#
+# ntsync-autoload is a new optional dep for steam, it loads ntsync for you
+# which means you don't have to do it manually, more on what ntsync is in the
+# manual step below which you can skip if you install this
+yay -S --needed steam xorg-fonts-misc ntsync-autoload
 
 # Run Steam in terminal to install it:
 steam
@@ -990,8 +994,10 @@ steam steam://unlockh264/
 
 Then let Steam finish whatever it opens/downloads, quit Steam again, and start it normally. 
 
-### Enable ntsync by default
+### OPTIONAL Enable ntsync by default
 ```zsh
+# Skip if you installed ntsync-autoload
+#
 # ntsync is an experimental Linux kernel driver mimicking Windows synchronization mechanisms.
 # It should improve performance of Wine synchronization syscalls comparing to their previous,
 # more user-space-based implementations (esync, fsync). Emphasis on should. I have personally
