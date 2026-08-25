@@ -403,7 +403,11 @@ hwclock --systohc
 
 Now we are going to configure our system language. You may edit or skip depending on your language and what you want, but if unsure here is what I usually go with: 
 
-I am configuring a system that uses the English language in every aspect except for the date format, clock and measurement units. Dates will display with Norwegian names for both days and months and the flawed American formatting for where the day and the month is placed in DD/MM/YYYY will also be fixed with this change. The clock will display as 00:00 in what the Americans call "military time" instead of 0:00 with AM and PM. I also want my measurement units to default to what my language uses. If you do not set this your system will measure itself with freedom units for things like hardware sensors, so say if you need an accurate assessment of your CPU temperature, unless you set this it will default to Fahrenheit instead of Celsius.
+I am configuring a system that uses the English language in every aspect except for the date format, clock and measurement units. 
+
+* Dates will display with Norwegian names for both days and months and with Norwegian date formatting for DD/MM/YYYY.
+* The clock will display as 00:00 in what the Americans call "military time" instead of 0:00 with AM and PM. 
+* And finally my measurement units to default to what my language uses, which is metric. 
 
 Using the country code in `locale.gen` with fine grained `locale.conf` settings achieves this, if you want this type of system too but with your own language/country defaults you can just use your own in place of the Norwegian one.
 
