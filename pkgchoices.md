@@ -2,7 +2,7 @@
 > Click [HERE](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/arch_kde_tutorial.md#46-install-the-system) to go back to the tutorial.
 
 ### pkgstats 
-**This is the most "controversial" one, but here is why it shouldn't be: pkgstats is a super harmless way to help out the Arch developers that work hard and mostly for free to make our wonderful distro.
+**This** is the most "controversial" one, but here is why it shouldn't be: pkgstats is a super harmless way to help out the Arch developers that work hard and mostly for free to make our wonderful distro.
 It basically just advertises a list of your core and extra packages that you use to them  so they can know what packages to 
 prioritize in testing and for other things. If you are extremely paranoid then you can leave it out.
 
