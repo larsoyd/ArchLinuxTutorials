@@ -708,7 +708,11 @@ then:
 systemctl enable swapfile.swap
 ```
 
-## Kernel/sysctl Optimizations
+---
+
+## Kernel Optimizations & Tweaks
+
+`/etc/sysctl.d/` is the system administrator’s drop-in configuration directory for persistent Linux kernel changes & tweaks during runtime. These changes are known as sysctl settings. These settings are applied automatically during boot. These are a combination of CachyOS settings and other sources. To read what they do, click [**here.**](70-settings.conf)
 
 ```zsh
 # Clone repo first:
@@ -723,7 +727,6 @@ mkdir -p /etc/sysctl.d/
 # copy from tmp
 cp /tmp/ArchLinuxTutorials/70-settings.conf /etc/sysctl.d/70-settings.conf
 ```
-These are a combination of CachyOS settings and other sources. To read what they do, click [**here.**](70-settings.conf)
 
 ```zsh
 # Load settings from all system configuration files to configure kernel parameters at runtime.
