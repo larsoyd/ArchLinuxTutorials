@@ -1,3 +1,5 @@
+> Click [HERE](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/arch_kde_tutorial.md#step-2-mount-filesystems-labels-match-your-original-layout) to go back to the tutorial.
+
 I mount the EFI like this:
 
 ```zsh
@@ -20,4 +22,3 @@ nodev: device files on that filesystem are not treated as devices.
 nosuid: any setuid or setgid bit is ignored, so binaries there cannot gain elevated privileges. 
 
 
-> Click [HERE](arch_kde_tutorial.md) to go back to the tutorial.
