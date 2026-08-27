@@ -1466,9 +1466,19 @@ pikaur -S --needed elisa
 # If you use those then you wont see a difference on the internet,
 # but the rest of the system will look better.
 # I prefer it, but YMMV. Try it and see if it works for you,
-# if it doesn't remove it with `sudo pacman -Rns lucidglyph` and then
-# reboot again.
-pikaur -S --needed lucidglyph ttf-dejavu-nerd
+# if it doesn't remove it with sudo ./lucidglyph.sh remove
+pikaur -S --needed ttf-dejavu-nerd
+
+# clone project
+git clone https://github.com/maximilionus/lucidglyph
+
+# enter lucidglyph directory
+cd lucidglyph
+
+# install and reboot
+sudo ./lucidglyph.sh install
+
+
 
 # Set the fonts in KDE Plasma 6
    a) Open: System Settings
@@ -1494,6 +1504,13 @@ pikaur -S --needed lucidglyph ttf-dejavu-nerd
 # Kitty Terminal
 # add to ~/.config/kitty/kitty.conf
 text_composition_strategy 1.7 0
+
+# Reboot to see changes
+reboot
+
+# uninstall if desired
+sudo ./lucidglyph.sh uninstall
+reboot
 ```
 
 ## OPTIONAL: Enable iPhone Fast Charging on Linux with a udev Rule
