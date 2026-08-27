@@ -941,7 +941,7 @@ This happens to me every time I install KDE on my desktop with three monitors.  
 ---
 
 # 1) Post-Install Tutorial
-Head to `arch_kde_post_tutorial.md` to do the post-install tutorial. I teach you many things you should know when using Arch so I do not consider it to be optional, but technically after this tutorial is over you have a bootable system with KDE on Arch so if you want to trial and error instead be my guest.
+Head to [Post-Install Tutorial](arch_kde_post_tutorial.md) to do set up your system with the best defaults (IMO). I teach you many things you should know when using Arch so I do not consider it to be optional, but technically after this tutorial is over you have a bootable system with KDE on Arch so if you want to trial and error instead be my guest. - If you don't want to do the post-install but you still want to enable SecureBoot and if also desired; encryption via LUKS afterwards, then click [**here**](extra/tutorials/secureboot.md)
 
 ---
 
