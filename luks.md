@@ -11,7 +11,7 @@ This tutorial assumes exactly the state after **extra/tutorials/secureboot.md**:
 - **GPT partition layout:** Exactly two partitions: a FAT ESP (∼2 GiB) and one “Root Partition (x86-64)” of type GUID `4f68bce3-e8cd-4db1-96e7-fbcaf984b709` containing the ext4 root.
 - **Running Arch environment:** The root partition is ext4 (no LUKS yet) and currently mounted as `/`. A Linux-lts and/or linux-zen kernel with `systemd` must be installed as UKIs.
 - **Backup & recovery materials:** Verified backup of all data; a backup of your Secure Boot (`/var/lib/sbctl/`) keys (as your Secure Boot tutorial instructed); and a recovery USB drive (Arch or SystemRescue with a working LUKS-capable environment). If dual-booting Windows, ensure you have BitLocker recovery info as per the Secure Boot guide.
-- **Password readiness:** Be prepared to enter an **UNIQUE** and **STRONG** LUKS passphrase & separately unique and strong fallback (ASCII-only recommended) during live-USB boot. If you are planning to add the same password as your user here then you are not going to benefit from enabling this. If you are worried about password fatigue, see my TPM2 section under which for the most part will allow for passwordless de-encryption unless TPM state is changed like with firmware updates.
+- **Password readiness:** Be prepared to enter an **UNIQUE** and **STRONG** LUKS passphrase & ANOTHER separately unique and strong fallback during live-USB boot. If you are planning to add the same password as your user password here or any other non-unique password then you can skip this tutorial since you are not going to benefit from enabling LUKS. If you are worried about password fatigue, see my TPM2 section under which for the most part will allow for passwordless de-encryption unless TPM state is changed like with firmware updates.
 
 **Warning:** This guide does **not** cover how to remove or *decrypt* the LUKS root later. While `cryptsetup reencrypt --decrypt` exists, undoing this encryption is a separate destructive process with its own risks (and is not documented here). If you think you might need to revert to an unencrypted system, do **not** proceed until you are absolutely sure. We will explicitly warn again before the destructive step.
 
@@ -61,15 +61,35 @@ Before changing anything, verify your current system state to match expectations
 
 If any check is unexpected, stop and fix it **before** continuing. This tutorial must start from a correct Secure Boot + signed-UKI Arch system.
 
+
+## NB: On the Performance Considerations
+
+Some of you may wonder if your system will suffer a lot from enabling this. That is understandable, encryption adds CPU overhead to every disk I/O. Modern CPUs with AES hardware can often handle AES-XTS at near SSD speeds though, but it is worth checking:
+
+ **Install `cryptsetup` (if not already):**  
+   ```zsh
+   sudo pacman -Syu cryptsetup
+```
+
+**Run the benchmark (can be done without encryption enabled):**
+```zsh
+cryptsetup benchmark
+```
+
+This shows your CPU's encryption speed for various algorithms. Look at **AES** (e.g. `aes xts` 128/256) and compare to your SSD’s performance. If the reported MB/s is well above your SSD’s throughput, then encryption overhead is likely negligible. If it’s comparable or lower, expect some slowdown under heavy I/O. 
+
+We *will not* tune ciphers or sector sizes here; we use cryptsetup’s defaults (AES-XTS, Argon2id KDF). If you wish, later you could re-encrypt with different parameters, but that is advanced.
+
+Also note: by default, dm-crypt uses a multi-queue work mechanism. If you *do* notice performance issues (especially on NVMe SSDs), ArchWiki notes you can disable the dm-crypt workqueues by adding options like `no_read_workqueue` and `no_write_workqueue` on your kernel command line. This is **optional and advanced**. We will not enable it here.
+
+**Summary:** Expect a small CPU cost and possibly a few percent disk throughput loss. Use `cryptsetup benchmark` to gauge the impact.
+
 ## 2. Add the `sd-encrypt` Hook (Pre-staging LUKS)
 
 Now we will configure the initramfs to support an encrypted root *before* encrypting anything. Still on the installed system:
 
-1. **Install `cryptsetup` (if not already):**  
-   ```zsh
-   sudo pacman -Syu cryptsetup
-   ```
-2. **Update `mkinitcpio.conf`:** Add `sd-encrypt` (systemd’s encrypt hook) *after* `block` and *before* `filesystems`. For example, find the line:  
+   
+1. **Update `mkinitcpio.conf`:** Add `sd-encrypt` (systemd’s encrypt hook) *after* `block` and *before* `filesystems`. For example, find the line:  
    ```ini
    HOOKS="base systemd autodetect block filesystems fsck"
    ```  
@@ -81,15 +101,15 @@ Now we will configure the initramfs to support an encrypted root *before* encryp
 
    > **Do not** add `encrypt` or `luks` (those use legacy scripts), and **do not** create `/etc/crypttab` or use `cryptdevice=`. We rely solely on systemd’s GPT discovery and `sd-encrypt`.  
 
-3. **(Optional Check)** Ensure no stray `rd.luks.*` or `cryptdevice=` in `/etc/kernel/cmdline` (embedded in UKI). There should be none, because we rely on GPT auto-detect. 
+2. **(Optional Check)** Ensure no stray `rd.luks.*` or `cryptdevice=` in `/etc/kernel/cmdline` (embedded in UKI). There should be none, because we rely on GPT auto-detect. 
 
-4. **Rebuild and copy the initramfs:** Now regenerate the initramfs and UKIs with your existing pipeline:  
+3. **Rebuild and copy the initramfs:** Now regenerate the initramfs and UKIs with your existing pipeline:  
    ```zsh
    sudo kernel-install add-all
    ```  
    This will run `mkinitcpio` (with `sd-encrypt` included), then `ukify` and `sbctl` to sign. 
 
-5. **Verify new images:**  
+4. **Verify new images:**  
    ```zsh
    sudo sbctl verify
    bootctl update
@@ -354,23 +374,7 @@ Do **not** blindly overwrite any existing LUKS flags—if there are unexpected f
 
 I recommend Option 1 (disable) if maximum secrecy is desired, or Option 2 (enable) if you prefer SSD health over the allocation pattern privacy. 
 
-## 12. Performance Considerations
-
-Encryption adds CPU overhead to every disk I/O. Modern CPUs with AES hardware can often handle AES-XTS at SSD speeds, but it is worth checking:
-
-```zsh
-cryptsetup benchmark
-```
-
-This shows your CPU's encryption speed for various algorithms. Look at **AES** (e.g. `aes xts` 128/256) and compare to your SSD’s performance. If the reported MB/s is well above your SSD’s throughput, then encryption overhead is likely negligible. If it’s comparable or lower, expect some slowdown under heavy I/O. 
-
-We *will not* tune ciphers or sector sizes here; we use cryptsetup’s defaults (AES-XTS, Argon2id KDF). If you wish, later you could re-encrypt with different parameters, but that is advanced.
-
-Also note: by default, dm-crypt uses a multi-queue work mechanism. If you *do* notice performance issues (especially on NVMe SSDs), ArchWiki notes you can disable the dm-crypt workqueues by adding options like `no_read_workqueue` and `no_write_workqueue` in `/etc/crypttab` or kernel command line. This is **optional and advanced**. We will not enable it here, but may document it under *Optional Tuning* or *Troubleshooting*.
-
-**Summary:** Expect a small CPU cost and possibly a few percent disk throughput loss. Use `cryptsetup benchmark` to gauge the impact.
-
-## 13. Recovery & Troubleshooting
+## 12. Recovery & Troubleshooting
 
 - **Wrong password:** The passphrase is case-sensitive. If you repeatedly fail, reboot into the live USB and repeat the conversion steps. Your data is still there in the LUKS container.
 
@@ -402,7 +406,7 @@ Also note: by default, dm-crypt uses a multi-queue work mechanism. If you *do* n
 
 - **BitLocker note:** If dual-booting Windows, remember to suspend or decrypt BitLocker before toggling Secure Boot state, as in your Secure Boot guide.
 
-## 14. Optional: TPM2 Auto-Unlock (Convenience)
+## 13. Optional: TPM2 Auto-Unlock (Convenience)
 
 Once your encrypted system is verified working, you may optionally enroll a TPM2 so that your disk unlocks without a passphrase (subject to machine state). This **must come last**; the system already boots with a passphrase. If TPM auto-unlock fails (e.g. after a firmware change), you always have the passphrase as backup. Do **not** remove the passphrase!
 
@@ -461,6 +465,6 @@ After all this, your system looks like this:
 - The EFI System Partition remains mounted at /efi with the restrictive fmask=0177,dmask=0077,noexec,nodev,nosuid options from the original install, limiting Linux-side access and execution on the ESP while still allowing systemd-boot, kernel-install, ukify, and sbctl to maintain the signed boot chain.
 
 
-If you did all of this, congratulations, you are now an Arch Linux user with a hardened system. You can also look into sysctl and cmdline to remove some of the stuff we added for performance and add other hardening if needed, but these are the two things that are really needed. SecureBoot and encryption. 
+If you did all of this, CONGRATULATIONS, you are now an Arch Linux user with a sufficiently hardened system. You could go further if you want, look into sysctl & kernel cmdline hardening defaults, maybe remove some of the ones I use that turn off security for performance, add others, etc - but these are the three things that are really needed IMO. SecureBoot, hardened EFI, and encryption.  Anything more is overkill IMO
 
 
