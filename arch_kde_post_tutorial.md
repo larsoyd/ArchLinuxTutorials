@@ -585,7 +585,7 @@ Those without AV1 hardware support may also want to disable AV1 decoders (e.g., 
 
 ### NVIDIA GLX Helper:
 
-Modern Linux systems use libglvnd, a vendor-neutral OpenGL dispatch layer. Its job is to choose whether OpenGL calls go to Mesa, NVIDIA, etc. By adding this you help many games and relevant apps use the NVIDIA driver instead of falling back to Mesa, llvmpipe, or the wrong GPU. If you do not set this explicitly and you happen to have this problem the games will run at single digit FPS and you have no idea why. Pretty fun.
+Modern Linux systems use libglvnd, a vendor-neutral OpenGL dispatch layer. Its job is to choose whether OpenGL calls go to Mesa, NVIDIA, etc. It is *supposed* to be automatic, but sometimes it fails for whatever reason. By adding this you help many games and relevant apps use the NVIDIA driver instead of falling back to Mesa, llvmpipe, or the wrong GPU. If you do not set this explicitly and you happen to have this problem the games will run at single digit FPS and you have no idea why. Pretty fun.
 
 ```zsh
 # Create the file:
