@@ -4,6 +4,8 @@
 
 This tutorial assumes exactly the state after **extra/tutorials/secureboot.md**: a working Arch KDE install, systemd-boot with signed UKIs, an ext4 `/`, and Secure Boot on. **Backup everything important before proceeding.** You will _not_ be able to undo this easily without specialized steps, so ensure you really want full-disk encryption. **DO NOT continue if you are uncertain or lack a backup.** 
 
+---
+
 ## Prerequisites
 
 - **Completed tutorials:** The main Arch install and post-install (part 1), plus the **secureboot.md** tutorial (part 2), must all be done. The system uses GPT, systemd-boot, UKIs, and has Secure Boot enabled.
@@ -14,6 +16,8 @@ This tutorial assumes exactly the state after **extra/tutorials/secureboot.md**:
 - **Password readiness:** Be prepared to enter an **UNIQUE** and **STRONG** LUKS passphrase & ANOTHER separately unique and strong fallback during live-USB boot. If you are planning to add the same password as your user password here or any other non-unique password then you can skip this tutorial since you are not going to benefit from enabling LUKS. If you are worried about password fatigue, see my TPM2 section under which for the most part will allow for passwordless de-encryption unless TPM state is changed like with firmware updates. Then you have to enter your LUKS password which is why its *vital* that you still keep both the LUKS password and the fallback somewhere safely off machine on a device not connected to the internet or inside a locked container.
 
 **Warning:** This guide does **not** cover how to remove or *decrypt* the LUKS root later. While `cryptsetup reencrypt --decrypt` exists, undoing this encryption is a separate destructive process with its own risks (and is not documented here). If you think you might need to revert to an unencrypted system, do **not** proceed until you are absolutely sure. We will explicitly warn again before the destructive step.
+
+---
 
 ## 1. Preflight on the Live System
 
@@ -84,6 +88,8 @@ Also note: by default, dm-crypt uses a multi-queue work mechanism. If you *do* n
 
 **Summary:** Expect a small CPU cost and possibly a few percent disk throughput loss. Use `cryptsetup benchmark` to gauge the impact.
 
+---
+
 ## 2. Add the `sd-encrypt` Hook (Pre-staging LUKS)
 
 Now we will configure the initramfs to support an encrypted root *before* encrypting anything. Still on the installed system:
@@ -117,6 +123,8 @@ Now we will configure the initramfs to support an encrypted root *before* encryp
    Ensure `sbctl verify` reports no errors (all modules and images are signed). 
 
 At this point, without yet encrypting the disk, your kernels’ initramfs are *capable* of decrypting a LUKS root. We now reboot **once** to make sure nothing has broken. 
+
+---
 
 ## 3. Safety Reboot (Before Encryption)
 
@@ -156,6 +164,8 @@ All encryption and disk resizing must happen with `/` unmounted. We will **only 
 
 If anything looks wrong (wrong disk, multiple rootfs, etc.), fix it now. Do not proceed if you're uncertain which partition is which.
 
+---
+
 ## 5. Shrink the ext4 Filesystem
 
 We must shrink the ext4 filesystem to free up at least 32 MiB at the end of the partition for the LUKS header. This should not lead to data loss, all we do is reserve 32 MiB for LUKS at the end of the file system after moving the current files to the front. - **Do not** shrink the partition itself; we leave the partition size unchanged. We only shrink the filesystem inside it.
@@ -185,7 +195,11 @@ We must shrink the ext4 filesystem to free up at least 32 MiB at the end of th
    ```
    Ensure the shrunk filesystem is clean. 
 
-> **IMPORTANT – LAST CHANCE:** Up to this point, your root filesystem is still unencrypted ext4. If at any point you decide to abort, you can skip the next steps. **Once you run the next command, the partition will become encrypted.** Make sure you have backups and really want to continue. This tutorial **does not** provide an undo path. Proceed only if you’re certain.
+#### **IMPORTANT – LAST CHANCE:** 
+
+Up to this point, your root filesystem is still unencrypted ext4. If at any point you decide to abort, you can skip the next steps. **Once you run the next command, the partition will become encrypted.** Make sure you have backups and really want to continue. This tutorial **does not** provide an undo path. Proceed only if you’re certain.
+
+---
 
 ## 6. In-Place LUKS2 Conversion
 
@@ -202,6 +216,8 @@ sudo cryptsetup reencrypt --encrypt --type luks2 --reduce-device-size 32M /dev/s
 - **What happened:** `/dev/sda2` is now a LUKS2 container. It contains all your data encrypted, and a header in the last 32 MiB. 
 
 If this step fails or aborts, data may be at risk. In that case reboot to BIOS (do **not** try to boot Arch, root is now encrypted). Boot live again and attempt `cryptsetup reencrypt --resume-only /dev/sda2` if possible. We will cover interrupted reencrypt recovery in troubleshooting.
+
+---
 
 ## 7. Verify and Open the LUKS Container
 
@@ -233,6 +249,8 @@ Before moving on, check that the LUKS container is valid.
    *Important:* **Store this backup file outside the disk!** (e.g. on an external USB or network storage). Without it, a header loss (e.g. disk error) means total data loss. Treat it like a key.
 
 At this point, the partition is fully LUKS2 and the filesystem is decrypted on `/dev/mapper/root`. 
+
+---
 
 ## 8. Resize Filesystem to Fill LUKS
 
@@ -274,7 +292,9 @@ Now grow the ext4 filesystem to use all available space inside the LUKS containe
 
 - GPT partition `/dev/sda2` of type “Root (x86-64)”.
 - Inside `/dev/sda2`: a LUKS2 container.
-- Inside LUKS: one volume mapped at `/dev/mapper/root` which holds your ext4 filesystem (with all Arch data and swapfile). 
+- Inside LUKS: one volume mapped at `/dev/mapper/root` which holds your ext4 filesystem (with all Arch data and swapfile).
+
+---
 
 ## 9. Re-enable Secure Boot and Boot Encrypted System
 
@@ -292,6 +312,8 @@ We now return to normal boot.
 4. **Unlock and continue:** Enter the passphrase you used. The system should unlock `/dev/mapper/root` and continue booting into your normal Arch desktop. 
 
    *If it fails:* You may have mistyped the passphrase, or something went wrong. Try rebooting. If persistent failure, boot the live USB again for troubleshooting.
+
+---
 
 ## 10. Verify Everything
 
@@ -343,6 +365,8 @@ Once logged in (graphical or text login), perform a thorough check:
 
 Everything should work as before, except `/` is now on `/dev/mapper/root` and automatically unlocked by your passphrase. Systemd’s auto-detection means you still do **not** use a UUID or cryptdevice line in `/etc/kernel/cmdline`.
 
+---
+
 ## 11. TRIM (Discard) Options
 
 Your original system probably had `fstrim.timer` enabled for SSD maintenance. By default, dm-crypt **blocks** discards (TRIM) for security reasons. We present **two options**:
@@ -373,6 +397,8 @@ Your original system probably had `fstrim.timer` enabled for SSD maintenance. By
 Do **not** blindly overwrite any existing LUKS flags—if there are unexpected flags, investigate first. The commands above preserve other flags.
 
 I recommend Option 1 (disable) if maximum secrecy is desired, or Option 2 (enable) if you prefer SSD health over the allocation pattern privacy. 
+
+---
 
 ## 12. Recovery & Troubleshooting
 
@@ -406,6 +432,8 @@ I recommend Option 1 (disable) if maximum secrecy is desired, or Option 2 (enabl
 
 - **BitLocker note:** If dual-booting Windows, remember to suspend or decrypt BitLocker before toggling Secure Boot state, as in your Secure Boot guide.
 
+---
+
 ## 13. Optional: TPM2 Auto-Unlock (Convenience)
 
 Once your encrypted system is verified working, you may optionally enroll a TPM2 so that your disk unlocks without a passphrase (subject to machine state). This **must come last**; the system already boots with a passphrase. If TPM auto-unlock fails (e.g. after a firmware change), you always have the passphrase as backup. Do **not** remove the passphrase!
@@ -429,9 +457,11 @@ Once your encrypted system is verified working, you may optionally enroll a TPM2
    ```zsh
    sudo systemd-cryptenroll --recovery-key /dev/sda2
    ```  
-   Type your LUKS passphrase, then it will show a 32-word recovery key. **Save this externally** (off-device) in case TPM or passphrase fails.
+   Type your LUKS passphrase, then it will show a 32-word recovery key. **Save this externally** (off-device) in case TPM or passphrase fails. If you didn't set a PIN then your system will be encrypted unless you turn it on in exactly the way it is intended to turn on, and if not the data will not be retrievable. This prevents a LUKS key having to be entered every boot, which does lower security which is why a PIN might be preferable for some, but it also prevents password fatigue without costing you an unencrypted drive that could be stolen and have its data harvested.
 
-4. **Enroll TPM2 token with PCR7 & PCR15:**
+---
+
+5. **Enroll TPM2 token with PCR7 & PCR15:**
 
  **(Optional) TPM PIN:** For extra security, you can add `--tpm2-with-pin=yes` under `--tpm2-pcrs=7+15:sha256=00...` during enrollment; I don't but it does make it more secure. It makes TPM request a PIN on each boot. We won’t cover that in detail here, but it’s an option if you want a two-factor unlock while still using TPM2 token. Note: repeated bad PIN attempts can lock the TPM (with timeout), so choose wisely.
 
@@ -453,6 +483,8 @@ We bind the TPM key to the current Secure Boot state (PCR7) and to PCR15 being a
 
 **Pitfall:** Do **not** delete the original passphrase keyslot (Slot 0) or the recovery key. Losing both would be disaster. Keep the passphrase and recovery key around.
 
+---
+
 ## Final Architecture
 
 After all this, your system looks like this:
@@ -467,6 +499,6 @@ After all this, your system looks like this:
 - The EFI System Partition remains mounted at /efi with the restrictive fmask=0177,dmask=0077,noexec,nodev,nosuid options from the original install, limiting Linux-side access and execution on the ESP while still allowing systemd-boot, kernel-install, ukify, and sbctl to maintain the signed boot chain.
 
 
-If you did all of this, CONGRATULATIONS, you are now an Arch Linux user with a sufficiently hardened system. You could go further if you want, look into sysctl & kernel cmdline hardening defaults, maybe remove some of the ones I use that turn off security for performance, add others, etc - but these are the three things that are really needed. SecureBoot, hardened EFI, and encryption.  Anything more is overkill IMO
+If you did all of this, then **CONGRATULATIONS,** you are now an Arch Linux user with a sufficiently hardened system. You could go further if you want, look into sysctl & kernel cmdline hardening defaults, maybe remove some of the ones I use that turn off security for performance, add others, etc - but these are the three things that are really needed in my opinion: SecureBoot, hardened EFI, and encryption. 
 
 
