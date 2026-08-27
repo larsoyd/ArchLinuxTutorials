@@ -158,7 +158,7 @@ If anything looks wrong (wrong disk, multiple rootfs, etc.), fix it now. Do not 
 
 ## 5. Shrink the ext4 Filesystem
 
-We must shrink the ext4 filesystem to free up at least 32 MiB at the end of the partition for the LUKS header. **Do not** shrink the partition itself; we leave the partition size unchanged. We only shrink the filesystem inside it.
+We must shrink the ext4 filesystem to free up at least 32 MiB at the end of the partition for the LUKS header. This should not lead to data loss, all we do is reserve 32 MiB for LUKS at the end of the file system after moving the current files to the front. - **Do not** shrink the partition itself; we leave the partition size unchanged. We only shrink the filesystem inside it.
 
 1. **Filesystem check:**  
    ```zsh
