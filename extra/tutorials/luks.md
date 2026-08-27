@@ -463,7 +463,7 @@ Once your encrypted system is verified working, you may optionally enroll a TPM2
 
 4. **Enroll TPM2 token with PCR7 & PCR15:**
 
- **(Optional) TPM PIN:** For extra security, you can add `--tpm2-with-pin=yes` under `--tpm2-pcrs=7+15:sha256=00...` during enrollment; I don't but it does make it more secure. It makes TPM request a PIN on each boot. We won’t cover that in detail here, but it’s an option if you want a two-factor unlock while still using TPM2 token. Note: repeated bad PIN attempts can lock the TPM (with timeout), so choose wisely.
+ **(Optional) TPM PIN:** For extra security, you can add `--tpm2-with-pin=yes` under `--tpm2-pcrs=7+15:sha256=00...` during enrollment; I don't but it does make it more secure. After you do you will be prompted to enter a PIN when prompted, again, ensure you have it saved safely off machine just in case. It makes TPM request a PIN on each boot. We won’t cover that in detail here, but it’s an option if you want a two-factor unlock while still using TPM2 token. Note: repeated bad PIN attempts can lock the TPM (with timeout), so choose wisely.
 
 We bind the TPM key to the current Secure Boot state (PCR7) and to PCR15 being all-zero (system-identity):  
    ```zsh
