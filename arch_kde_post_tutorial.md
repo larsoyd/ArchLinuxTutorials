@@ -1395,6 +1395,9 @@ My advice is pick one here, you can do both but it's best to not clutter your sy
 # install Haruna (video)
 pikaur -S --needed haruna
 
+# (Third-party) Phonon Support for mpv (installed with Haruna)
+pikaur -S --needed phonon-qt6-mpv
+
 # You have to do this if you want GPU acceleration for your wholesome entertainment
 mkdir -p ~/.config/mpv
 echo "hwdec=auto" > ~/.config/mpv/mpv.conf
