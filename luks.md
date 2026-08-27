@@ -57,7 +57,7 @@ Before changing anything, verify your current system state to match expectations
   ```zsh
   sudo e2fsck -fn /dev/YOUR-ROOT-PARTITION
   ```
-  *Expected:* No errors or prompts (the `-n` option means "don't actually fix"). If errors are found, fix them now with `sudo e2fsck -fy /dev/YOUR-ROOT-PARTITION` before proceeding.
+  *Expected:* No errors or prompts (the `-n` option means "don't actually fix"). If errors are found, shutdown the computer, chroot in with your ArchUSB, mount the system and fix it with `sudo e2fsck -fy /dev/YOUR-ROOT-PARTITION` before proceeding.
 
 If any check is unexpected, stop and fix it **before** continuing. This tutorial must start from a correct Secure Boot + signed-UKI Arch system.
 
