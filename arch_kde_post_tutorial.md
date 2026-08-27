@@ -53,7 +53,7 @@ sudo pacman -Fy
 
 ---
 
-## 2 · Install AUR Helper (yay)
+## 2 · Install AUR Helper (pikaur)
 
 ### 2.1 Prerequisites
 
@@ -239,10 +239,10 @@ LLMs can help in parsing them if you are new, but *try* to learn how to read the
 What you are looking out for are malicious links or anything else out of the ordinary.
 ```
 
-### Either build yay from AUR or install it via Chaotic-AUR
+### Either build pikaur from AUR or install it via Chaotic-AUR
 ```zsh
 # If you enabled Chaotic-AUR you can just install it like so:
-sudo pacman -S --needed yay
+sudo pacman -S --needed pikaur
 
 # But if you want to build it from the AUR
 # without installing from Chaotic-AUR:
@@ -250,26 +250,26 @@ sudo pacman -S --needed yay
 # go to the temporary directory
 cd /tmp
 
-# clone the yay pkgbuild from the aur                                      
-git clone https://aur.archlinux.org/yay.git
+# clone the pikaur pkgbuild from the aur                                      
+git clone https://aur.archlinux.org/pikaur.git
 
 # enter the cloned folder
-cd yay
+cd pikaur
 
 # build the package, then install it and deps
 makepkg -si
 
 # go home, remove the temporary build folder
-cd ~ && rm -rf /tmp/yay                      
+cd ~ && rm -rf /tmp/pikaur                      
 
-yay --version  # quick test | NOTE: Whenever you run any 'yay' command, do not use 'sudo' before it.
+pikaur --version  # quick test | NOTE: Whenever you run any 'pikaur' command, do not use 'sudo' before it.
 ```
 
 ### Shell and terminal bliss
 ```zsh
 # Oh-my-zsh makes your terminal nicer, zsh-autosuggestions and the other are plugins
 # More on them later.
-yay -S --needed oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
+pikaur -S --needed oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
 ```
 
 ### Copy .zshrc default template config
@@ -313,7 +313,7 @@ PROMPT='%F{white}%B[%F{#1793d1}Arch%F{white}Lars%F{white}] %F{cyan}%~ %f%(!.#.$)
 # Also optionally add any aliases here
 #
 # Here is one for installing packages:
-alias pacin='yay -S --needed'
+alias pacin='pikaur -S --needed'
 #
 # with this you can just write 'pacin' and then package to install anything
 # Example: pacin firefox
@@ -417,7 +417,7 @@ cursor_trail_start_threshold 2
 - Up arrow: recall a previous command that starts the same way. 
 For example, type 'sudo', then press Up, and it fills in the rest. 
 This is useful when installing packages, like you will in this tutorial.
-Every time you type 'yay', you can press Up to autofill your usual flags, 
+Every time you type 'pikaur', you can press Up to autofill your usual flags, 
 then replace the package name with something else.
 
 - Syntax highlighting makes commands easier to read, and helps you spot obvious mistakes.
@@ -449,7 +449,7 @@ ILoveCandy                 # write this manually under Color
 mkdir -p ~/.config/nano
 
 # package with enhanced rules
-yay -S --needed nano-syntax-highlighting
+pikaur -S --needed nano-syntax-highlighting
 
 # enable all bundled syntaxes
 # paste into terminal with CTRL + SHIFT + V:
@@ -502,7 +502,7 @@ sudo true
 
 ```zsh
 # essential stuff to have.
-yay -S --needed informant \
+pikaur -S --needed informant \
 gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly \
 rebuild-detector aurutils \
 python-pip kdeconnect
@@ -523,10 +523,10 @@ informant --check
 ### Browser
 ```zsh
 # recommended:
-yay -S --needed firefox
+pikaur -S --needed firefox
 
 # or anything else
-yay -S --needed chromium   # example of "anything else"
+pikaur -S --needed chromium   # example of "anything else"
 ```
 
 ### How to add Environmental Variables:
@@ -773,7 +773,7 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'icon:minimize,maxi
 # Then log out and back in
 
 # If that still doesn't work, then try:
-yay -S --needed xdg-desktop-portal-gtk
+pikaur -S --needed xdg-desktop-portal-gtk
 ```
 
 ---
@@ -942,15 +942,15 @@ topgrade && checkrebuild
 pacup && checkrebuild
 
 # usually it doesn't list anything, that means you're good, but if it does you need to run
-# yay  -S <pkg> --rebuild
+# pikaur  -S <pkg> --rebuild
 ```
 
-Option 2) with yay:
+Option 2) with pikaur:
 ```zsh
-# Tip/Fun Fact: You can update your system by just writing 'yay'.
+# Tip/Fun Fact: You can update your system by just writing 'pikaur'.
 # This is actually ideal, as pacman -Syu does not update your AUR packages.
 # Try it:
-yay
+pikaur
 
 # This is a good time to teach you the habit of running `checkrebuild` after updates.
 # 'checkrebuild' checks if you need to rebuild any packages towards new dependencies.
@@ -961,10 +961,10 @@ checkrebuild
 # If you don't want to remember this, just run this once and then use it from history
 # every time you update. It simply updates and then after runs checkrebuild in
 # one command:
-yay && checkrebuild
+pikaur && checkrebuild
 
 # usually it doesn't list anything, that means you're good, but if it does you need to run
-# yay  -S <pkg> --rebuild
+# pikaur  -S <pkg> --rebuild
 ```
 
 ### 4.2.5 Games & Steam
@@ -977,7 +977,7 @@ yay && checkrebuild
 # ntsync-autoload is a new optional dep for steam, it loads ntsync for you
 # which means you don't have to do it manually, more on what ntsync is in the
 # manual step below which you can skip if you install this
-yay -S --needed steam xorg-fonts-misc ntsync-autoload
+pikaur -S --needed steam xorg-fonts-misc ntsync-autoload
 
 # Run Steam in terminal to install it:
 steam
@@ -1040,7 +1040,7 @@ unShaderBackgroundProcessingThreads 8
 ```zsh
 # To quickly learn how to find steamapps for example without googling you can use plocate
 # It's the fastest way to find any file or folder on your system, first install plocate:
-yay -S --needed plocate
+pikaur -S --needed plocate
 
 # Then build the database:
 sudo updatedb
@@ -1055,7 +1055,7 @@ sudo systemctl start --now plocate-updatedb.timer
 ### ProtonUp-Qt:
 ```zsh
 # install protonup qt (ProtonGE)
-yay -S --needed protonup-qt
+pikaur -S --needed protonup-qt
 ```
 
 ### Configure Proton GE as the default in Steam after installing Proton GE from ProtonUp-Qt:
@@ -1081,12 +1081,10 @@ propietary codecs and such that Valve cannot package themselves. This helps with
 # reflector will run reflector any time mirrorlist updates
 #
 # paccache-hook is the GOAT. it cleans your cache after using pacman.
-#
-# yaycache-hook will remove old and uninstalled packages from yay cache
-yay -S --needed \
+pikaur -S --needed \
   pacdiff-pacman-hook-git \
   reflector-pacman-hook-git \
-  paccache-hook yaycache-hook
+  paccache-hook
 ```
 
 
@@ -1095,7 +1093,7 @@ yay -S --needed \
 # To prevent stale UKIs you need a hook to run after every update
 # Or do it manually, but automatic is better.
 #
-yay -S --needed pacman-hook-kernel-install
+pikaur -S --needed pacman-hook-kernel-install
 
 # NOTE: This may not be needed, sometimes they are not installed
 # other times they are. I have had mixed results. Good to run both
@@ -1109,7 +1107,7 @@ sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ### Install & Enable Nohang:
 ```zsh
 # This is an OOM killer. DON'T SKIP. It's VITAL.
-yay -S --needed nohang
+pikaur -S --needed nohang
 
 # Reason why it's vital is this:
 # If your system fills up it's swap and RAM then this will terminate offending processes before your system freeze up.
@@ -1204,7 +1202,7 @@ OPTION A)
 # From uv (Rust based Python manager, very good)
 #
 # This is recommended as its upstream, though ensure you keep it up to date.
-# If you simply run `yay` or `pacman -Syu` it will NOT update this package.
+# If you simply run `pikaur` or `pacman -Syu` it will NOT update this package.
 # You must run `uv tool upgrade --all` as well. This is tedious.
 # The best way instead is to update your system using topgrade since it will
 # automatically detect that uv is on your system and then
@@ -1245,12 +1243,12 @@ OPTION B)
 # If not using topgrade / don't want uv, you can also get it from the
 # repositories, reason why its not reccomended is it may lag behind
 # the official package. See why curl_cffi is included above.
-yay -S --needed yt-dlp python-curl_cffi
+pikaur -S --needed yt-dlp python-curl_cffi
 
 ---
 
 # Then install deno and nodejs
-yay -S --needed deno nodejs
+pikaur -S --needed deno nodejs
 
 # And finally add a config file to use the solver each time
 mkdir -p ~/.config/yt-dlp && echo "--remote-components ejs:github" >> ~/.config/yt-dlp/config
@@ -1390,7 +1388,7 @@ My advice is pick one here, you can do both but it's best to not clutter your sy
 # YouTube Playback well.
 #
 # install Haruna (video)
-yay -S --needed haruna
+pikaur -S --needed haruna
 
 # You have to do this if you want GPU acceleration for your wholesome entertainment
 mkdir -p ~/.config/mpv
@@ -1407,7 +1405,7 @@ echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 # It also is not reliable for hardware acceleration on NVIDIA IMO
 #
 # install vlc (video)
-yay -S --needed vlc vlc-plugins-all
+pikaur -S --needed vlc vlc-plugins-all
 
 # Hardware Acceleration:
 ## VLC automatically tries to use an available API
@@ -1415,11 +1413,11 @@ yay -S --needed vlc vlc-plugins-all
 ## Choose the suitable option under Hardware-accelerated decoding,
 
 # Phonon backend (for integration within KDE):
-yay -S --needed phonon-qt6-vlc
+pikaur -S --needed phonon-qt6-vlc
 
 # OPTIONAL: Plugin to allow you to click on the video inside VLC's window
 # and it will be paused or resumed. This is a commonly expected behavior:
-yay -S --needed vlc-pause-click-plugin
+pikaur -S --needed vlc-pause-click-plugin
 ```
 
 ### Option 3) MPV
@@ -1429,10 +1427,10 @@ yay -S --needed vlc-pause-click-plugin
 # If you care about manual configs and stuff use MPV, otherwise use VLC or Haruna
 #
 # install mpv (video)
-yay -S --needed mpv  
+pikaur -S --needed mpv  
 
 # (Third-party) Phonon Support for mpv
-yay -S --needed phonon-qt6-mpv
+pikaur -S --needed phonon-qt6-mpv
 
 # You have to do this if you want GPU acceleration for your wholesome entertainment
 mkdir -p ~/.config/mpv
@@ -1448,7 +1446,7 @@ echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 # integrates natively into your KDE Plasma system. This is what I use at the moment.
 #
 # install Elisa (music)
-yay -S --needed elisa
+pikaur -S --needed elisa
 ```
 
 ## Optional: Improve Font Rendering
@@ -1465,7 +1463,7 @@ yay -S --needed elisa
 # I prefer it, but YMMV. Try it and see if it works for you,
 # if it doesn't remove it with `sudo pacman -Rns lucidglyph` and then
 # reboot again.
-yay -S --needed lucidglyph ttf-dejavu-nerd
+pikaur -S --needed lucidglyph ttf-dejavu-nerd
 
 # Set the fonts in KDE Plasma 6
    a) Open: System Settings
@@ -1529,7 +1527,7 @@ This is still unresolved after more than a year and a half due to the way animat
 Basically Qt6's animations are hard coded to only run at a certain refresh rate due to tech debt of the Qt Framework itself. As of now (2026) the only fix is to use a patched version of qt6-base from the AUR that lowers the hard coded number from 16 (around 60Hz) to 4.
 
 ```zsh
-yay -S --needed qt6-base-hifps
+pikaur -S --needed qt6-base-hifps
 ```
 
 ---
@@ -1550,7 +1548,7 @@ sudo pacman -Rns $(pacman -Qtdq)
 reboot
 
 # after reboot open kitty (CTRL + ALT + T)
-yay -S --needed fastfetch
+pikaur -S --needed fastfetch
 
 # Then run it to see your glorious fetch
 fastfetch
