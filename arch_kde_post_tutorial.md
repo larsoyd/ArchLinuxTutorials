@@ -240,6 +240,9 @@ What you are looking out for are malicious links or anything else out of the ord
 ```
 
 ### Either build pikaur from AUR or install it via Chaotic-AUR
+
+I used to use yay, but reviewing PKGBUILDs with `yay` is quite tedious. I now use `pikaur` instead which automatically shows you the PKGBUILD to be read with syntax highlighting. They appear on install and updates, which is important in these trying times for the AUR. - I recommend it over `yay`, personally, but you can use whatever AUR helper strikes your fancy.
+
 ```zsh
 # If you enabled Chaotic-AUR you can just install it like so:
 sudo pacman -S --needed pikaur
