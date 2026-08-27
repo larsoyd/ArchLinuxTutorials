@@ -520,7 +520,7 @@ reboot
 groups
 
 # if you are run informant
-informant --check
+informant read
 ```
 
 ### Browser
