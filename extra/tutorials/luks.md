@@ -431,21 +431,23 @@ Once your encrypted system is verified working, you may optionally enroll a TPM2
    ```  
    Type your LUKS passphrase, then it will show a 32-word recovery key. **Save this externally** (off-device) in case TPM or passphrase fails.
 
-4. **Enroll TPM2 token with PCR7 & PCR15:**  
-   We bind the TPM key to the current Secure Boot state (PCR7) and to PCR15 being all-zero (system-identity):  
+4. **Enroll TPM2 token with PCR7 & PCR15:**
+
+ **(Optional) TPM PIN:** For extra security, you can add `--tpm2-with-pin=yes` under `--tpm2-pcrs=7+15:sha256=00...` during enrollment; I don't but it does make it more secure. It makes TPM request a PIN on each boot. We won’t cover that in detail here, but it’s an option if you want a two-factor unlock while still using TPM2 token. Note: repeated bad PIN attempts can lock the TPM (with timeout), so choose wisely.
+
+We bind the TPM key to the current Secure Boot state (PCR7) and to PCR15 being all-zero (system-identity):  
    ```zsh
    sudo systemd-cryptenroll \
      --tpm2-device=auto \
      --tpm2-pcrs=7+15:sha256=0000000000000000000000000000000000000000000000000000000000000000 \
      /dev/sda2
    ```  
-   This adds a TPM2 token keyslot. Now LUKS has three ways to unlock: your original passphrase, the recovery key, or the TPM2.  
+   This adds a TPM2 token keyslot. Now LUKS has three ways to unlock: your original passphrase, the recovery key, or the TPM2.
+
 
    *Explanation:* PCR7 ties it to the current Secure Boot keys/policy. PCR15 must be zero (the initial state); once the root is opened, systemd will measure the LUKS volume into PCR15, preventing reuse of this key mid-boot. This means the TPM key works only when the firmware/bootloaders match exactly. 
 
-5. **Test TPM unlock:** Reboot. If everything went well and you kept Secure Boot on, the system should unlock without asking for a passphrase (you might see a brief TPM-unseal message). If TPM fails, it will fall back to asking for the passphrase. 
-
-6. **(Optional) TPM PIN:** For extra security, you could have used `--tpm2-with-pin=yes` during enrollment; that makes TPM request a PIN on each boot. We won’t cover that in detail here, but it’s an option if you want a two-factor unlock. Note: repeated bad PIN attempts can lock the TPM (with timeout), so choose wisely.
+6. **Test TPM unlock:** Reboot. If everything went well and you kept Secure Boot on, the system should unlock without asking for a passphrase (you might see a brief TPM-unseal message). If TPM fails, it will fall back to asking for the passphrase. 
 
 7. **Recovery & Re-enrollment:** If you ever update your Secure Boot keys or firmware and TPM unlock stops working (PCR7 changed), just boot with the passphrase, then re-run `systemd-cryptenroll` with the new PCR values (it can wipe the old TPM token and enroll a new one). Your recovery key ensures you can always unlock in the meantime.
 
@@ -465,6 +467,6 @@ After all this, your system looks like this:
 - The EFI System Partition remains mounted at /efi with the restrictive fmask=0177,dmask=0077,noexec,nodev,nosuid options from the original install, limiting Linux-side access and execution on the ESP while still allowing systemd-boot, kernel-install, ukify, and sbctl to maintain the signed boot chain.
 
 
-If you did all of this, CONGRATULATIONS, you are now an Arch Linux user with a sufficiently hardened system. You could go further if you want, look into sysctl & kernel cmdline hardening defaults, maybe remove some of the ones I use that turn off security for performance, add others, etc - but these are the three things that are really needed IMO. SecureBoot, hardened EFI, and encryption.  Anything more is overkill IMO
+If you did all of this, CONGRATULATIONS, you are now an Arch Linux user with a sufficiently hardened system. You could go further if you want, look into sysctl & kernel cmdline hardening defaults, maybe remove some of the ones I use that turn off security for performance, add others, etc - but these are the three things that are really needed. SecureBoot, hardened EFI, and encryption.  Anything more is overkill IMO
 
 
