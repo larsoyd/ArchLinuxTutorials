@@ -1018,7 +1018,9 @@ ntsync
 
 ### Make Shader Pre-Compilation Faster
 
-When running games under Proton the shader compilation can legitimately hit high CPU usage because it is parallel work. This can create runtime stuttering if done during play. To mitigate this shader preprocessing is set on by default beforehand. This usually takes seconds, but sometimes under certain circumstances™ (CLASSIC) shader pre-compilation may only use one core for w/e reason and that is when people usually get frustrated by it and learn bad habits like skipping, however this flaw can be overridden by the user by adding a conf file that makes Steam always use more cores for shader comp. Example number is 8 cores, modify the number depending your own CPU and workload. Shader comp is heavy on the CPU so if you are doing other things like streaming or w/e you might want to set a lower number than all the cores. Restart Steam afterwards if it was already running:
+When running games under Proton the shader compilation can legitimately hit high CPU usage because it is parallel work. This can create runtime stuttering if done during play. To mitigate this shader preprocessing is set on by default beforehand. This usually takes seconds, but sometimes under certain circumstances™ (CLASSIC) shader pre-compilation may only use one core for w/e reason and that is when people usually get frustrated by it and learn bad habits like skipping. 
+
+However this flaw can be overridden by the user by adding a conf file that makes Steam always use more cores for shader comp. Example number is 8 cores, modify the number depending your own CPU and workload. Shader comp is heavy on the CPU so if you are doing other things like streaming or w/e you might want to set a lower number than all the cores. Restart Steam afterwards if it was already running:
 
 
 Here is how to set it:
