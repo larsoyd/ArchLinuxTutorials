@@ -526,9 +526,9 @@ sudo sbctl verify
 
 ---
 
-### 14) Add a Secure Boot check to Topgrade
+### 14) OPTIONAL: Add a Secure Boot check to Topgrade
 
-This could be tedious to do with `yay` as you would always have to add `sudo sbctl verify` to the end of the command after `&&` or with an alias. The better way to do this is to use Topgrade and add it as a `post_command` which runs after your updates are done. To do this, first open your Topgrade configuration:
+This is only if you installed `topgrade` in the post-install tutorial. This could be tedious to do with `pacman` as you would always have to add `sudo sbctl verify` to the end of the command after `&&` or with an alias. The better way to do this is to use Topgrade and add it as a `post_command` which runs after your updates are done. To do this, first open your Topgrade configuration:
 
 ```zsh
 topgrade --edit-config
