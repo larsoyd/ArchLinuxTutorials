@@ -6,7 +6,7 @@ This tutorial assumes exactly the state after **extra/tutorials/secureboot.md**:
 
 ---
 
-## Prerequisites
+### Prerequisites
 
 - **Completed tutorials:** The main Arch install and post-install (part 1), plus the **secureboot.md** tutorial (part 2), must all be done. The system uses GPT, systemd-boot, UKIs, and has Secure Boot enabled.
 - **EFI in UEFI mode:** Confirm you are booted with UEFI, Secure Boot enabled (Setup Mode off). The ESP should be mounted at `/efi`.
@@ -19,7 +19,7 @@ This tutorial assumes exactly the state after **extra/tutorials/secureboot.md**:
 
 ---
 
-## 1. Preflight on the Live System
+### 1. Preflight on the Live System
 
 Before changing anything, verify your current system state to match expectations. Run these checks on your installed Arch system (not the live USB yet):
 
@@ -66,7 +66,7 @@ Before changing anything, verify your current system state to match expectations
 If any check is unexpected, stop and fix it **before** continuing. This tutorial must start from a correct Secure Boot + signed-UKI Arch system.
 
 
-## NB: On the Performance Considerations
+### NB: On the Performance Considerations
 
 Some of you may wonder if your system will suffer a lot from enabling this. That is understandable, encryption adds CPU overhead to every disk I/O. Modern CPUs with AES hardware can often handle AES-XTS at near SSD speeds though, but it is worth checking:
 
@@ -90,7 +90,7 @@ Also note: by default, dm-crypt uses a multi-queue work mechanism. If you *do* n
 
 ---
 
-## 2. Add the `sd-encrypt` Hook (Pre-staging LUKS)
+### 2. Add the `sd-encrypt` Hook (Pre-staging LUKS)
 
 Now we will configure the initramfs to support an encrypted root *before* encrypting anything. Still on the installed system:
 
@@ -126,7 +126,7 @@ At this point, without yet encrypting the disk, your kernels’ initramfs are *c
 
 ---
 
-## 3. Safety Reboot (Before Encryption)
+### 3. Safety Reboot (Before Encryption)
 
 **STOP:** Ensure you have backups and are ready. Then reboot:
 
@@ -139,7 +139,9 @@ sudo reboot
 
 This confirms that adding `sd-encrypt` did not break your current system. If reboot fails, restore your old `HOOKS=` or fix the issue before proceeding.
 
-## 4. Prepare Live USB and Disable Secure Boot
+---
+
+### 4. Prepare Live USB and Disable Secure Boot
 
 All encryption and disk resizing must happen with `/` unmounted. We will **only disable Secure Boot**, not erase keys or change anything else. Then we boot a live environment that supports LUKS2:
 
@@ -166,7 +168,7 @@ If anything looks wrong (wrong disk, multiple rootfs, etc.), fix it now. Do not 
 
 ---
 
-## 5. Shrink the ext4 Filesystem
+### 5. Shrink the ext4 Filesystem
 
 We must shrink the ext4 filesystem to free up at least 32 MiB at the end of the partition for the LUKS header. This should not lead to data loss, all we do is reserve 32 MiB for LUKS at the end of the file system after moving the current files to the front. - **Do not** shrink the partition itself; we leave the partition size unchanged. We only shrink the filesystem inside it.
 
@@ -195,13 +197,13 @@ We must shrink the ext4 filesystem to free up at least 32 MiB at the end of th
    ```
    Ensure the shrunk filesystem is clean. 
 
-#### **IMPORTANT – LAST CHANCE:** 
+###### **IMPORTANT – LAST CHANCE:** 
 
 Up to this point, your root filesystem is still unencrypted ext4. If at any point you decide to abort, you can skip the next steps. **Once you run the next command, the partition will become encrypted.** Make sure you have backups and really want to continue. This tutorial **does not** provide an undo path. Proceed only if you’re certain.
 
 ---
 
-## 6. In-Place LUKS2 Conversion
+### 6. In-Place LUKS2 Conversion
 
 Now we convert the partition in-place to LUKS2. We assume **no data** exists in the final ~32 MiB of the partition (the previous shrink step ensured this). We use `cryptsetup reencrypt` which will encrypt the existing data and set up a new LUKS2 header in the freed space.
 
@@ -219,7 +221,7 @@ If this step fails or aborts, data may be at risk. In that case reboot to BIOS (
 
 ---
 
-## 7. Verify and Open the LUKS Container
+### 7. Verify and Open the LUKS Container
 
 Before moving on, check that the LUKS container is valid.
 
@@ -252,7 +254,7 @@ At this point, the partition is fully LUKS2 and the filesystem is decrypted on `
 
 ---
 
-## 8. Resize Filesystem to Fill LUKS
+### 8. Resize Filesystem to Fill LUKS
 
 Now grow the ext4 filesystem to use all available space inside the LUKS container.
 
@@ -296,7 +298,7 @@ Now grow the ext4 filesystem to use all available space inside the LUKS containe
 
 ---
 
-## 9. Re-enable Secure Boot and Boot Encrypted System
+### 9. Re-enable Secure Boot and Boot Encrypted System
 
 We now return to normal boot.
 
@@ -315,7 +317,7 @@ We now return to normal boot.
 
 ---
 
-## 10. Verify Everything
+### 10. Verify Everything
 
 Once logged in (graphical or text login), perform a thorough check:
 
@@ -367,7 +369,7 @@ Everything should work as before, except `/` is now on `/dev/mapper/root` and au
 
 ---
 
-## 11. TRIM (Discard) Options
+### 11. TRIM (Discard) Options
 
 Your original system probably had `fstrim.timer` enabled for SSD maintenance. By default, dm-crypt **blocks** discards (TRIM) for security reasons. We present **two options**:
 
@@ -400,7 +402,7 @@ I recommend Option 1 (disable) if maximum secrecy is desired, or Option 2 (enabl
 
 ---
 
-## 12. Recovery & Troubleshooting
+### 12. Recovery & Troubleshooting
 
 - **Wrong password:** The passphrase is case-sensitive. If you repeatedly fail, reboot into the live USB and repeat the conversion steps. Your data is still there in the LUKS container.
 
@@ -434,7 +436,7 @@ I recommend Option 1 (disable) if maximum secrecy is desired, or Option 2 (enabl
 
 ---
 
-## 13. Optional: TPM2 Auto-Unlock (Convenience)
+### 13. Optional: TPM2 Auto-Unlock (Convenience)
 
 Once your encrypted system is verified working, you may optionally enroll a TPM2 so that your disk unlocks without a passphrase (subject to machine state). This **must come last**; the system already boots with a passphrase. If TPM auto-unlock fails (e.g. after a firmware change), you always have the passphrase as backup. Do **not** remove the passphrase!
 
@@ -459,9 +461,7 @@ Once your encrypted system is verified working, you may optionally enroll a TPM2
    ```  
    Type your LUKS passphrase, then it will show a 32-word recovery key. **Save this externally** (off-device) in case TPM or passphrase fails. If you didn't set a PIN then your system will be encrypted unless you turn it on in exactly the way it is intended to turn on, and if not the data will not be retrievable. This prevents a LUKS key having to be entered every boot, which does lower security which is why a PIN might be preferable for some, but it also prevents password fatigue without costing you an unencrypted drive that could be stolen and have its data harvested.
 
----
-
-5. **Enroll TPM2 token with PCR7 & PCR15:**
+4. **Enroll TPM2 token with PCR7 & PCR15:**
 
  **(Optional) TPM PIN:** For extra security, you can add `--tpm2-with-pin=yes` under `--tpm2-pcrs=7+15:sha256=00...` during enrollment; I don't but it does make it more secure. It makes TPM request a PIN on each boot. We won’t cover that in detail here, but it’s an option if you want a two-factor unlock while still using TPM2 token. Note: repeated bad PIN attempts can lock the TPM (with timeout), so choose wisely.
 
@@ -477,15 +477,15 @@ We bind the TPM key to the current Secure Boot state (PCR7) and to PCR15 being a
 
    *Explanation:* PCR7 ties it to the current Secure Boot keys/policy. PCR15 must be zero (the initial state); once the root is opened, systemd will measure the LUKS volume into PCR15, preventing reuse of this key mid-boot. This means the TPM key works only when the firmware/bootloaders match exactly. 
 
-6. **Test TPM unlock:** Reboot. If everything went well and you kept Secure Boot on, the system should unlock without asking for a passphrase (you might see a brief TPM-unseal message). If TPM fails, it will fall back to asking for the passphrase. 
+5. **Test TPM unlock:** Reboot. If everything went well and you kept Secure Boot on, the system should unlock without asking for a passphrase (you might see a brief TPM-unseal message). If TPM fails, it will fall back to asking for the passphrase. 
 
-7. **Recovery & Re-enrollment:** If you ever update your Secure Boot keys or firmware and TPM unlock stops working (PCR7 changed), just boot with the passphrase, then re-run `systemd-cryptenroll` with the new PCR values (it can wipe the old TPM token and enroll a new one). Your recovery key ensures you can always unlock in the meantime.
+6. **Recovery & Re-enrollment:** If you ever update your Secure Boot keys or firmware and TPM unlock stops working (PCR7 changed), just boot with the passphrase, then re-run `systemd-cryptenroll` with the new PCR values (it can wipe the old TPM token and enroll a new one). Your recovery key ensures you can always unlock in the meantime.
 
 **Pitfall:** Do **not** delete the original passphrase keyslot (Slot 0) or the recovery key. Losing both would be disaster. Keep the passphrase and recovery key around.
 
 ---
 
-## Final Architecture
+### Final Architecture
 
 After all this, your system looks like this:
 
