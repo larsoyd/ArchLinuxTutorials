@@ -1,4 +1,4 @@
-> Click [HERE](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/arch_kde_tutorial.md#optional-using-systemrescue-to-install) to go back to the tutorial.
+
 
 ### EXTRA TUTORIAL: Enable Secure Boot with systemd-boot + UKIs + sbctl
 
