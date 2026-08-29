@@ -23,7 +23,7 @@ CUDA is NVIDIA's GPU computing and programming toolkit.
 
 This is what software uses when it wants to run general-purpose calculations on an NVIDIA GPU rather than just draw graphics. AI/ML software, Blender rendering, scientific computing, video processing and various other programs can make use of CUDA.
 
-It is **not required for a normal NVIDIA desktop or normal gaming**. It is also gigantic. I include it because having CUDA available is very useful on a powerful NVIDIA desktop, but if you know you will never run CUDA software you can absolutely leave this one out.
+It is **not technically required for a normal NVIDIA desktop or normal gaming**. I include it because having CUDA available is very useful on a powerful NVIDIA desktop, it is used to help hardware acceleration for video, for example. You can leave it out if you don't care though.
 
 
 
