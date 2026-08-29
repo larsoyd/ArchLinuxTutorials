@@ -621,7 +621,7 @@ HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block file
 bootctl install --esp-path=/efi --variables=yes
 ```
 
-#### Add a minimal cmdline with kernel option(s)
+### Add a minimal cmdline with kernel option(s)
 
 `/etc/kernel/cmdline` is a configuration file that stores the Linux kernel command-line parameters that should be used when generating boot entries or Unified Kernel Images (UKIs). It typically contains a single line with options such as `rw`, `quiet`, `loglevel=3`, NVIDIA parameters, zswap settings, and other kernel arguments. Tools such as `kernel-install` read this file so the same kernel parameters are automatically embedded or applied whenever a kernel image is rebuilt. 
 
