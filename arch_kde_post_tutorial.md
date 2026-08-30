@@ -1228,7 +1228,7 @@ propietary codecs and such that Valve cannot package themselves. This helps with
 
 ---
 
-## 5 · Maintenance hooks
+### 5 · Maintenance hooks
 ```zsh
 # these hooks are great for system maintenance
 #
@@ -1282,6 +1282,9 @@ sudo nano /etc/systemd/journald.conf.d/00-journal-size.conf
 [Journal]
 SystemMaxUse=50M
 ```
+
+---
+
 ### Set Keymaps for X11
 This is only if you don't have an US keymap layout. While this tutorial primarily covers how to install a Wayland exclusive environment, setting the keymap in Xorg should still be done even if you are only using Wayland for compatibility reasons. This is not strictly necessary and may be redundant, but there is no harm in generating it so if you ever do hit a compatibility issue then you won't be surprised.
 
@@ -1294,6 +1297,8 @@ All you have to do is run `set-x11-keymap` with your country code like in the ma
 # have edited my defaults to yours, run:
 sudo localectl set-x11-keymap no pc105
 ```
+
+---
 
 ### USB autosuspend
 The Linux kernel automatically suspend USB devices when they are not in use. 
@@ -1313,6 +1318,8 @@ sudo nano /etc/udev/rules.d/50-usb_power_save.rules
 ```zsh
 ACTION=="add", SUBSYSTEM=="usb", ATTR{product}!="*Mouse", ATTR{product}!="*Keyboard", TEST=="power/control", ATTR{power/control}="auto"
 ```
+
+---
 
 #### ADVANCED OPTION B) More specific exemptions based on Base Classes:
 
@@ -1348,7 +1355,9 @@ sudo udevadm trigger --subsystem-match=usb --action=add
 grep -H . /sys/bus/usb/devices/*/power/{control,runtime_status}
 ```
 
-## YT-DLP and aliases I use with it:
+---
+
+#### YT-DLP and aliases I use with it:
 
 YT-DLP is a downloader for online media hosted on sites. It's very good.
 
@@ -1410,6 +1419,8 @@ pikaur -S --needed deno nodejs
 mkdir -p ~/.config/yt-dlp && echo "--remote-components ejs:github" >> ~/.config/yt-dlp/config
 ```
 
+---
+
 #### OPTIONAL QoL FOR YT-DLP:
 
 - Here are some aliases I use, add to `~/.zshrc` with `nano` on the bottom:
@@ -1426,6 +1437,8 @@ alias ytdlv='yt-dlp --js-runtimes deno -f "bestvideo+bestaudio" \
 ```
 
 Save and then run: `source ~/.zshrc`
+
+---
 
 #### How to use:
 
