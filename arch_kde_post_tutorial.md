@@ -578,7 +578,7 @@ then replace the package name with something else.
 
 ### 3 · System Optimisation
 
-### 3.1 Pacman candy
+#### 3.1 Pacman candy
 Edit `/etc/pacman.conf`:
 ```zsh
 sudo nano /etc/pacman.conf
