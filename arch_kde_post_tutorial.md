@@ -268,6 +268,109 @@ cd ~ && rm -rf /tmp/pikaur
 pikaur --version  # quick test | NOTE: Whenever you run any 'pikaur' command, do not use 'sudo' before it.
 ```
 
+### Configure Automatic Pikaur Cache Cleanup
+
+Pikaur keeps packages it builds from the AUR in `~/.cache/pikaur/pkg`. Over time this can accumulate old versions of packages and take up a significant amount of disk space.
+
+Pikaur includes an example pacman hook which uses `paccache` from `pacman-contrib` to automatically clean old cached packages after package installs and upgrades.
+
+First make sure `pacman-contrib` is installed:
+
+```zsh
+sudo pacman -S --needed pacman-contrib
+```
+
+Install Pikaur's included example hook into the local pacman hooks directory:
+
+```zsh
+sudo install -Dm644 \
+  /usr/share/pikaur/examples/pikaur-cache.hook \
+  /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
+```
+
+`install -D` creates `/etc/pacman.d/hooks` automatically if it does not already exist.
+
+The example hook contains the placeholder `YOUR_USER`, so replace it with your current username. I have written out a command that will automatically replace it with your name, no need to change anything about it. `$USER` always resolves to your username on Linux. To see this in action just write `echo $USER` in your terminal.
+
+Anyways, here is the command:
+
+```zsh
+sudo sed -i "s|YOUR_USER|$USER|g" \
+  /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
+```
+
+By default Pikaur's example keeps only the newest **1 version** of each cached package.
+
+I recommend keeping **2 versions** instead. This retains the current package and one previous package in case you need to downgrade:
+
+```zsh
+sudo sed -i 's|--keep 1|--keep 2|' \
+  /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
+```
+
+Check the finished hook:
+
+```zsh
+cat /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
+```
+
+The important part should now resemble:
+
+```ini
+[Action]
+Description = Remove unused package files cached by pikaur in user's home directory
+Depends = bash
+Depends = pacman-contrib
+When = PostTransaction
+Exec = /usr/bin/bash -c '/usr/bin/paccache --cachedir /home/YOUR_USERNAME/.cache/pikaur/pkg --verbose --remove --keep 2;'
+```
+
+You can also verify that the placeholder was completely removed:
+
+```zsh
+grep -n 'YOUR_USER' /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
+```
+
+If that prints nothing, it was replaced successfully.
+
+#### Test the cleanup without deleting anything
+
+You can have `paccache` show what it *would* remove first:
+
+```zsh
+paccache \
+  --cachedir "$HOME/.cache/pikaur/pkg" \
+  --dryrun \
+  --keep 2 \
+  --verbose
+```
+
+To manually perform the same cleanup:
+
+```zsh
+paccache \
+  --cachedir "$HOME/.cache/pikaur/pkg" \
+  --remove \
+  --keep 2 \
+  --verbose
+```
+
+After this, the pacman hook will automatically run the cleanup after package install and upgrade transactions.
+
+**NOTE:** This only manages Pikaur's AUR package cache at:
+
+```text
+~/.cache/pikaur/pkg
+```
+
+Pacman's normal package cache at `/var/cache/pacman/pkg` is separate. This means you should also install a hook for the regular Pacman cache:
+
+```zsh
+pikaur -S --needed paccache-hook
+```
+
+---
+
 ### Shell and terminal bliss
 ```zsh
 # Oh-my-zsh makes your terminal nicer, zsh-autosuggestions and the other are plugins
