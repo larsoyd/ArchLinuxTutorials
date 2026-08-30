@@ -387,43 +387,85 @@ cp /usr/share/oh-my-zsh/zshrc ~/.zshrc
 
 ### Configure ~/.zshrc
 
-```ini
-# Tip: You can press F12 to insert the letter ~ into the terminal
-# This avoids having to spider-man hand ALT + whatever to write it
-#
+```zsh
 nano ~/.zshrc
-
-# Before scrolling to the bottom uncomment the PATH like so:
-export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-
-# Add this under the path above so you also can use your Rust packages.
-export PATH="$HOME/.cargo/bin:$PATH"
-
-# Scroll to the bottom, add these two lines to the bottom:
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# also add this under the two lines to turn on autocomplete
-autoload -Uz compinit
-compinit
-
-# You are also going to want to set your name in PROMPT, otherwise it will just be `~`
-# The "PROMPT" below will look like this: [ArchLars], with Arch in Arch blue and Lars in white, same with brackets.
-# The ~ will be in cyan, which is your working directory.
-# This is a fine early profile name, you can make it nicer later.
-#
-# Replace "Lars" with your own name and add this to the very bottom of ~/.zshrc:
-#
-PROMPT='%F{white}%B[%F{#1793d1}Arch%F{white}Lars%F{white}] %F{cyan}%~ %f%(!.#.$) '
-
-# Also optionally add any aliases here
-#
-# Here is one for installing packages:
-alias pacin='pikaur -S --needed'
-#
-# with this you can just write 'pacin' and then package to install anything
-# Example: pacin firefox
 ```
+
+#### Configure PATH
+
+Instead of adding several separate `export PATH=...` lines, use Zsh's native `path` array.
+
+Add this near the beginning of your `~/.zshrc`:
+
+```zsh
+# User-installed commands and Rust/Cargo binaries
+typeset -U path PATH
+
+path=(
+  "$HOME/.cargo/bin"
+  "$HOME/.local/bin"
+  "$HOME/bin"
+  /usr/local/bin
+  $path
+)
+
+export PATH
+```
+
+`typeset -U` makes the Zsh `path` array unique, preventing duplicate PATH entries.
+
+The order also determines priority, so programs installed through Cargo or in your user directories are found before system-wide `/usr/local/bin` entries.
+
+#### Enable Zsh Autosuggestions
+
+Add this after Oh My Zsh has been loaded:
+
+```zsh
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+```
+
+#### Configure the Prompt
+
+You are also going to want to set your name in `PROMPT`, otherwise it will just be `~`.
+
+The prompt below will look like `[ArchLars]`, with `Arch` in green and `Lars` in white. The current working directory will be cyan.
+
+Replace `Lars` with your own name:
+
+```zsh
+PROMPT='%F{white}%B[%F{#6ba65e}Arch%F{white}Lars] %F{cyan}%~ %f%b%(!.#.$) '
+```
+
+#### Optional Package Install Alias
+
+Here is a convenient alias for installing packages through Pikaur:
+
+```zsh
+alias pacin='pikaur -S --needed'
+```
+
+With this you can simply write:
+
+```zsh
+pacin firefox
+```
+
+instead of:
+
+```zsh
+pikaur -S --needed firefox
+```
+
+#### Enable Zsh Syntax Highlighting
+
+Keep syntax highlighting at the **bottom of `~/.zshrc`**, after the rest of your interactive shell configuration:
+
+```zsh
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+```
+
+Syntax highlighting is deliberately loaded last because it hooks into Zsh's line editor and is generally intended to be sourced after other shell configuration.
+
 
 ### Add Separator
 
