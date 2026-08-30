@@ -574,7 +574,9 @@ then replace the package name with something else.
 
 - Syntax highlighting makes commands easier to read, and helps you spot obvious mistakes.
 
-## 3 · System Optimisation
+---
+
+### 3 · System Optimisation
 
 ### 3.1 Pacman candy
 Edit `/etc/pacman.conf`:
