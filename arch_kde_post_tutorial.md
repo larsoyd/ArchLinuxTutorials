@@ -378,6 +378,8 @@ pikaur -S --needed paccache-hook
 pikaur -S --needed oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
 ```
 
+---
+
 ### Copy .zshrc default template config
 
 ```zsh
@@ -513,6 +515,8 @@ The result will resemble:
 # Then reload zshrc like so:
 source ~/.zshrc
 ```
+
+---
 
 ### Make Kitty Look Nice
 ```zsh
