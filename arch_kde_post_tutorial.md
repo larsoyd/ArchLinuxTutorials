@@ -932,9 +932,9 @@ pikaur -S --needed xdg-desktop-portal-gtk
 
 ---
 
-## 4 · Essential security and quality of life
+### 4 · Essential security and quality of life
 
-### 4.0 Firmware Updates
+#### 4.0 Firmware Updates
 ```zsh
 # You are going to need to update your firmware
 # To do this install fwupd and start the service
