@@ -428,12 +428,12 @@ source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 You are also going to want to set your name in `PROMPT`, otherwise it will just be `~`.
 
-The prompt below will look like `[ArchLars]`, with `Arch` in green and `Lars` in white. The current working directory will be cyan.
+The prompt below will look like `[ArchLars]`, with `Arch` in blue and `Lars` in white. The current working directory will be cyan.
 
 Replace `Lars` with your own name:
 
 ```zsh
-PROMPT='%F{white}%B[%F{#6ba65e}Arch%F{white}Lars] %F{cyan}%~ %f%b%(!.#.$) '
+PROMPT='%F{white}%B[%F{#1793d1}Arch%F{white}Lars] %F{cyan}%~ %f%b%(!.#.$) '
 ```
 
 #### Optional Package Install Alias
