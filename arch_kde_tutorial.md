@@ -511,7 +511,7 @@ pacman -S --needed \
   kio-admin plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
   tesseract tesseract-data-eng \
   nvidia-open-dkms nvidia-utils libva-nvidia-driver libva-utils cuda vulkan-headers \
-  pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils \
+  pacman-contrib git wget hunspell hunspell-en_us quota-tools usbutils ttf-roboto \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
   ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols zsh-completions \
   base-devel
@@ -530,7 +530,7 @@ pacman -S --needed \
   libva libva-utils \
   quota-tools hunspell hunspell-en_us usbutils \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
-  ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols \
+  ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols ttf-roboto \
   pacman-contrib git wget \
   base-devel
 ```
@@ -547,7 +547,7 @@ pacman -S --needed \
   mesa vulkan-intel zsh-completions \
   libva libva-utils intel-media-driver \
   noto-fonts noto-fonts-cjk noto-fonts-extra noto-fonts-emoji terminus-font \
-  ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols \
+  ttf-dejavu ttf-liberation ttf-nerd-fonts-symbols ttf-roboto \
   hunspell hunspell-en_us quota-tools usbutils \
   pacman-contrib git wget \
   base-devel
