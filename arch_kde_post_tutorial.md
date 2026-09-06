@@ -1423,13 +1423,18 @@ mkdir -p ~/.config/yt-dlp && echo "--remote-components ejs:github" >> ~/.config/
 
 #### OPTIONAL QoL FOR YT-DLP:
 
-- Here are some aliases I use, add to `~/.zshrc` with `nano` on the bottom:
+- Here are some aliases I use, the first requires firefox. Add to `~/.zshrc` with `nano` on the bottom:
 
 ```zsh
-alias ytdla='yt-dlp --js-runtimes deno -f "bestaudio/best" \
-                 --extract-audio \
-                 --audio-format mp3 \
-                 -o "/home/$USER/Music/%(title)s.%(ext)s"'
+alias ytdla='yt-dlp \
+    --cookies-from-browser firefox \
+    --js-runtimes deno \
+    -f "bestaudio/best" \
+    --extract-audio \
+    --audio-format mp3 \
+    --embed-metadata \
+    --embed-thumbnail \
+    -o "$HOME/Music/%(title)s.%(ext)s"'
 
 alias ytdlv='yt-dlp --js-runtimes deno -f "bestvideo+bestaudio" \
     --merge-output-format mkv \
