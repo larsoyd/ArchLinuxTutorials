@@ -1423,7 +1423,9 @@ mkdir -p ~/.config/yt-dlp && echo "--remote-components ejs:github" >> ~/.config/
 
 #### OPTIONAL QoL FOR YT-DLP:
 
-- Here are some aliases I use, the first requires firefox. Add to `~/.zshrc` with `nano` on the bottom:
+- Here are some aliases I use, the first exports cookies from Firefox with `--cookies-from-browser firefox`, if you don't plan to use Firefox change that with another browser. I have not tested the command with another browser, so I am not sure if that works as well but it should. 
+
+Add to `~/.zshrc` with `nano` on the bottom:
 
 ```zsh
 alias ytdla='yt-dlp \
