@@ -140,6 +140,11 @@ sudo pacman -S --needed base-devel git  # when you run pacman with the --needed 
 
 ### Optimize Build Environment:
 
+This section configures a faster and more optimized local build environment for compiling packages from the AUR, source code, and Rust projects. It installs **ccache** and **sccache** to cache previously compiled code, **mold** as a significantly faster linker, and **rustup** for managing the Rust toolchain. The configuration also enables parallel compilation, LTO where supported, and `target-cpu=native` / `-march=native` so locally compiled software can take advantage of the instruction sets supported by your specific CPU. This optimizes compiled software to run better on your computer.
+
+These settings ONLY affect software you **compile locally** and do not change the optimization level of precompiled packages installed from the official Arch repositories. Because `native` CPU optimizations are used, binaries built with this configuration are intended for the machine they were compiled on and may not work on older or different CPUs. This should be fine for you if you are not planning to distribute any software from your computer. The configuration also keeps Arch's existing compiler and hardening flags where possible while adding caching, faster linking, CPU-specific optimization, and parallel builds to reduce compilation times and improve locally built package performance.
+
+
 ```zsh
 sudo pacman -S --needed ccache mold rustup sccache
 
