@@ -657,14 +657,21 @@ Defaults pwfeedback
 sudo -k
 sudo true
 ```
+
+---
+
 ### Install Basic packages:
 
+This installs a small collection of useful packages that improve day-to-day Arch Linux maintenance and multimedia support. **informant** displays important Arch Linux news before system upgrades, helping catch manual intervention requirements before they become a problem. The **GStreamer plugin** packages add broad audio and video codec support for applications that rely on GStreamer, while **rebuild-detector** can identify packages that may need rebuilding after library upgrades.
+
+**aurutils** provides additional tools for managing and building AUR packages and repositories, **python-pip** provides Python's package installer, and **archlinux-contrib** contains various maintenance scripts and utilities contributed by the Arch Linux community. None of these are strictly required for a working Arch installation, but they provide useful tooling and broader compatibility for a general-purpose desktop system.
+
 ```zsh
-# essential stuff to have.
+# Very good stuff to have.
 pikaur -S --needed informant \
 gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly \
 rebuild-detector aurutils \
-python-pip kdeconnect
+python-pip archlinux-contrib
 
 # add yourself to group informant
 sudo usermod -aG informant $USER
