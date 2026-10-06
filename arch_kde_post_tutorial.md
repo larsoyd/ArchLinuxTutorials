@@ -997,6 +997,39 @@ Find & Uncomment FastConnectable and change 'false' to 'true':
 FastConnectable = true
 ```
 
+### OPTIONAL: Fix Bluetooth mouse stutter
+```zsh
+# This is only if you use a Bluetooth mouse and also have
+# other Bluetooth devices paired that are turned off,
+# like a controller or headphones.
+#
+# The adapter scans every 60ms to reconnect those devices,
+# and every scan makes it miss a report from the mouse.
+# On my MX Master 4 that was 1 in 6 reports dropped, which
+# felt like stutter when turning the camera in games.
+#
+# The tradeoff is turned off devices take a couple of
+# seconds longer to reconnect when you turn them on.
+# The benefit is a way smoother mouse, also on the desktop.
+#
+sudo nano /etc/bluetooth/main.conf
+```
+
+Find & Uncomment ScanIntervalAutoConnect and ScanWindowAutoConnect under [LE] and set them to:
+
+```conf
+# LE scanning parameters used for passive scanning supporting auto connect
+# scenarios
+ScanIntervalAutoConnect=2048
+ScanWindowAutoConnect=18
+```
+
+Then restart Bluetooth:
+
+```zsh
+sudo systemctl restart bluetooth
+```
+
 ---
 
 ### 4.1 Firewall
