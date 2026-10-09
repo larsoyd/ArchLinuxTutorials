@@ -634,7 +634,7 @@ nano /etc/kernel/cmdline
 
 ```zsh
 ## add to /etc/kernel/cmdline :
-rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
+rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=zstd zswap.max_pool_percent=30
 ```
 
 With `systemd-gpt-auto-generator` you do not need to specify UUIDs of your drives, the only thing required here is `rw`. Read more about the other settings added [**here**](extra/misc/kernelflags.md).
