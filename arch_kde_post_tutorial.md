@@ -25,10 +25,14 @@ Open Kitty from the application launcher under **System**. If Zsh asks about an 
 Import and locally sign the repository key, then install the keyring and mirror list:
 
 ```zsh
+# Import the Chaotic-AUR signing key
 sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+# Trust the imported key locally
 sudo pacman-key --lsign-key 3056513887B78AEB
 
+# Install the repository keyring
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
+# Install the repository mirror list
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 ```
 
@@ -48,8 +52,10 @@ Include = /etc/pacman.d/chaotic-mirrorlist
 Update the system and populate the package file databases. Repeat the file database update when adding another repository:
 
 ```zsh
+# Update repository databases and installed packages
 sudo pacman -Syu
 
+# Refresh package file databases
 sudo pacman -Fy
 ```
 
@@ -118,6 +124,7 @@ Reload Kitty's configuration with Ctrl+Shift+F5.
 Make sure the basic build tools are installed. `--needed` skips packages that are already up to date:
 
 ```zsh
+# Install the basic package-building tools
 sudo pacman -S --needed base-devel git
 ```
 
@@ -126,8 +133,10 @@ My build setup uses ccache and sccache for compiler caching, mold for linking, a
 These settings affect software you compile locally, including AUR packages. They do not change prebuilt repository packages. Binaries built with `native` CPU settings may not run on other CPUs, so do not use this configuration for builds you intend to distribute without reviewing it.
 
 ```zsh
+# Install compiler caches and build tools
 sudo pacman -S --needed ccache mold rustup sccache
 
+# Install and select stable Rust
 rustup default stable
 
 mkdir -p ~/.config/ccache/
@@ -182,7 +191,9 @@ For the user makepkg configuration, choose **one** method.
 
 ```zsh
 cd /tmp
+# Download the tutorial configuration files
 git clone https://github.com/larsoyd/ArchLinuxTutorials
+# Copy the local build configuration
 cp /tmp/ArchLinuxTutorials/configs/makepkg.conf ~/.makepkg.conf
 cd
 ```
@@ -234,6 +245,7 @@ Choose **one** installation method.
 **From Chaotic-AUR:**
 
 ```zsh
+# Install Pikaur from the binary repository
 sudo pacman -S --needed pikaur-git
 ```
 
@@ -241,15 +253,19 @@ sudo pacman -S --needed pikaur-git
 
 ```zsh
 cd /tmp
+# Download the Pikaur build files
 git clone https://aur.archlinux.org/pikaur.git
 cd pikaur
+# Build and install Pikaur with its dependencies
 makepkg -si
+# Return home and remove the temporary build files
 cd ~ && rm -rf /tmp/pikaur
 ```
 
 Check the installed version:
 
 ```zsh
+# Check the installed Pikaur version
 pikaur --version
 ```
 
@@ -262,10 +278,12 @@ Pikaur stores built packages in `~/.cache/pikaur/pkg`. Its example pacman hook u
 Install the dependency and copy the hook. `install -D` creates the destination directory if needed:
 
 ```zsh
+# Install package maintenance utilities
 sudo pacman -S --needed pacman-contrib
 ```
 
 ```zsh
+# Install the Pikaur cache cleanup hook
 sudo install -Dm644 \
   /usr/share/pikaur/examples/pikaur-cache.hook \
   /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
@@ -274,6 +292,7 @@ sudo install -Dm644 \
 Replace the hook's `YOUR_USER` placeholder with the username from your current shell:
 
 ```zsh
+# Set the hook to use your account
 sudo sed -i "s|YOUR_USER|$USER|g" \
   /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
 ```
@@ -281,6 +300,7 @@ sudo sed -i "s|YOUR_USER|$USER|g" \
 The example keeps one version. I prefer two so the previous package remains available for a downgrade:
 
 ```zsh
+# Keep two cached versions of each package
 sudo sed -i 's|--keep 1|--keep 2|' \
   /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
 ```
@@ -288,6 +308,7 @@ sudo sed -i 's|--keep 1|--keep 2|' \
 Inspect the result:
 
 ```zsh
+# Inspect the completed cleanup hook
 cat /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
 ```
 
@@ -305,12 +326,14 @@ Exec = /usr/bin/bash -c '/usr/bin/paccache --cachedir /home/YOUR_USERNAME/.cache
 Check that the original placeholder is gone. No output means no matches were found:
 
 ```zsh
+# Check for an unreplaced username placeholder
 grep -n 'YOUR_USER' /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
 ```
 
 Preview a cleanup without deleting packages:
 
 ```zsh
+# Preview old cached packages to remove
 paccache \
   --cachedir "$HOME/.cache/pikaur/pkg" \
   --dryrun \
@@ -321,6 +344,7 @@ paccache \
 To perform that cleanup manually:
 
 ```zsh
+# Remove old cached packages, keeping two versions
 paccache \
   --cachedir "$HOME/.cache/pikaur/pkg" \
   --remove \
@@ -331,6 +355,7 @@ paccache \
 The installed hook handles subsequent package transactions. Pacman's cache at `/var/cache/pacman/pkg` is separate; install its cleanup hook too:
 
 ```zsh
+# Install automatic pacman cache cleanup
 pikaur -S --needed paccache-hook
 ```
 
@@ -341,12 +366,14 @@ pikaur -S --needed paccache-hook
 Install Oh My Zsh, autosuggestions, and syntax highlighting:
 
 ```zsh
+# Install the Zsh framework and plugins
 pikaur -S --needed oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
 ```
 
 Copy the default template and open it:
 
 ```zsh
+# Copy the default Zsh configuration
 cp /usr/share/oh-my-zsh/zshrc ~/.zshrc
 ```
 
@@ -395,10 +422,12 @@ alias pacin='pikaur -S --needed'
 With that alias, these two examples do the same thing. Run either one when you want to install Firefox:
 
 ```zsh
+# Install Firefox using the alias
 pacin firefox
 ```
 
 ```zsh
+# Install Firefox
 pikaur -S --needed firefox
 ```
 
@@ -450,6 +479,7 @@ Example terminal output:
 Reload your shell configuration:
 
 ```zsh
+# Reload the shell configuration
 source ~/.zshrc
 ```
 
@@ -462,14 +492,18 @@ The supplied script applies a Nord theme inspired by [Chris Titus's terminal set
 Install the dependencies, then run the script. Skip cloning if the repository already exists at `/tmp/ArchLinuxTutorials`:
 
 ```zsh
+# Install the terminal theme dependencies
 sudo pacman -S --needed zsh kitty fastfetch ttf-meslo-nerd
 
 cd /tmp
+# Download the tutorial configuration files
 git clone https://github.com/larsoyd/ArchLinuxTutorials
 cd ArchLinuxTutorials
 
+# Make the terminal setup script executable
 chmod +x scripts/terminal.zsh
 
+# Apply the Kitty and Fastfetch theme
 ./scripts/terminal.zsh
 
 cd
@@ -521,11 +555,15 @@ The commands below enable the rules for your user and system-wide:
 ```zsh
 mkdir -p ~/.config/nano
 
+# Install additional Nano syntax rules
 pikaur -S --needed nano-syntax-highlighting
 
+# Enable the bundled Nano syntax rules for your user
 printf 'include "/usr/share/nano/*.nanorc"\ninclude "/usr/share/nano/extra/*.nanorc"\n' >> ~/.config/nano/nanorc
+# Enable the additional Nano syntax rules
 echo 'include "/usr/share/nano-syntax-highlighting/*.nanorc"' >> ~/.config/nano/nanorc
 
+# Enable Nano syntax rules system-wide
 sudo tee -a /etc/nanorc >/dev/null <<'EOF'
 include "/usr/share/nano/*.nanorc"
 include "/usr/share/nano/extra/*.nanorc"
@@ -577,7 +615,9 @@ Defaults pwfeedback
 Save and test with a fresh password prompt:
 
 ```zsh
+# Discard the cached sudo authentication
 sudo -k
+# Request a fresh sudo password prompt
 sudo true
 ```
 
@@ -590,18 +630,23 @@ This list adds Arch news notices through Informant, GStreamer codecs, rebuild de
 Install them and add your user to the Informant group:
 
 ```zsh
+# Install news checks, codecs, and maintenance tools
 pikaur -S --needed informant \
 gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly \
 rebuild-detector aurutils \
 python-pip archlinux-contrib
+# Add your account to the Informant group
 sudo usermod -aG informant $USER
+# Restart the system
 reboot
 ```
 
 After rebooting, confirm that `informant` appears in your groups, then read the news:
 
 ```zsh
+# Check your active group memberships
 groups
+# Read the Arch news notices
 informant read
 ```
 
@@ -612,12 +657,14 @@ informant read
 I use Firefox:
 
 ```zsh
+# Install Firefox
 pikaur -S --needed firefox
 ```
 
 Chromium is another option:
 
 ```zsh
+# Install Chromium
 pikaur -S --needed chromium
 ```
 
@@ -650,6 +697,7 @@ export CUDA_DISABLE_PERF_BOOST=1
 Log out of Plasma completely and log back in. If you added the last setting, check that it returns `1`:
 
 ```zsh
+# Check that the session variable is loaded
 printenv CUDA_DISABLE_PERF_BOOST
 ```
 
@@ -690,6 +738,7 @@ export __GLX_VENDOR_LIBRARY_NAME=nvidia
 Check VA-API support in the terminal:
 
 ```zsh
+# Inspect hardware video decoding support
 vainfo
 ```
 
@@ -806,6 +855,7 @@ Link the theme assets into the profile's `chrome` directory. Replace `PROFILE_ID
 ```zsh
 cd ~/.config/mozilla/firefox/PROFILE_ID_HERE.default-release/chrome
 
+# Link GTK button assets into the Firefox profile
 ln -sfn ~/.config/gtk-3.0/assets buttons
 ```
 
@@ -818,12 +868,14 @@ For the file picker, set `widget.use-xdg-desktop-portal.file-picker` to `1` in `
 For missing minimize or maximize buttons, try:
 
 ```zsh
+# Set the window title-bar buttons
 gsettings set org.gnome.desktop.wm.preferences button-layout 'icon:minimize,maximize,close'
 ```
 
 Log out and back in. If the problem remains, the original workaround also suggests installing the GTK portal:
 
 ```zsh
+# Install the GTK portal backend
 pikaur -S --needed xdg-desktop-portal-gtk
 ```
 
@@ -834,16 +886,22 @@ pikaur -S --needed xdg-desktop-portal-gtk
 Install fwupd and start its service:
 
 ```zsh
+# Install the firmware update tools
 sudo pacman -S --needed fwupd
+# Start the firmware update service
 sudo systemctl start --now fwupd.service
 ```
 
 Topgrade, introduced below, can handle the update checks. To do them manually, list devices, refresh LVFS metadata, inspect available updates, and install them:
 
 ```zsh
+# List devices supported by fwupd
 fwupdmgr get-devices
+# Refresh firmware update metadata
 fwupdmgr refresh
+# Check for available firmware updates
 fwupdmgr get-updates
+# Install available firmware updates
 fwupdmgr update
 ```
 
@@ -884,6 +942,7 @@ ScanWindowAutoConnect=18
 Restart Bluetooth:
 
 ```zsh
+# Restart Bluetooth with the new settings
 sudo systemctl restart bluetooth
 ```
 
@@ -894,9 +953,13 @@ sudo systemctl restart bluetooth
 Install and enable firewalld, then allow KDE Connect in the public zone:
 
 ```zsh
+# Install the firewall and its applet
 sudo pacman -S --needed firewalld firewall-applet
+# Start the firewall and enable it at boot
 sudo systemctl enable --now firewalld
+# Allow KDE Connect through the public zone
 sudo firewall-cmd --permanent --zone=public --add-service=kdeconnect
+# Apply the saved firewall rules
 sudo firewall-cmd --reload
 ```
 
@@ -933,7 +996,9 @@ mkdir -p "$HOME/.local/bin"
 cd "$tmpdir" || exit 1
 curl -fLO "https://github.com/topgrade-rs/topgrade/releases/download/$ver/topgrade-$ver-$target.tar.gz"
 tar -xzf "topgrade-$ver-$target.tar.gz"
+# Install Topgrade for your user
 install -m 0755 topgrade "$HOME/.local/bin/topgrade"
+# Check the installed Topgrade version
 topgrade --version
 cd
 ```
@@ -953,34 +1018,40 @@ alias pacup='topgrade'
 Reload the file:
 
 ```zsh
+# Reload the shell configuration
 source ~/.zshrc
 ```
 
 Run either the alias:
 
 ```zsh
+# Run Topgrade through the alias
 pacup
 ```
 
 Or the original command:
 
 ```zsh
+# Update packages and supported tools
 topgrade
 ```
 
 After updating, check for packages that need rebuilding against changed libraries:
 
 ```zsh
+# Check for packages that need rebuilding
 checkrebuild
 ```
 
 For future updates, you can combine the commands. Choose the form that matches whether you added the alias:
 
 ```zsh
+# Update everything, then check for rebuilds
 topgrade && checkrebuild
 ```
 
 ```zsh
+# Update through the alias, then check for rebuilds
 pacup && checkrebuild
 ```
 
@@ -989,13 +1060,16 @@ pacup && checkrebuild
 Running Pikaur without arguments updates both repository and AUR packages:
 
 ```zsh
+# Update repository and AUR packages
 pikaur
+# Check for packages that need rebuilding
 checkrebuild
 ```
 
 For future updates, the combined form is:
 
 ```zsh
+# Update packages, then check for rebuilds
 pikaur && checkrebuild
 ```
 
@@ -1008,8 +1082,10 @@ No output from `checkrebuild` normally means it found nothing to rebuild. If it 
 With multilib enabled, install Steam. The optional packages add legacy X11 fonts and automatic loading of the ntsync module:
 
 ```zsh
+# Install Steam, legacy fonts, and ntsync autoloading
 pikaur -S --needed steam xorg-fonts-misc ntsync-autoload
 
+# Start Steam to complete its setup
 steam
 ```
 
@@ -1020,6 +1096,7 @@ Make sure those fonts are indexed. `xorg-fonts-misc` can be installed while `/us
 Run this as your normal desktop user. `xorg-mkfontscale` supplies `mkfontdir`, and `xorg-xset` supplies `xset` to refresh the running X11 or Xwayland font path:
 
 ```zsh
+# Rebuild the font index and refresh the X11 font path
 pikaur -S --needed xorg-mkfontscale xorg-xset &&
 sudo mkfontdir /usr/share/fonts/misc &&
 if [ -n "${DISPLAY:-}" ] && timeout 5s xset q >/dev/null 2>&1; then
@@ -1039,6 +1116,7 @@ You can run this again to refresh an existing index. Without a reachable X displ
 If MP4 playback in Steam Chat is broken, close Steam completely and run its H.264 decoder unlock:
 
 ```zsh
+# Run the Steam H.264 decoder setup
 steam steam://unlockh264/
 ```
 
@@ -1066,6 +1144,7 @@ Shader compilation can use substantial CPU time. If Steam's background preproces
 ```zsh
 mkdir -p ~/.steam/steam
 
+# Set Steam shader preprocessing to eight threads
 printf 'unShaderBackgroundProcessingThreads 8\n' > ~/.steam/steam/steam_dev.cfg
 ```
 
@@ -1082,14 +1161,18 @@ unShaderBackgroundProcessingThreads 8
 Plocate searches a file database, which makes it useful for finding directories such as `steamapps`. Install it, build the database, and try a search:
 
 ```zsh
+# Install the indexed file search tool
 pikaur -S --needed plocate
+# Build the file search database
 sudo updatedb
+# Find Steam library directories
 locate -b '\steamapps'
 ```
 
 Start the daily database-update timer:
 
 ```zsh
+# Start the file database update timer
 sudo systemctl start --now plocate-updatedb.timer
 ```
 
@@ -1100,6 +1183,7 @@ sudo systemctl start --now plocate-updatedb.timer
 Install ProtonUp-Qt:
 
 ```zsh
+# Install the Proton version manager
 pikaur -S --needed protonup-qt
 ```
 
@@ -1116,6 +1200,7 @@ I like Proton GE for games that need additional codecs or compatibility fixes, e
 These hooks check for `.pacnew` files that need merging, run Reflector after mirror-list updates, and clean pacman's cache:
 
 ```zsh
+# Install package maintenance hooks
 pikaur -S --needed \
   pacdiff-pacman-hook-git \
   reflector-pacman-hook-git \
@@ -1129,12 +1214,14 @@ pikaur -S --needed \
 Install the kernel-install hook to rebuild UKIs after updates:
 
 ```zsh
+# Install the UKI rebuild hook
 pikaur -S --needed pacman-hook-kernel-install
 ```
 
 The guide masks these mkinitcpio hooks to avoid duplicate handling. Their presence can vary by setup:
 
 ```zsh
+# Mask duplicate mkinitcpio hooks
 sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
 sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ```
@@ -1146,8 +1233,10 @@ sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 I recommend Nohang to terminate processes under severe memory pressure before the desktop becomes unresponsive:
 
 ```zsh
+# Install the memory-pressure monitor
 pikaur -S --needed nohang
 
+# Start Nohang and enable it at boot
 sudo systemctl enable --now nohang-desktop.service
 ```
 
@@ -1178,6 +1267,7 @@ For a non-US keyboard, I also configure an X11 layout for compatibility even tho
 Replace `no` and `pc105` with your layout and keyboard model. My Norwegian keyboard uses `pc105`; some US keyboards use `pc104`.
 
 ```zsh
+# Set the Norwegian X11 keyboard layout
 sudo localectl set-x11-keymap no pc105
 ```
 
@@ -1223,9 +1313,12 @@ ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{ID_USB_INTERFAC
 Reload the rules, retrigger USB events, and inspect the power state:
 
 ```zsh
+# Reload the udev rules
 sudo udevadm control --reload-rules
+# Apply the rules to connected USB devices
 sudo udevadm trigger --subsystem-match=usb --action=add
 
+# Inspect USB power management states
 grep -H . /sys/bus/usb/devices/*/power/{control,runtime_status}
 ```
 
@@ -1242,11 +1335,17 @@ I prefer the upstream installation through uv. These packages need their own upd
 The example uses `UV_NO_MODIFY_PATH=1` with the installer. The earlier Zsh setup already includes `~/.local/bin` in `PATH`.
 
 ```zsh
+# Download and run the uv installer
 UV_NO_MODIFY_PATH=1 curl -LsSf https://astral.sh/uv/install.sh | sh
+# Refresh the shell command cache
 rehash
+# Show which uv executables the shell finds
 type -a uv uvx
+# Check the installed uv version
 uv --version
+# Update uv itself
 uv self update
+# Install yt-dlp with its optional dependencies
 uv tool install 'yt-dlp[default,curl-cffi]'
 ```
 
@@ -1257,6 +1356,7 @@ The extras provide yt-dlp's default optional dependencies and browser impersonat
 If you prefer package-manager updates, install:
 
 ```zsh
+# Install yt-dlp and browser impersonation support
 pikaur -S --needed yt-dlp python-curl_cffi
 ```
 
@@ -1265,7 +1365,9 @@ pikaur -S --needed yt-dlp python-curl_cffi
 After either installation method, install the runtimes and add the remote-component setting:
 
 ```zsh
+# Install JavaScript runtimes for media extraction
 pikaur -S --needed deno nodejs
+# Enable the remote JavaScript solver component
 mkdir -p ~/.config/yt-dlp && echo "--remote-components ejs:github" >> ~/.config/yt-dlp/config
 ```
 
@@ -1381,6 +1483,7 @@ exec yt-dlp "$URL" \
 Make it executable:
 
 ```zsh
+# Make the clipping script executable
 chmod +x /home/$USER/bin/ytclip
 ```
 
@@ -1406,11 +1509,14 @@ Choose the player you prefer. I currently use Haruna, but VLC and MPV are altern
 Haruna combines MPV playback with a Qt interface that fits KDE. This also installs the third-party MPV Phonon backend and enables automatic hardware decoding in MPV's configuration:
 
 ```zsh
+# Install the Haruna video player
 pikaur -S --needed haruna
 
+# Install the MPV backend for KDE audio and video
 pikaur -S --needed phonon-qt6-mpv
 
 mkdir -p ~/.config/mpv
+# Enable automatic hardware decoding in MPV
 echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 ```
 
@@ -1419,7 +1525,9 @@ echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 VLC offers a broad GUI and a Phonon backend. In my experience, YouTube playback and NVIDIA hardware acceleration have been less reliable than I would like.
 
 ```zsh
+# Install VLC and its plugins
 pikaur -S --needed vlc vlc-plugins-all
+# Install the VLC backend for KDE audio and video
 pikaur -S --needed phonon-qt6-vlc
 ```
 
@@ -1428,6 +1536,7 @@ For hardware decoding, check **Tools → Preferences → Input & Codecs → Hard
 Optionally install click-to-pause support:
 
 ```zsh
+# Add click-to-pause support to VLC
 pikaur -S --needed vlc-pause-click-plugin
 ```
 
@@ -1436,11 +1545,14 @@ pikaur -S --needed vlc-pause-click-plugin
 Choose MPV if you prefer a minimal interface and manual configuration. This also installs the third-party Phonon backend and enables automatic hardware decoding:
 
 ```zsh
+# Install the MPV video player
 pikaur -S --needed mpv
 
+# Install the MPV backend for KDE audio and video
 pikaur -S --needed phonon-qt6-mpv
 
 mkdir -p ~/.config/mpv
+# Enable automatic hardware decoding in MPV
 echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 ```
 
@@ -1451,6 +1563,7 @@ echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 I use Elisa for its KDE integration:
 
 ```zsh
+# Install the Elisa music player
 pikaur -S --needed elisa
 ```
 
@@ -1463,9 +1576,12 @@ I prefer Lucidglyph's slightly heavier rendering. It does not affect Chromium br
 Install the font and Lucidglyph:
 
 ```zsh
+# Install the DejaVu Nerd Font
 pikaur -S --needed ttf-dejavu-nerd
+# Download Lucidglyph
 git clone https://github.com/maximilionus/lucidglyph
 cd lucidglyph
+# Apply the font-rendering changes
 sudo ./lucidglyph.sh install
 ```
 
@@ -1484,13 +1600,16 @@ text_composition_strategy 1.7 0
 Reboot to see the result:
 
 ```zsh
+# Restart the system
 reboot
 ```
 
 If you want to undo Lucidglyph, run this from its checkout and reboot again:
 
 ```zsh
+# Remove the font-rendering changes
 sudo ./lucidglyph.sh uninstall
+# Restart the system
 reboot
 ```
 
@@ -1513,6 +1632,7 @@ Only consider it if you are comfortable entering a chroot and reinstalling the o
 The workaround targets Qt animations that appear capped around 60 frames per second on faster displays, such as scrolling in Dolphin or System Settings. The patch changes a timing value from 16 to 4. See the [KDE discussion of high-refresh-rate animations](https://www.old.reddit.com/r/kde/comments/1p26pu0/highrefreshrate_users_were_working_on_removing/) for context.
 
 ```zsh
+# Install the patched Qt base package
 pikaur -S --needed qt6-base-hifps
 ```
 
@@ -1521,14 +1641,18 @@ pikaur -S --needed qt6-base-hifps
 Before the final reboot, you can remove orphaned packages: dependencies no longer required by installed packages. Review the removal list before confirming. The command also removes their configuration files and any dependencies that become unused:
 
 ```zsh
+# Remove orphaned packages and their configuration
 sudo pacman -Rns $(pacman -Qtdq)
+# Restart the system
 reboot
 ```
 
 After rebooting, open Kitty with Ctrl+Alt+T and try Fastfetch:
 
 ```zsh
+# Install Fastfetch
 pikaur -S --needed fastfetch
+# Show a summary of the system
 fastfetch
 ```
 

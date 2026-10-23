@@ -80,31 +80,37 @@ Run these commands in the live environment. Each line is a separate command unle
 List available keymaps, or filter the list using part of your country's name or code:
 
 ```zsh
+# Browse available keyboard layouts
 localectl list-keymaps | less
+# Find layouts matching Norway
 localectl list-keymaps | grep -i -E 'no'
 ```
 
 For my Norwegian keyboard, I use `no-latin1`. Test the layout after loading it and choose another if needed. On a Nordic keyboard using the US layout, the key labelled `\` near Backspace produces `-`.
 
 ```zsh
+# Load the Norwegian console layout
 loadkeys no-latin1
 ```
 
 Choose a readable console font. Start with:
 
 ```zsh
+# Use a larger console font
 setfont ter-118n
 ```
 
 If it is too small, try:
 
 ```zsh
+# Try the next font size
 setfont ter-132n
 ```
 
 For a larger version:
 
 ```zsh
+# Double the console font size
 setfont -d ter-132n
 ```
 
@@ -115,7 +121,9 @@ setfont -d ter-132n
 Confirm that the firmware variables are available. The command should finish with `UEFI firmware detected`:
 
 ```zsh
+# Confirm that the ISO booted in UEFI mode
 ls /sys/firmware/efi/efivars && echo "UEFI firmware detected"
+# Enable network time synchronization
 timedatectl set-ntp true
 ```
 
@@ -126,49 +134,63 @@ timedatectl set-ntp true
 Check the available interfaces and their state:
 
 ```zsh
+# List network interfaces
 ip link
+# Show interface connection states
 networkctl list
 ```
 
 **Ethernet:** DHCP should be automatic on the ISO. Look for an address and gateway:
 
 ```zsh
+# Show network addresses and gateways
 networkctl status | sed -n '1,80p'
 ```
 
 **Wi-Fi:** Check for a soft block, unblock wireless if needed, and identify your wireless device:
 
 ```zsh
+# Check whether wireless is blocked
 rfkill list
 ```
 
 If wireless is soft-blocked:
 
 ```zsh
+# Clear software blocks on wireless devices
 rfkill unblock all
 ```
 
 List devices, then replace `YOUR-DEV` and `YOUR-SSID` in the connection commands. Keep the quotes, especially when the network name contains spaces. `iwctl` prompts for the passphrase.
 
 ```zsh
+# Find the wireless device name
 iwctl device list
+# Scan for nearby networks
 iwctl station "YOUR-DEV" scan
+# List the networks found
 iwctl station "YOUR-DEV" get-networks
+# Connect to the chosen network
 iwctl station "YOUR-DEV" connect "YOUR-SSID"
 ```
 
 Check IP connectivity, DNS resolution, and HTTPS access. For the final command, expect a successful response or a redirect such as HTTP 301 or 302:
 
 ```zsh
+# Test connectivity without DNS
 ping -c 3 1.1.1.1
+# Check DNS resolution
 resolvectl query archlinux.org
+# Test connectivity by hostname
 ping -c 3 archlinux.org
+# Check the HTTPS response
 curl -I https://archlinux.org
 ```
 
 Confirm the clock status before partitioning:
 
 ```zsh
+# Check the clock and synchronization status
 timedatectl status | sed -n '1,12p'
 ```
 
@@ -177,6 +199,7 @@ timedatectl status | sed -n '1,12p'
 **The apply commands below erase the selected disk. Confirm the device before continuing.**
 
 ```zsh
+# Identify the installation disk
 lsblk -l
 ```
 
@@ -228,6 +251,7 @@ Format=ext4
 Preview the layout:
 
 ```zsh
+# Preview the partition layout without writing it
 systemd-repart \
   --definitions=/tmp/repart.d \
   --empty=force \
@@ -240,6 +264,7 @@ Choose **one** of the following apply commands.
 **Standard Ext4:**
 
 ```zsh
+# Erase the disk and create the partitions
 systemd-repart \
   --definitions=/tmp/repart.d \
   --dry-run=no \
@@ -251,6 +276,7 @@ systemd-repart \
 **Optional Ext4 fast commits:** `fast_commit` is an alternative journaling option. There have been reports of problems with it, so review whether you want it before choosing this variant.
 
 ```zsh
+# Erase the disk and format root with fast commits
 SYSTEMD_REPART_MKFS_OPTIONS_EXT4='-O fast_commit' \
   systemd-repart \
     --definitions=/tmp/repart.d \
@@ -278,6 +304,7 @@ dumpe2fs -h /dev/disk/by-label/root | grep -i 'Fast commit length'
 Mount root first:
 
 ```zsh
+# Mount the installed root filesystem
 mount /dev/disk/by-label/root /mnt
 ```
 
@@ -285,6 +312,7 @@ Then create and mount the EFI directory:
 
 ```zsh
 mkdir -p /mnt/efi
+# Mount the EFI partition with restricted access
 mount -o fmask=0177,dmask=0077,noexec,nodev,nosuid /dev/disk/by-label/EFI /mnt/efi
 ```
 
@@ -301,6 +329,7 @@ On SystemRescue, install Reflector with `pacman --config=/etc/pacman-rolling.con
 Choose one of these Reflector commands. The expanded form is easier to read:
 
 ```zsh
+# Rank nearby mirrors and save the mirror list
 reflector \
       --country 'Norway,Sweden,Denmark,Germany,Netherlands' \
       --age 12 \
@@ -313,6 +342,7 @@ reflector \
 The shorter form uses country codes:
 
 ```zsh
+# Rank nearby mirrors and save the mirror list
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 -l 10 --sort rate --save /etc/pacman.d/mirrorlist
 ```
@@ -320,6 +350,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 Alternatively, allow a longer download timeout when testing mirrors:
 
 ```zsh
+# Rank nearby mirrors and save the mirror list
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
 ```
@@ -331,6 +362,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 From the official Arch ISO:
 
 ```zsh
+# Install the base system from the Arch ISO
 pacstrap /mnt base nano sudo
 ```
 
@@ -345,6 +377,7 @@ pacstrap -C /etc/pacman-rolling.conf -K /mnt base nano sudo
 ### 4.1 Enter the installed system
 
 ```zsh
+# Enter the installed system
 arch-chroot /mnt
 ```
 
@@ -357,11 +390,15 @@ Run the following installation commands inside this chroot until the guide tells
 Install Zsh and Git, set the root password, and create your user. Replace `lars` with your chosen username:
 
 ```zsh
+# Install Zsh and Git
 pacman -S --needed zsh git
 
+# Set the root password
 passwd
 
+# Create the user with administrator group membership
 useradd -m -G wheel lars
+# Set the user password
 passwd lars
 
 chsh -s /usr/bin/zsh lars
@@ -382,18 +419,21 @@ In the editor, uncomment `%wheel ALL=(ALL:ALL) ALL`, then save.
 Install the main and backup kernels with their headers. The name `linux-zen` refers to desktop tuning, not AMD's Zen CPU architecture.
 
 ```zsh
+# Install both kernels and their headers
 pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
 ```
 
 Choose the firmware command for your CPU. For AMD:
 
 ```zsh
+# Install firmware and AMD microcode
 pacman -S --needed linux-firmware amd-ucode nano sudo systemd-ukify
 ```
 
 For Intel, use this instead:
 
 ```zsh
+# Install firmware and Intel microcode
 pacman -S --needed linux-firmware intel-ucode nano sudo systemd-ukify
 ```
 
@@ -402,6 +442,7 @@ pacman -S --needed linux-firmware intel-ucode nano sudo systemd-ukify
 I use Dash for `/usr/bin/sh` to reduce shell startup overhead. Scripts that assume Bash features while declaring themselves as `sh` can fail with this change. Skip it if you prefer to keep the existing shell. `checkbashisms` can help identify such scripts.
 
 ```zsh
+# Install Dash and the shell compatibility checker
 pacman -S --needed dash checkbashisms
 
 ln -sfT dash /usr/bin/sh
@@ -414,8 +455,10 @@ ln -sfT dash /usr/bin/sh
 Replace `Europe/Oslo` with your timezone, then set the hardware clock:
 
 ```zsh
+# Set the system timezone
 ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
+# Write system time to the hardware clock
 hwclock --systohc
 ```
 
@@ -441,6 +484,7 @@ nb_NO.UTF-8 UTF-8
 Generate the locales and open the system locale configuration:
 
 ```zsh
+# Generate the selected locales
 locale-gen
 nano /etc/locale.conf
 ```
@@ -485,6 +529,7 @@ VariantList=
 Save the file, then set its ownership and permissions. Replace both instances of `lars` in the ownership argument as well as the home directory:
 
 ```zsh
+# Give the user ownership of their configuration
 chown -R lars:lars /home/lars/.config
 chmod 644 /home/lars/.config/kxkbrc
 ```
@@ -496,6 +541,7 @@ chmod 644 /home/lars/.config/kxkbrc
 Replace `BigBlue` with the name you want for this computer:
 
 ```zsh
+# Set the computer hostname
 echo "BigBlue" > /etc/hostname
 nano /etc/hosts
 ```
@@ -520,6 +566,7 @@ Choose **one** package list for your GPU.
 #### NVIDIA
 
 ```zsh
+# Install KDE and the NVIDIA graphics stack
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
@@ -536,6 +583,7 @@ pacman -S --needed \
 #### AMDGPU
 
 ```zsh
+# Install KDE and the AMD graphics stack
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
@@ -557,6 +605,7 @@ pacman -S --needed \
 I have not verified this setup on my own hardware. Check the package choices for your GPU before using it.
 
 ```zsh
+# Install KDE and the Intel graphics stack
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
@@ -578,6 +627,7 @@ pacman -S --needed \
 If you use Wi-Fi, install `wireless-regdb` and set your region. Its regulatory database describes the channels and restrictions for each country. Without a usable database, the conservative world domain can limit available channels. Ethernet-only systems can skip this step.
 
 ```zsh
+# Install the wireless regulatory database
 pacman -S --needed wireless-regdb
 nano /etc/conf.d/wireless-regdom
 ```
@@ -614,6 +664,7 @@ For AMDGPU, use `amdgpu` in `MODULES`; the NVIDIA instruction to remove `kms` do
 Install systemd-boot. Keep `--variables=yes` so bootctl writes the firmware boot variables from the chroot. Without that override, container detection introduced in systemd 257 can cause that step to be skipped.
 
 ```zsh
+# Install systemd-boot and its firmware entry
 bootctl install --esp-path=/efi --variables=yes
 ```
 
@@ -654,6 +705,7 @@ layout=uki
 Install the kernel images:
 
 ```zsh
+# Generate and install the kernel images
 kernel-install add-all
 ```
 
@@ -680,6 +732,7 @@ I use Zswap with a swap file rather than Zram. For background on that choice, se
 Create and initialize a 16 GiB swap file. `--file` creates the file with the required allocation and permissions; `-U clear` clears its UUID:
 
 ```zsh
+# Create and initialize the 16 GiB swap file
 mkswap -U clear --size 16G --file /swapfile
 ```
 
@@ -706,6 +759,7 @@ WantedBy=swap.target
 Enable it for boot:
 
 ```zsh
+# Enable the swap file at boot
 systemctl enable swapfile.swap
 ```
 
@@ -719,17 +773,20 @@ Clone this repository and copy the configuration:
 
 ```zsh
 cd /tmp
+# Download the tutorial configuration files
 git clone https://github.com/larsoyd/ArchLinuxTutorials.git
 
 cd
 mkdir -p /etc/sysctl.d/
 
+# Install the supplied kernel settings
 cp /tmp/ArchLinuxTutorials/configs/70-settings.conf /etc/sysctl.d/70-settings.conf
 ```
 
 Load the system's sysctl settings:
 
 ```zsh
+# Apply the configured kernel parameters
 sysctl --system
 ```
 
@@ -754,6 +811,7 @@ The value `244` combines keyboard control (`4`), process signals (`64`), filesys
 Apply the settings:
 
 ```zsh
+# Apply the configured kernel parameters
 sysctl --system
 ```
 
@@ -772,6 +830,7 @@ mkdir -p /etc/udev/rules.d
 Choose either **copying the supplied rule**:
 
 ```zsh
+# Install the disk scheduler rules
 cp /tmp/ArchLinuxTutorials/rules.d/60-ioschedulers.rules /etc/udev/rules.d/60-ioschedulers.rules
 ```
 
@@ -809,18 +868,21 @@ mkdir -p /etc/modprobe.d/
 For NVIDIA:
 
 ```zsh
+# Install the NVIDIA module settings
 cp /tmp/ArchLinuxTutorials/configs/nvidia.conf /etc/modprobe.d/20-nvidia.conf
 ```
 
 For AMDGPU, if you want the supplied driver selection settings:
 
 ```zsh
+# Install the AMDGPU driver selection settings
 cp /tmp/ArchLinuxTutorials/configs/amdgpu.conf /etc/modprobe.d/21-amdgpu.conf
 ```
 
 To apply the watchdog blacklist:
 
 ```zsh
+# Install the watchdog module blacklist
 cp /tmp/ArchLinuxTutorials/configs/blacklist.conf /etc/modprobe.d/22-blacklist.conf
 ```
 
@@ -833,6 +895,7 @@ Some applications select monochrome emoji fonts. This configuration adds Noto Co
 ```zsh
 mkdir -p /etc/fonts/conf.d
 
+# Install the colour emoji fallback
 cp /tmp/ArchLinuxTutorials/configs/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
 ```
 
@@ -879,6 +942,7 @@ rc-manager=auto
 Enable the resolver:
 
 ```zsh
+# Enable the DNS resolver at boot
 systemctl enable systemd-resolved.service
 ```
 
@@ -889,6 +953,7 @@ systemctl enable systemd-resolved.service
 Inside the chroot, enable the services. Include `cups.service` if you use a printer, and `bluetooth.service` if you installed `bluez` and `bluez-utils` for Bluetooth.
 
 ```zsh
+# Enable desktop services and maintenance timers
 systemctl enable NetworkManager plasmalogin systemd-timesyncd systemd-boot-update.service \
 fstrim.timer reflector.timer pkgstats.timer
 ```
@@ -896,19 +961,23 @@ fstrim.timer reflector.timer pkgstats.timer
 Exit the chroot:
 
 ```zsh
+# Leave the installed system
 exit
 ```
 
 Back in the live environment, create the resolver symlink **before unmounting**:
 
 ```zsh
+# Connect DNS clients to the local resolver
 ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 ```
 
 Unmount the installed system and shut down:
 
 ```zsh
+# Unmount the installed system
 umount -R /mnt
+# Shut down before removing the installation USB
 shutdown now
 ```
 
