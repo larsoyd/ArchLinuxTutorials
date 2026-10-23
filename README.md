@@ -1,13 +1,13 @@
-# Arch Linux with KDE Plasma
+# Arch Linux with KDE Plasma Tutorial (v2.0.0)
 
-An opinionated guide to installing Arch Linux with KDE Plasma, Wayland, and automatic GPT partition discovery. I use this setup for gaming and daily desktop work.
+A rewritten and improved guide to installing Arch Linux with KDE Plasma, Wayland, and automatic GPT partition discovery. Still opinionated, but way easier to both read and follow now. I use this setup for my own gaming, dev and daily desktop work.
 
 ## Start here
 
 1. [Installation tutorial](arch_kde_tutorial.md): partition the disk, install Arch, and configure the system from the live environment and chroot.
 2. [Post-install tutorial](arch_kde_post_tutorial.md): configure the desktop, install applications, and set up maintenance after the first boot. Optional, but recommended.
 
-You need a bootable Arch Linux USB, an internet connection, and a UEFI system. The examples use an AMD CPU, an NVIDIA GPU, and an NVMe SSD. Read the installation guide's hardware notes and replace its example disk, username, hostname, and regional settings before running commands.
+You need a bootable Arch Linux USB, an internet connection, and a UEFI system. The examples lean towards an AMD CPU, a NVIDIA GPU (Turing architecture or later only), and an NVMe SSD. Any major deviation from this is not officially supported and puts you in "here be dragons" territory. Read the installation guide's hardware notes and replace its example disk, username, hostname, and regional settings before running commands.
 
 ## Supporting guides
 
