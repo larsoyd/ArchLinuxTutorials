@@ -1,8 +1,8 @@
-## OPTIONAL: Enable iPhone Fast Charging on Linux with a udev Rule
+# Optional: Apple device fast charging
 
-What many do not know is that Linux is capable of fast charging iOS devices. This is set off by default, so here is how you can set up Linux to request fast charging for an iPhone or another supported Apple iOS device using the kernel's `apple-mfi-fastcharge` driver automatically with an udev rule.
+This guide requests fast charging for a supported Apple device through the kernel's `apple-mfi-fastcharge` driver. Test the request manually first, then add a udev rule to apply it when the device connects.
 
-### What this checks
+## What this checks
 
 The `charge_type` file usually reports one of these values:
 
@@ -15,22 +15,19 @@ Fast
 - `Fast` means Linux has requested fast charging.
 - This does not measure real watts or amps. Use an inline USB power meter if you want to verify actual electrical draw.
 
-
 The fix works by writing `Fast` to the kernel power-supply attribute:
 
 ```text
 /sys/class/power_supply/apple_mfi_fastcharge*/charge_type
 ```
 
-### 1. Plug in the iPhone
+## 1. Plug in the iPhone
 
-First plug the iPhone into a USB data-capable port. Open your phone and trust the computer.
+Connect the iPhone to a data-capable USB port. Unlock it and trust the computer.
 
 Wait a few seconds.
 
-### 2. Load the kernel module
-
-Run:
+## 2. Load the kernel module
 
 ```zsh
 sudo modprobe apple-mfi-fastcharge
@@ -38,9 +35,7 @@ sudo modprobe apple-mfi-fastcharge
 
 This should be harmless if the module is already loaded.
 
-### 3. Check the current charge mode
-
-Run:
+## 3. Check the current charge mode
 
 ```zsh
 typeset -a charge_files
@@ -75,7 +70,7 @@ Older kernels may use a path without the bus/device suffix:
 
 Both path styles are fine.
 
-### 4. Manually enable fast charging once
+## 4. Manually enable fast charging once
 
 Before adding the udev rule, test that the kernel attribute works manually:
 
@@ -86,9 +81,7 @@ for charge_file in /sys/class/power_supply/apple_mfi_fastcharge*/charge_type(N);
 done
 ```
 
-### 5. Check whether the manual change worked
-
-Run:
+## 5. Check whether the manual change worked
 
 ```zsh
 for charge_file in /sys/class/power_supply/apple_mfi_fastcharge*/charge_type(N); do
@@ -104,19 +97,18 @@ Expected result:
 
 If this does not change to `Fast`, the udev rule will not fix it either. Check the troubleshooting section first.
 
-### 6. Create the udev rule
+## 6. Create the udev rule
 
-Create this file:
+The rule matches a `power_supply` event because `charge_type` may not exist at the first USB event. Create the file:
 
 ```zsh
 sudo tee /etc/udev/rules.d/99-apple-mfi-fastcharge.rules >/dev/null <<'EOF'
-# Enable fast charging for Apple iPhone/iPad devices handled by apple-mfi-fastcharge.
-# Match the power_supply device because the sysfs charge_type file may not exist yet on the first USB add event.
+# Wait for the power supply attribute to exist
 SUBSYSTEM=="power_supply", KERNEL=="apple_mfi_fastcharge*", ACTION=="add|change", RUN+="/bin/sh -c 'echo Fast > /sys%p/charge_type || :'"
 EOF
 ```
 
-Important detail:
+The path used by the rule is:
 
 ```text
 /sys%p/charge_type
@@ -130,17 +122,13 @@ So this becomes something like:
 /sys/devices/pci0000:00/.../power_supply/apple_mfi_fastcharge_1-12/charge_type
 ```
 
-### 7. Reload udev rules
-
-Run:
+## 7. Reload udev rules
 
 ```zsh
 sudo udevadm control --reload-rules
 ```
 
-### 8. Trigger the rule without rebooting
-
-Run:
+## 8. Trigger the rule without rebooting
 
 ```zsh
 sudo udevadm trigger --subsystem-match=power_supply --action=change
@@ -152,9 +140,7 @@ Wait briefly:
 sleep 1
 ```
 
-### 9. Check the charge mode after the udev rule
-
-Run:
+## 9. Check the charge mode after the udev rule
 
 ```zsh
 for charge_file in /sys/class/power_supply/apple_mfi_fastcharge*/charge_type(N); do
@@ -170,13 +156,9 @@ Correct result:
 
 If it says `Fast`, the rule is working.
 
-### 10. Test by unplugging and replugging
+## 10. Test by unplugging and replugging
 
-Unplug the iPhone.
-
-Wait a few seconds.
-
-Plug it back in.
+Unplug the iPhone, wait a few seconds, and reconnect it.
 
 Then run:
 
@@ -192,11 +174,9 @@ Expected result:
 /sys/class/power_supply/apple_mfi_fastcharge_1-12/charge_type: Fast
 ```
 
-### General Troubleshooting
+## General Troubleshooting
 
-#### No `apple_mfi_fastcharge` path exists
-
-Run:
+### No `apple_mfi_fastcharge` path exists
 
 ```zsh
 sudo modprobe apple-mfi-fastcharge
@@ -210,9 +190,9 @@ Check kernel logs:
 sudo dmesg | grep -iE 'apple.*mfi|fastcharge|iphone'
 ```
 
-#### Check whether udev sees the power_supply event
+### Check whether udev sees the power_supply event
 
-Run this in one terminal:
+Run this in one terminal. Stop it with Ctrl+C after checking the event:
 
 ```zsh
 sudo udevadm monitor --kernel --udev --property --subsystem-match=power_supply
@@ -226,9 +206,7 @@ You should see an event for a device whose name starts with:
 apple_mfi_fastcharge
 ```
 
-#### Check the udev properties for the device
-
-Run:
+### Check the udev properties for the device
 
 ```zsh
 for charge_file in /sys/class/power_supply/apple_mfi_fastcharge*/charge_type(N); do
@@ -238,9 +216,7 @@ for charge_file in /sys/class/power_supply/apple_mfi_fastcharge*/charge_type(N);
 done
 ```
 
-#### Manually test the exact path style used by the udev rule
-
-Run:
+### Manually test the exact path style used by the udev rule
 
 ```zsh
 for charge_file in /sys/class/power_supply/apple_mfi_fastcharge*/charge_type(N); do
@@ -259,13 +235,12 @@ for charge_file in /sys/class/power_supply/apple_mfi_fastcharge*/charge_type(N);
 done
 ```
 
-#### Alternative rule if `/sys%p` does not work on your system
+### Alternative rule if `/sys%p` does not work on your system
 
 Try this version instead:
 
 ```zsh
 sudo tee /etc/udev/rules.d/99-apple-mfi-fastcharge.rules >/dev/null <<'EOF'
-# Enable fast charging for Apple iPhone/iPad devices handled by apple-mfi-fastcharge.
 SUBSYSTEM=="power_supply", KERNEL=="apple_mfi_fastcharge*", ACTION=="add|change", RUN+="/bin/sh -c 'echo Fast > /sys/class/power_supply/%k/charge_type || :'"
 EOF
 ```

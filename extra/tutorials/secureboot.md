@@ -1,6 +1,4 @@
-
-
-### EXTRA TUTORIAL: Enable Secure Boot with systemd-boot + UKIs + sbctl
+# Secure Boot with systemd-boot, UKIs, and sbctl
 
 This tutorial uses:
 
@@ -20,26 +18,21 @@ Secure Boot makes the firmware reject untrusted or modified EFI boot files. In t
 
 **Secure Boot does not encrypt your files.** For protection against someone removing the SSD and reading it from another computer, you also need LUKS encryption.
 
----
+## Optional: Prepare Windows for dual boot
 
+If you also boot Windows, complete this preparation before changing Secure Boot keys.
 
-### OPTIONAL: If Dual-Booting Windows with Secure Boot
-
-This is an optional first step of the tutorial that is only relevant to users who followed my tutorial but also have Windows installed on another partition or drive with SecureBoot enabled, you must read & do this part before you start the tutorial.
-
-You may wonder if changing your SecureBoot keys while an OS already exists on another drive would render that install forever unbootable. This is an understandable fear, but unless something went wrong it **won't.** Windows does not require the original OEM Platform Key to boot with SecureBoot enabled, meaning you can replace the Platform Key with your custom sbctl key while retaining Microsoft’s certificates in `KEK` and `db`. To do this you must simply ensure that you always enroll the keys with Microsoft's certs by using the `--microsoft` flag like we do in this tutorial:
+Windows can boot with a custom Platform Key when the required Microsoft certificates remain in `KEK` and `db`. This guide includes them with `--microsoft`. The enrollment command shown here is a reference; run it at the enrollment step below:
 
 ```zsh
 sudo sbctl enroll-keys --microsoft
 ```
 
-It is a good rule of thumb to always include it with this command regardless if you are dual booting or not. The reason why the flag should always be included is because a custom-only enrollment on Windows can cause firmware to reject Windows Boot Manager when Secure Boot is enabled.
+Keep `--microsoft` even if you do not dual-boot. Firmware components and hardware Option ROMs may also depend on Microsoft certificates.
 
-___
+### Prepare Windows
 
-#### Windows Housekeeping
-
-Before starting the tutorial if you are dual booting with Windows boot into Windows, before you do ensure you have re-enabled SecureBoot in firmware which had to be disabled during the Arch install.
+Boot Windows before starting. If you disabled Secure Boot for the Arch installation, re-enable it in firmware for this preparation.
 
 Open **Command Prompt as Administrator** (`cmd`) and check whether BitLocker or Windows Device Encryption protects the Windows system drive:
 
@@ -47,7 +40,7 @@ Open **Command Prompt as Administrator** (`cmd`) and check whether BitLocker or 
 manage-bde -status C:
 ```
 
-If protection is not enabled, you can reboot back into the firmware, turn off SecureBoot again and boot into Arch to begin the process. If it *is* enabled, make sure you possess the 48-digit BitLocker recovery password:
+If BitLocker protection is off, return to firmware, disable Secure Boot, and boot Arch. If protection is on, obtain the 48-digit recovery password first:
 
 ```bat
 manage-bde -protectors -get C:
@@ -57,7 +50,7 @@ Store the recovery password somewhere that is **not located only on this compute
 
 Do not continue until the recovery key has been saved somewhere accessible.
 
-#### Suspend BitLocker before changing Secure Boot keys
+### Suspend BitLocker before changing Secure Boot keys
 
 From an Administrator Command Prompt:
 
@@ -67,13 +60,11 @@ manage-bde -protectors -disable C: -rebootcount 0
 
 `-rebootcount 0` keeps protection suspended until you manually enable it again. This is useful because setting up custom Secure Boot keys may require several reboots between Windows, Arch, and the firmware settings.
 
-This does **not** decrypt the Windows partition and does not remove its BitLocker protectors. All it does is temporarily stop the TPM from blocking access because the Secure Boot measurements changed. You may now reboot back into the firmware, turn off SecureBoot again and boot into Arch to begin the process. 
+Suspending protection does not decrypt Windows or remove its protectors. It temporarily allows booting while the measured configuration changes. You can now disable Secure Boot in firmware and boot Arch.
 
----
+## Before you begin
 
-### IMPORTANT WARNING BEFORE STARTING
-
-Now that you are back in Arch, do some housekeeping before starting. First ensure you have these ready:
+Before starting in Arch, have these ready:
 
 * A recent backup of important files
 * Your Arch installation USB or another Linux recovery USB
@@ -90,11 +81,9 @@ Now that you are back in Arch, do some housekeeping before starting. First ensur
 
 If Arch fails to boot after enabling Secure Boot, always go back into the firmware and **only disable Secure Boot**. Do not clear the keys.
 
----
+## 1) Install the Secure Boot tools
 
-### 1) Install the Secure Boot tools
-
-Let's begin the tutorial then, first install the necessary tools:
+Install the tools:
 
 ```zsh
 sudo pacman -S --needed sbctl efitools mokutil
@@ -108,9 +97,7 @@ What each package does:
 
 The Arch `sbctl` package also installs integration for `kernel-install`, mkinitcpio, and pacman transactions.
 
----
-
-### 2) Confirm that this is the correct boot setup
+## 2) Confirm that this is the correct boot setup
 
 ```zsh
 printf 'Firmware boot mode: '
@@ -161,9 +148,7 @@ Stop here if:
 * `kernel-install` is not configured with the `uki` layout
 * You did not install using this tutorial
 
----
-
-### 3) Check whether the firmware is in Setup Mode
+## 3) Check whether the firmware is in Setup Mode
 
 ```zsh
 sudo sbctl status
@@ -182,15 +167,13 @@ You may also see:
 Installed: ✗ sbctl is not installed
 ```
 
-This does **NOT** mean the Arch package is missing.
+Here, `sbctl is not installed` means its keys and owner GUID have not been created yet; it does not mean the Arch package is missing.
 
-In this context, it means sbctl has not yet created its key hierarchy and owner GUID.
-
-#### If Setup Mode is already enabled
+### If Setup Mode is already enabled
 
 Continue to the next step.
 
-#### If Setup Mode is disabled
+### If Setup Mode is disabled
 
 Your firmware probably still has its factory Platform Key enrolled. Custom Secure Boot keys cannot normally be enrolled until the firmware is placed into Setup Mode.
 
@@ -224,9 +207,7 @@ Do not continue until it reports that Setup Mode is enabled.
 
 The sbctl documentation requires Setup Mode for live key enrollment and recommends retaining Microsoft trust certificates because some firmware and Option ROM components depend on them.
 
----
-
-### 4) Inspect the current firmware key databases
+## 4) Inspect the current firmware key databases
 
 This step is read-only:
 
@@ -245,9 +226,7 @@ The variables mean:
 
 When the firmware is in Setup Mode, `PK` should have no entries.
 
----
-
-### 5) Create your Secure Boot keys
+## 5) Create your Secure Boot keys
 
 ```zsh
 sudo sbctl create-keys
@@ -281,9 +260,7 @@ Do not upload that directory or put it in a public repository.
 
 After everything is working, make an encrypted offline backup of `/var/lib/sbctl`. Someone who obtains your private database key can sign a modified UKI that your computer will trust.
 
----
-
-### 6) Create a signed systemd-boot source file
+## 6) Create a signed systemd-boot source file
 
 systemd’s `bootctl install` and `bootctl update` prefer a file ending in `.efi.signed` when one is available.
 
@@ -303,9 +280,7 @@ sudo bootctl update
 
 This should install or update the signed systemd-boot binaries under `/efi/EFI/`.
 
----
-
-### 7) Sign every currently installed UKI
+## 7) Sign every currently installed UKI
 
 The UKIs created by this tutorial are stored in:
 
@@ -325,9 +300,7 @@ sudo find /efi/EFI/Linux \
 
 This does not depend on zsh glob expansion. `find` passes the exact filenames directly to sbctl.
 
----
-
-### 8) Verify the complete boot chain
+## 8) Verify the complete boot chain
 
 ```zsh
 sudo sbctl verify
@@ -354,9 +327,7 @@ sudo sbctl verify
 
 Repeat until every boot file belonging to this installation is signed.
 
----
-
-### 9) Enroll your keys and Microsoft’s certificates
+## 9) Enroll your keys and Microsoft’s certificates
 
 ```zsh
 sudo sbctl enroll-keys --microsoft
@@ -387,8 +358,7 @@ Setup Mode should now be disabled because your new Platform Key has been enrolle
 
 Secure Boot will remain disabled until you enable it in the firmware.
 
-
-### 10) Confirm that the keys were actually enrolled
+## 10) Confirm that the keys were actually enrolled
 
 ```zsh
 for sb_variable in PK KEK db; do
@@ -403,11 +373,9 @@ You should see:
 * Your custom key plus Microsoft certificates in `KEK`
 * Your custom database certificate plus Microsoft certificates in `db`
 
-Current sbctl versions include Microsoft’s newer Secure Boot certificate generation when using `--microsoft`. When this is present and confirmed your Windows partition should boot with SecureBoot enabled.
+Inspect the Microsoft certificates included by your installed sbctl version rather than assuming enrollment alone proves that Windows will boot.
 
----
-
-### 11) Reboot into the firmware and enable Secure Boot
+## 11) Reboot into the firmware and enable Secure Boot
 
 ```zsh
 sync
@@ -432,9 +400,7 @@ Do **NOT** choose any of these after enrolling with sbctl:
 
 Those options may replace or remove the custom key that signs your Arch UKIs.
 
----
-
-### 12) Verify Secure Boot after Arch starts
+## 12) Verify Secure Boot after Arch starts
 
 ```zsh
 sudo sbctl status
@@ -453,7 +419,7 @@ SecureBoot enabled
 
 Every file from `sbctl verify` should still show a checkmark.
 
-Congrats. You are now using Secure Boot with your own Arch signing key.
+With those checks passing, Arch is using your signing key for Secure Boot.
 
 Your boot chain is approximately:
 
@@ -469,17 +435,15 @@ Signed UKI
     └─ embedded kernel command line
 ```
 
----
+## 13) Confirm that future kernel updates will be signed
 
-### 13) Confirm that future kernel updates will be signed
-
-One thing that may worry a technical minded user is if the signing of kernels to work with SecureBoot can be relied upon to persist on updates automatically. The fear being that if it doesn't then you might update your system one day, reboot and find yourself unable to enter your system due to a new kernel being unsigned. - In short, **yes it should**. Arch's sbctl package comes with a `kernel-install` plugin named:
+Automatic signing matters because each new kernel produces a new UKI filename. The Arch sbctl package supplies this kernel-install plugin:
 
 ```text
 91-sbctl.install
 ```
 
-This is a hook that automatically signs your UKI with `sbctl` for you whenever a new kernel is installed, i.e via an update. To confirm that it exists you can check the complete local plugin chain:
+The plugin signs new UKIs when kernel-install runs. Inspect the local plugin chain to confirm it is present:
 
 ```zsh
 sudo find /usr/lib/kernel/install.d /etc/kernel/install.d \
@@ -501,7 +465,7 @@ If you followed this tutorial, you should see this general order:
 91-sbctl.install
 ```
 
-What this means is when `kernel-install` is initiated it should follow this chain:
+The expected sequence is:
 
 ```text
 Kernel package update
@@ -517,7 +481,7 @@ systemd-ukify assembles the UKI
 
 The final UKI filename contains the kernel version, so every kernel update creates a new filename. The sbctl `kernel-install` plugin then signs that new file automatically.
 
-However, you should always still verify after every update before rebooting:
+Verify the result after every update and before rebooting:
 
 ```zsh
 sudo sbctl verify
@@ -525,11 +489,9 @@ sudo sbctl verify
 
 **Never blindly assume that an automatic hook succeeded.**
 
----
+## 14) Optional: Add a Secure Boot check to Topgrade
 
-### 14) OPTIONAL: Add a Secure Boot check to Topgrade
-
-This is only if you installed `topgrade` in the post-install tutorial. This could be tedious to do with `pacman` as you would always have to add `sudo sbctl verify` to the end of the command after `&&` or with an alias. The better way to do this is to use Topgrade and add it as a `post_command` which runs after your updates are done. To do this, first open your Topgrade configuration:
+If you use Topgrade, add verification as a post-command so it runs after updates. Otherwise, run `sudo sbctl verify` manually after updating. Open the Topgrade configuration:
 
 ```zsh
 topgrade --edit-config
@@ -552,9 +514,7 @@ Now every Topgrade run will finish by checking:
 
 If verification fails, do not reboot until you fix the unsigned file.
 
----
-
-### 15) TROUBLESHOOT: What to do if a future UKI is unsigned
+## 15) Troubleshooting: What to do if a future UKI is unsigned
 
 **If a verification fails with an unsigned file,** run:
 
@@ -571,11 +531,9 @@ sudo sbctl verify
 
 Only reboot after it reports that every required EFI file is signed.
 
----
+## 16a) Resume BitLocker after Windows boots successfully
 
-### 16a) Resume BitLocker after Windows boots successfully
-
-This step is ONLY if you have another partition with Windows on it, if not skip to 16b. You may now reboot back into the Windows partition with SecureBoot on to confirm that it works. If you use BitLocker and turned it off at the beginning you must launch `cmd` as an Administrator and re-enable it, but again, **ONLY** if you had BitLocker on and disabled it:
+Skip this section unless you dual-boot Windows. Boot Windows with Secure Boot enabled and confirm it works. If you suspended BitLocker earlier, open an administrator Command Prompt and resume protection:
 
 ```bat
 manage-bde -protectors -enable C:
@@ -593,15 +551,13 @@ You want the Windows drive to report:
 Protection Status: Protection On
 ```
 
-**When protection is resumed, BitLocker seals its key against the new valid boot measurements.** If everything is okay then you may go back to Arch Linux. If not, here is a list of common troubleshooting:
+After resuming protection, confirm that Windows boots with the new measurements. Then return to Arch. If it does not, use the troubleshooting steps below.
 
-___
+### Troubleshooting: If Windows asks for the recovery key
 
-#### TROUBLESHOOT: If Windows asks for the recovery key
+A recovery prompt does not necessarily mean the Windows installation or encrypted data is damaged.
 
-Don't panic. This does not necessarily mean Windows or the encryption is broken.
-
-Changing the Secure Boot configuration can sometimes change the TPM measurements that BitLocker uses to validate the boot environment. All you have to do is enter the previously saved 48-digit recovery password.
+Changes to Secure Boot can change the TPM measurements used by BitLocker. Enter the recovery password you saved before starting.
 
 Once Windows starts, resume or reset BitLocker protection as normal so that it accepts the new Secure Boot measurements:
 
@@ -609,9 +565,7 @@ Once Windows starts, resume or reset BitLocker protection as normal so that it a
 manage-bde -protectors -enable C:
 ```
 
-___
-
-#### TROUBLESHOOT: If Windows is rejected by the firmware
+### Troubleshooting: If Windows is rejected by the firmware
 
 Enter the firmware and temporarily **disable Secure Boot only**.
 
@@ -631,13 +585,9 @@ sudo sbctl enroll-keys --microsoft
 
 **DO NOT** manually modify or privately re-sign `bootmgfw.efi`. Windows Boot Manager should remain signed, maintained and serviced by Microsoft.
 
----
+## 16b) Optional: Update the Secure Boot dbx revocation database
 
-### 16b) OPTIONAL: Update the Secure Boot dbx revocation database
-
-The `dbx` database prevents known vulnerable EFI programs and bootloaders from starting. After you enable SecureBoot on Linux you may see a new firmware update available when running fwupd for SecureBoot.
-
-This is because your firmware may have an old dbx even if your BIOS itself has no available update.
+The `dbx` database revokes vulnerable EFI programs and boot loaders. Fwupd may offer a UEFI dbx update after Secure Boot is enabled, even when no BIOS update is available.
 
 To check, install and start fwupd if you have not already:
 
@@ -659,9 +609,9 @@ If it offers a **UEFI dbx** update, first verify your current boot chain:
 sudo sbctl verify
 ```
 
-#### Check the battery and charger state
+### Check the battery and charger state
 
-If you are on a laptop the firmware update might refuse to continue if the battery is under a certain treshold, regardless of if you are charging or not.
+On a laptop, firmware updates can require a minimum battery charge even while connected to AC power:
 
 ```zsh
 sudo fwupdtool get-report-metadata 2>/dev/null |
@@ -673,9 +623,9 @@ You want:
 * `PowerState: ac`
 * `BatteryLevel` equal to or higher than `BatteryThreshold`
 
-When that is met you can proceed to install, just keep the charging cable connected during the update. Power failures during firmware updates is a good way to brick your computer.
+Keep AC power connected throughout the update. A power failure during a firmware update can damage the system.
 
-Now you can evaluate if you want this update or not. If you choose to install this firmware update, then install and apply it like this:
+If you choose to install the offered update, run:
 
 ```zsh
 sudo fwupdmgr update
@@ -719,11 +669,9 @@ fwupd uses date-formatted dbx versions, so a large-looking jump such as `2022080
 
 The dbx payload is written while Linux is running but becomes active after restarting.
 
----
+## 17) Troubleshooting: Older computers and limited EFI NVRAM
 
-### 17) TROUBLESHOOT: Older computers and limited EFI NVRAM
-
-Sometimes after a `dbx` update if your computer is very old it may say it "failed" due to hitting a limit on the size requirements of your EFI variable storage. This storage is **NOT** your EFI System Partition, as confusing as that may be. The EFI System Partition and EFI variable storage are two completely different things:
+Older firmware may lack space for a dbx update in its EFI variable storage. This is separate from the EFI System Partition:
 
 ```text
 /efi
@@ -760,14 +708,12 @@ A complete shutdown and cold power cycle may allow old firmware to garbage-colle
 systemctl poweroff
 ```
 
-Then wait until the machine is fully powered off, and finally start it again and recheck the free space. This is not a guarantee however, and it is probable that it will still report size issues and an "update failure"
+Wait until the machine is fully off, start it again, and recheck available space. A cold boot may not resolve the limit.
 
-But this "failure" report should not be taken as gospel, since if a dbx update still reports success and the new version is shown after reboot, the update worked even if fwupd warns that there is not enough space for another future write. Yes its very annoying, however in the future `dbx` updates will most likely fail due to space requirements. The sad report to give here is that there is really nothing you can do about this. The last `dbx` should be treated as the ceiling for the security of w/e hardware you are using. Take whatever precautions necessary in response, which includes getting a new laptop.
+Distinguish an update failure from a warning about space for a future write. Check the reported dbx version and update history after rebooting. If the new version is present and the update succeeded, that update was applied; a remaining space warning still matters for future updates. Avoid forcing another write when the firmware reports insufficient space.
 
----
+## Protecting the files on the drive
 
-### WARNING: THE ROOT OF YOUR SYSTEM IS STILL ACCESSIBLE FROM ANOTHER SYSTEM
+Secure Boot verifies the boot chain. It does not encrypt the SSD or prevent someone reading unencrypted data after removing the drive.
 
-Secure Boot **ONLY** verifies the boot chain. *It does not* encrypt the SSD. What that means is if someone steals your drive then your data can be accessed on another system.
-
-For **ANY** computer you should also strongly consider using LUKS encryption for protection against offline access to your files. If you are wondering on how to do that, you may follow [**this**](luks.md) tutorial.
+For protection against offline access to files, consider the [LUKS encryption guide](luks.md).

@@ -1,29 +1,30 @@
-## EXTRA TUTORIAL: How to add a new Drive/SSD to GPT-Auto Setups with systemd-repart
+# Add a drive with systemd mount and automount units
 
-This is how you add a new SSD to an install with systemd-gpt-auto-mount without fstab. It is a bit different than the usual way to do it on Linux but its way more simple IMO. The example name of the drive in the tutorial is `REPLACE_THIS` but it can obv be anything you like.
+This guide adds an Ext4 data drive to the [GPT-discovery installation](../../arch_kde_tutorial.md) without an `fstab` entry. It uses systemd-repart to create the filesystem, then native mount and automount units to make it available on demand.
 
-Replace ALL instances of `REPLACE_THIS` in this guide with your own name, that is if you don't want that stupid name for your drive which I hope you don't.
-And by all I mean in ALL instances, even in the `.mount` and `.automount` files.
+Replace **every** `REPLACE_THIS` with your chosen name, including filenames and unit contents. Replace the device placeholder with the actual new disk.
 
-#### 0) First identify your new drive & double check before you write to it
+## 1. Identify the disk
+
+Check the model, serial number, and existing mount points before choosing a device:
 
 ```zsh
-# First identify the drive you want to format & mount like in the original tutorial
 lsblk -e7 -o NAME,SIZE,TYPE,MOUNTPOINT,MODEL,SERIAL
+```
 
-# Then write out the DEV=/dev/ command with the correct identifier afterwards.
-# ensure you have the right one and write the identifier for it.
-# for example: sdb for SATA, hdb for HDD, or nvme1n1 for NVME.
+Assign the correct device, for example the appropriate SATA or NVMe disk:
+
+```zsh
 DEV=/dev/drive_identifier_here
 ```
 
-#### 1) Create one GPT Linux data partition with systemd-repart
+## 2. Define the partition
+
+**The apply command below destroys the selected disk's existing partition table. Back up its data and confirm `DEV` before continuing.**
+
+Create a fresh definition directory and an Ext4 partition definition:
 
 ```zsh
-# WARNING: --empty=force is destructive.
-# It creates a fresh partition table and existing partitions do not survive.
-# Save data on disk first.
-
 sudo rm -rf /tmp/repart-data.d
 sudo mkdir -p /tmp/repart-data.d
 
@@ -34,18 +35,22 @@ Label=REPLACE_THIS
 Format=ext4
 SizeMinBytes=1G
 EOF_REPART
+```
 
-# Preview the plan first. Without --dry-run=no, systemd-repart only shows what it would do.
+Preview the layout:
+
+```zsh
 sudo systemd-repart --definitions=/tmp/repart-data.d --empty=force "$DEV"
+```
 
-# Apply it for real.
+After checking the preview, apply it and wait for udev's device links:
+
+```zsh
 sudo systemd-repart --definitions=/tmp/repart-data.d --dry-run=no --empty=force "$DEV"
-
-# Let udev create /dev/disk/by-* symlinks.
 sudo udevadm settle
 ```
 
-#### 2) Verify the partition and filesystem labels
+## 3. Verify the labels
 
 ```zsh
 lsblk -f "$DEV"
@@ -53,21 +58,19 @@ ls -l /dev/disk/by-partlabel/ | grep ' REPLACE_THIS$' || true
 ls -l /dev/disk/by-label/ | grep ' REPLACE_THIS$' || true
 ```
 
-`systemd-repart` already made the ext4 filesystem because the repart file used `Format=ext4`, so do **not** run `mkfs.ext4` separately here.
+`Format=ext4` already created the filesystem. Do not run `mkfs.ext4` again.
 
-#### 3) Create the mount point
+## 4. Create the mount point and unit
 
 ```zsh
 sudo mkdir -p /mnt/REPLACE_THIS
 ```
 
-#### 4) Create a native systemd mount unit
-
 ```zsh
 sudo nano /etc/systemd/system/mnt-REPLACE_THIS.mount
 ```
 
-Add:
+Contents of `/etc/systemd/system/mnt-REPLACE_THIS.mount`:
 
 ```ini
 [Unit]
@@ -83,13 +86,13 @@ Options=noatime
 WantedBy=multi-user.target
 ```
 
-#### 5) Create an automount for on-demand mounting
+## 5. Create the automount unit
 
 ```zsh
 sudo nano /etc/systemd/system/mnt-REPLACE_THIS.automount
 ```
 
-Add:
+Contents of `/etc/systemd/system/mnt-REPLACE_THIS.automount`:
 
 ```ini
 [Unit]
@@ -102,14 +105,16 @@ Where=/mnt/REPLACE_THIS
 WantedBy=multi-user.target
 ```
 
-#### 6) Enable it
+## 6. Enable the automount
+
+The enable command below uses the example unit name `mnt-data.automount`. Substitute the unit name you created above.
 
 ```zsh
 sudo systemctl daemon-reload
 sudo systemctl enable --now mnt-data.automount
 ```
 
-#### 7) Test
+## 7. Test access
 
 ```zsh
 systemctl status mnt-REPLACE_THIS.automount

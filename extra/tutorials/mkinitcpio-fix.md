@@ -1,64 +1,41 @@
-# OPTIONAL: How to fix those annoying 'missing firmware' warnings in mkinitcpio
+# Optional: Handle missing-firmware warnings
 
-### Preamble:
+Repeated warnings can make real problems harder to notice. Before suppressing a mkinitcpio warning, confirm that the named module and firmware are not needed by your hardware.
 
-So this is more than just an annoyance, it is actually a huge problem. Due to this issue people become complacant to seeing firmware errors and are thus unaware of which ones are real and which ones are a problem. If a firmware issue occurs in the future it might go unnoticed, leading to system failure and potential data loss. Ideally the firmware would only give such errors based on a query of the system of some kind, but that is not the case.
+## Identify the warnings
 
----
-
-#### 0) Find the module names that warn
+Run mkinitcpio and note messages such as `Possibly missing firmware for module: qla2xxx`:
 
 ```bash
-# So everytime you run mkinicpio -P it warns you about a bunch of "missing firmware" 
-# but none of these are important, they are ancient. You probably won't need them.
-#
-# IF you are unsure that you might need them or if the ones you are seeing are the ones
-# I am talking about or actual problems, then you can find a list of them here :
-#
-# https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX
-#
-# To see them, run this, and you'll see multiple lines ala:
-# "Possibly missing firmware for module: qla2xxx"
-# Write down all you see and confirm that you won't need them.
-#
 sudo mkinitcpio -P
 ```
 
-Now you have two bad options:
+Compare the module names with the [Arch Wiki's missing-firmware guidance](https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX). Do not assume every warning is irrelevant.
 
-## OPTION A) Install all the firmware from the AUR
+Choose one of the following approaches only after reviewing those warnings.
 
-This may seem like a nobrainer compared to Option B, but it really isn't. It is maintained by a third party which is by definition unsafe and it will populate your hardware with a bunch of outdated firmware which will take up space and introduce a wildcard element. It **should** be fine but it might not be one day. It is overkill for a bunch of terminal noise anyways, but that terminal noise has a real potential for harm, unfortunately.
+## Option A: Install the firmware package
+
+The AUR package adds firmware that may be unnecessary for your hardware. It uses additional space and depends on a third-party package maintainer. Review the package before choosing it.
 
 ```bash
 yay -S --needed --noconfirm mkinitcpio-firmware
 ```
 
-## OPTION B) OR Copy a script that silences them by making dummy firmware
+## Option B: Create dummy firmware files
 
-### There is NO guarantee in the script that what it write dummies for is one of these ancient modules.
-### PLEASE confirm that the errors you see are irrelevant by checking the wiki list of firmware FIRST, before running this script:
+**The script cannot establish that every warning is harmless. Confirm that the affected firmware is not needed before running it.**
 
-[Arch Wiki | Mkinitcpio/Possibly_missing_firmware_for_module_XXXX
-](https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX
-)
+The script captures warnings from one mkinitcpio run and creates dummy files for the reported modules, skipping modules currently loaded. It records the files it creates so its undo mode can remove them. If you later add matching hardware, remove the dummies and install the real firmware.
 
----
+Create the script:
 
 ```bash
-# The Arch Wiki recommends manually writing dummy files for every single one of them
-# I suppose that is Option C but everytime I wrote it out I felt ridiculous for even suggesting it by proxy.
-#
-# I wrote a script that creates harmless dummy firmware files for you
-# It automatically captures the ones on a single run and then writes dummies for all of them
-# then you run mkinitcpio again to build with the dummies to never see them ever again
-#
-# First open nano like so, which will create a new file:
-#
 sudo nano /usr/local/sbin/mkinitcpio-silence-missing-fw
 ```
 
-#### 1.5) Then paste ALL of this underneath into it with CTRL + **SHIFT** + V
+Contents of `/usr/local/sbin/mkinitcpio-silence-missing-fw`:
+
 ```bash
 #!/usr/bin/env bash
 # mkinitcpio-silence-missing-fw
@@ -106,7 +83,7 @@ undo() {
   echo "Removed recorded dummy firmware files."
 }
 
-# Try modinfo with common dash/underscore variants
+# Try common module name variants
 get_fw_list() {
   local m="$1"
   # print unique non-empty firmware paths to stdout
@@ -198,28 +175,27 @@ case "${1:-}" in
   *) create_from_warnings ;;
 esac
 ```
-#### 2) Make it executable
+
+Make it executable:
+
 ```bash
 sudo chmod +x /usr/local/sbin/mkinitcpio-silence-missing-fw
 ```
-#### 3) Run & Undo
+
+### Apply
+
+After reviewing the warnings, create the dummy files and rebuild:
 
 ```bash
-# By running this you acknowledge you have checked the wiki first and any liability that follows
-
-## 1) FIRST run this to write the dummies for the ancient modules warned on your machine
 sudo /usr/local/sbin/mkinitcpio-silence-missing-fw
-
-## 2) THEN run this to confirm, and you are done
-sudo mkinitcpio -P
----
-
-# Ignored both my warnings up there and found yourself screwed?
-## 1) Don't worry, I wrote a way to undo a run of this script, just do:
-sudo /usr/local/sbin/mkinitcpio-silence-missing-fw --undo
-
-## 2) And once again to confirm, run this afterwards:
 sudo mkinitcpio -P
 ```
 
----
+### Undo
+
+To remove the recorded dummy files and rebuild again:
+
+```bash
+sudo /usr/local/sbin/mkinitcpio-silence-missing-fw --undo
+sudo mkinitcpio -P
+```

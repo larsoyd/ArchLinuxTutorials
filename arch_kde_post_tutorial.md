@@ -1384,7 +1384,7 @@ pikaur -S --needed vlc-pause-click-plugin
 Choose MPV if you prefer a minimal interface and manual configuration. This also installs the third-party Phonon backend and enables automatic hardware decoding:
 
 ```zsh
-pikaur -S --needed mpv  
+pikaur -S --needed mpv
 
 pikaur -S --needed phonon-qt6-mpv
 
