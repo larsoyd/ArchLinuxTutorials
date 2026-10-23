@@ -18,7 +18,7 @@ Run terminal commands as your normal desktop user. Commands that need administra
 
 ## 1. Chaotic-AUR
 
-Chaotic-AUR provides prebuilt packages from the AUR, saving local compilation time. I recommend it for convenience, but it is optional. Installing prebuilt packages means trusting that repository and its build process, while that means not reading PKGBUILDS **it does not replace reviewing what you install.**
+Chaotic-AUR provides prebuilt packages from the AUR, saving local compilation time. I recommend it for convenience, but it is optional. Installing prebuilt packages means trusting that repository and its build process, while that means not reading & building your own PKGBUILDS **it does not replace reviewing what you install.**
 
 Open Kitty from the application launcher under **System**. If Zsh asks about an initial configuration, choose an empty `.zshrc` for now. We will configure it below. Paste terminal commands with Ctrl+Shift+V.
 
