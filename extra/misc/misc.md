@@ -1,37 +1,29 @@
-# Misc Settings/Tweaks
+# Optional KDE preferences
 
-1. By default KDE Plasma saves your desktop session before you shut it off by default. This is undesirable for many users. To turn it off open System Settings then:
+[Return to the post-install guide](../../arch_kde_post_tutorial.md).
 
-* Go to System -> Desktop Session and then under "System Restore" check the "Start with an empry session" box.
+These are small desktop settings I prefer to change. Pick the ones that suit you.
 
-____
+## Start with an empty session
 
-2. By default KDE Plasma grows your cursor if you shake it, this is an intended behavior to make it easier to find your cursor. If you find it annoying you can turn it off like so:
+To stop Plasma restoring the previous session, open **System Settings → System → Desktop Session**. Under **Session Restore**, choose **Start with an empty session**.
 
-* Go to Input & Output -> Accessibility -> Shake Cursor and then uncheck "Enable" under Shake pointer to find it
+## Disable the growing cursor
 
-____
+Plasma can enlarge the pointer when you shake it to make it easier to find. To turn that off, open **System Settings → Input & Output → Accessibility → Shake Cursor** and disable **Shake pointer to find it**.
 
-3. By default KDE Plasma has an annoying beep when you raise and lower your volume. This is intended. To turn it off:
+## Disable volume feedback
 
-* Go to System Settings > Sound > Configure Volume Controls... and under Play audio feedback for changes to: disable Audio volume.
+Open **System Settings → Sound → Configure Volume Controls**. Under **Play audio feedback for changes to**, disable **Audio volume**.
 
-____
+## Disable zoom and magnification
 
-4. By default KDE Plasma will zoom & magnify your screen if you hit a hotkey by accident (Windows Key + CTRL IIRC) which can seriously mess your day up if you don't know about it.
-Here is how to turn it off:
+If you do not use the screen magnifier, open **System Settings → Input & Output → Accessibility → Zoom & Magnifier** and select **Disabled**.
 
-* Go to Input & Output -> Accessibility -> Zoom & Magnifier and then check "Disabled"
+## Disable the floating panel
 
-____
+Right-click the panel, choose **Show Panel Configuration**, and set **Floating** to **Disabled**.
 
-5. By default KDE's taskbar (panel) will float if no windows are on the screen. You can turn this off by:
+## Enable automatic spell checking
 
-* Right Click the Taskbar -> "Show Panel Configuration" -> Look For the "Floating" option in the Window On The Right -> Change Dropdown Menu Option to "Disabled"
-
-____
-
-6. And finally, by default even though we installed Hunspell for spellchecking in the Install phase, KDE will not have turned it on by default. 
-To turn on spellchecking you have to open System Settings and go to:
-
-* Language & Time -> Preferred Languages -> American English (United States) and choose the large option -> Apply. Then check "Automatic Spell Checking enabled by default"
+Hunspell is included in the installation guide, but KDE still needs its spell-checking preferences configured. Open **System Settings → Language & Time → Preferred Languages**, select **American English (United States)** and its dictionary option, then apply the change. Enable **Automatic Spell Checking enabled by default**.

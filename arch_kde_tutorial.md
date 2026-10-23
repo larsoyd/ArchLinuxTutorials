@@ -1,198 +1,203 @@
-# Complete Arch Linux Tutorial (KDE Plasma + Wayland w/ Automounting Partitions)
+# Arch Linux installation with KDE Plasma and Wayland
 
-This is an Arch installation guide for regular folks who just want a working system to game on that's straight forward & optimized with a few opinionated tweaks using a DE that is most like Windows
-and usually the one most people want to use because of that, at least for their first DE. I've used every DE and WM that is both trendy and some obscure,
-I started with KDE Plasma and Arch Linux. I always come back to both eventually. It's fun to try out new things, but KDE Plasma is OP at the moment I am writing 
-this. It's fully featured, and they finally have a good process in eliminating bugs which plagued the DE before.
+This is my opinionated guide to an Arch Linux desktop for gaming and daily use. It uses KDE Plasma, systemd-boot, and GPT partition discovery. I keep coming back to Arch and KDE because they give me the flexibility and desktop features I want.
 
+The examples target an AMD CPU, an NVIDIA GPU, and a single NVMe SSD. AMD and Intel GPU package lists are included, but I have less experience with those setups. Check the Arch Wiki for your hardware before installing. The NVIDIA example assumes a Turing (NV160/TUXXX) or newer card supported by `nvidia-open-dkms`.
 
-# INTRODUCTION - How GPT Auto-Mounting Works
+## Contents
 
-In this tutorial I will be using `systemd-gpt-auto-generator` to automatically discover and mount partitions based on specific 128-bit **UUIDs**. What that means is that your drive partitions like `boot` and `root` will not be mounted by `fstab`, instead they will automount basically by themselves. This system is useful for centralizing file system configuration in the partition table and in making configuration in `/etc/fstab` or on the kernel command line completely unnecessary.
+- [How GPT auto-mounting works](#how-gpt-auto-mounting-works)
+- [Prerequisites and example values](#prerequisites-and-example-values)
+- [Step 0: Boot the installation medium](#step-0-boot-the-installation-medium)
+- [Step 1: Partition the disk](#step-1-partition-the-disk)
+- [Step 2: Mount filesystems](#step-2-mount-filesystems)
+- [Step 3: Install the base system](#step-3-install-the-base-system)
+- [Step 4: Configure the system](#step-4-configure-the-system)
+- [Kernel and desktop settings](#kernel-and-desktop-settings)
+- [Step 5: Complete the installation](#step-5-complete-the-installation)
+- [Troubleshooting](#troubleshooting)
+- [Next steps](#next-steps)
 
-This is still very unconventional, so it's worth familiarizing yourself with how this works before following my guide. Some things are different like mounting a new SSD drive for example, which I show how to do in [**this**](extra/tutorials/newdrive.md) guide. 
+## How GPT auto-mounting works
 
+`systemd-gpt-auto-generator` discovers and mounts partitions using their GPT partition type UUIDs. In this setup, root and other supported partitions are discovered without entries in `/etc/fstab`. This keeps their layout information in the partition table.
 
-# - CONS: -
+There are a few limitations to understand first:
 
-Same Disk Only: Auto-mounting only works for partitions on the same physical disk as your root partition.
+- Automatic discovery is tied to the physical disk containing the root partition. This guide does not cover a root filesystem spread across multiple disks, such as a Btrfs RAID setup.
+- The boot loader must set the `LoaderDevicePartUUID` EFI variable for root partition discovery. This guide uses systemd-boot, which supports it.
+- Only the first partition of each supported type is mounted. For example, multiple partitions with type code `8302` do not all become home directories.
+- Additional drives need their own configuration. See [mounting a new drive](extra/tutorials/newdrive.md).
 
-Boot Loader Dependency: The boot loader must set the `LoaderDevicePartUUID` EFI variable for root partition detection to work. systemd-boot (used in this guide) supports this. Check if the bootloader you wish to use does.
-For GRUB to set the `LoaderDevicePartUUID` UEFI variable load the bli module in grub.cfg:
-```ini
+For reference, GRUB can set `LoaderDevicePartUUID` when its `bli` module is loaded from `grub.cfg`:
+
+```sh
 if [ "$grub_platform" = "efi" ]; then
   insmod bli
 fi
 ```
 
-First Partition Rule: systemd mounts the first partition of each type it finds. If you have multiple 8302 partitions on the same disk, **then only the first one gets auto-mounted.**
+I like this approach because the disk describes its own layout, can move between machines without changing `fstab`, and works with tools such as systemd-nspawn. It also removes one source of mount configuration errors.
 
-No Multi-Disk Support: This won't work on systems where the root filesystem is distributed across multiple disks (like BTRFS RAID).
+The resulting system uses:
 
-# - PROS: -
+- KDE Plasma on Wayland.
+- `linux-zen` as the main kernel and `linux-lts` as a backup.
+- Zsh as the user shell, with an optional switch to Dash for `/usr/bin/sh`.
+- systemd-boot with Unified Kernel Images (UKIs).
+- Zswap backed by a 16 GiB swap file.
+- Ext4 for root, with optional `fast_commit` journaling.
 
-Portability: Your disk image can boot on different hardware without `fstab` changes
+## Prerequisites and example values
 
-Self-Describing: The partition table contains all mounting information
+You need a bootable Arch Linux USB, an internet connection, and a UEFI system.
 
-Container-Friendly: Tools like systemd-nspawn can automatically set up filesystems from GPT images
+I use real values in the examples so you can see how the commands fit together. Replace these with your own before running the relevant commands:
 
-Reduced Maintenance: No broken boots from typos in `/etc/fstab` or random updates doing weird stuff messing with it.
+| Example | Replace with |
+|---|---|
+| `/dev/nvme0n1` | Your installation disk, confirmed with `lsblk -l` |
+| `lars` | Your username |
+| `BigBlue` | Your hostname |
+| `no-latin1`, `no`, `nb_NO.UTF-8` | Your keyboard layout and regional locale |
+| `Europe/Oslo` | Your timezone |
+| Norway and nearby mirror countries | Countries near you |
 
-## What you will learn to set and use:
+The examples use English for the system language and Norwegian formats for dates, time, and measurements. US keyboard users can skip changing the live console keymap.
 
-- systemd-automount for GPT partitions 
-- KDE Plasma on Wayland
-- `linux-zen` default kernel, `linux-lts` backup.
-- zsh default shell for users, optional dash shell for /usr/bin/sh 
-- systemd-boot with UKIs
-- zswap with a 16 GiB swap file
-- EXT4 for `/` with optional fast_commit journaling
+### Optional: Using SystemRescue to install
 
-## What my guide will primarily target:
-- AMD CPU + NVIDIA GPU w/ `nvidia-open-dkms` 
-**NOTE:** This tutorial assumes you have a Turing (NV160/TUXXX) and newer	card for current driver. Check your card first.
+I sometimes install from [SystemRescue](https://www.system-rescue.org/) because it provides a graphical live environment and Arch installation tools. The main guide assumes the official Arch ISO. If you prefer SystemRescue and already understand the installation process, read the [SystemRescue notes](extra/misc/systemrescue.md) first.
 
-I included some stuff for AMDGPUs and Intel too, but my system is NVIDIA so I may have missed some things.
+Before following the guide from SystemRescue, run `pacman --config=/etc/pacman-rolling.conf -Sy` in its XFCE terminal. Use the SystemRescue variants where shown below.
 
-NVIDIA modeset is set by default, and according to the wiki setting fbdev manually is now unnecessary so I will not set those. PLEASE check the wiki before install for anything. **POST-INSTALL GUIDE IS EVEN MORE OPINIONATED, FOLLOW BY OWN VOLITION.**
+## Step 0: Boot the installation medium
 
-*Protip:* This tutorial uses Norwegian keymaps and locale/timezone settings. Simply replace those with your own (e.g. keymap, `LANG`, `TZ`).
-If you use an English lang keyboard you can ignore all of it, but it's worth knowing if you are new and use a different keyboard like say `de-latin1` for German keyboards.
+Run these commands in the live environment. Each line is a separate command unless it ends with `\`, which continues the command on the next line. A continuation backslash must be the last character on its line.
 
-**NOTE:** **This tutorial assumes you have a NVME SSD,** which are named `/dev/nvme0n1`. If you don't have that, it's something else. If you don't know, check with `lsblk -l` to see your scheme. It could be `sda` or something else.
+### Keyboard and console font
 
-*Sidenote:* Unless you like the name, replace my hostname (basically the name of your rig) of `BigBlue` with yours, same as my user name `lars` if your name ain't Lars. Though if it is, cool. Hi! I thought about doing placeholders but I feel those are more distracting usually, I prefer to see how something would actually work in a guide, maybe you do as well?
-
-
-## Prerequisites
-
-- A bootable Arch Linux USB (written with `dd` or similar)
-- Internet connection
-- UEFI system
-
-### OPTIONAL: Using SystemRescue To Install
-
-- While in this tutorial I will be assuming you are using the official ArchISO Installation Medium, I must concede that after installing Arch via the official medium for years I now instead opt for a live environment for my own convenience. Basically what this means is that I install Arch from another distro, and I choose the LiveISO maintenance distro [SystemRescue](https://www.system-rescue.org/) which is based on Arch and comes with the installation scripts and reflector pre-installed for maximum convenience. This is only if you already have a gist on how to install Arch and you don't want to use the TUI. - [Here](extra/misc/systemrescue.md) is more on this if you are interested.
-
-**NB: If you choose to use SystemRescue remember to write `pacman --config=/etc/pacman-rolling.conf -Sy` in the XFCE terminal before starting the tutorial.**
-
----
-
-
-### TUTORIAL PROPER
-
-**GPT Auto-Mount + KDE Plasma (Wayland) + NVIDIA**
-
-> **Prerequisites:** This guide assumes you have an AMD processor with NVIDIA graphics. For Intel CPUs, replace `amd-ucode` with `intel-ucode` throughout the installation.
-For AMDGPU or Intel GPU you should look either up at the Arch Wiki and replace the corresponding packages with those. I'd rather not clutter up the guide with a bunch of different setups, especially if I've never used those. It just confuses new users, like placeholders.
-
-
-
-## Step 0: Boot from ISO
-
-Set up your keyboard layou if you're not on an US keyboard, and verify UEFI boot:
+List available keymaps, or filter the list using part of your country's name or code:
 
 ```zsh
-# Set your keyboard layout, you can skip this is u use a normal keyboard (US)
-# each line in these code blocks is a separate line in the terminal FYI
-
-# # List all keymaps (scrollable):
 localectl list-keymaps | less
-
-# or filter by country code by writing:
-localectl list-keymaps | grep -i -E 'no'                   # Norway example
-                                                           # "no" is our ISO-639 code. Find yours by googling first
-                                                           # Then replace 'no' with your country code                 
-
-# For Norway it's "no-latin1". On Arch it's usually "*-latin1" and not just the country code.
-# Test out your keyboard after this, if it is wrong try another on the list.
-#
-# To write "-" on US keyboard which you will need to do to be able to write this command,
-# it's usually the first key left of backspace. For Norwegian/Nordic keyboard that's: \.
-loadkeys no-latin1
-
-# the default font for an arch install is tiny and it only gets worse as you get older
-# here is how you get it to something readable
-setfont ter-118n
-
-# if that is not big enough try this:
-setfont ter-132n    
-
-# and if even that is not big enough:
-setfont -d ter-132n  
-
-# Verify UEFI firmware, write it all out including && and echo.
-# It's just going to be a bunch of random variables that's confusing, however...
-#
-# If it says the quote at the end there then you are good.
-ls /sys/firmware/efi/efivars && echo "UEFI firmware detected"
-
-# Sync system clock
-timedatectl set-ntp true
-
-# --- Web Test (wired & Wi-Fi) ---
-
-# See your links & their state (names like enpXsY for Ethernet, wlan0 for Wi-Fi)
-ip link           # interface listing
-networkctl list   # networkd's view; "configured" with DHCP is what you want
-
----
-
-Ethernet:
-
-# If you're on Ethernet, DHCP should be automatic on the ISO.
-# You can confirm an IPv4/IPv6 address like:
-networkctl status | sed -n '1,80p'   # look for "Address:" and "Gateway:"
-
----
-
-Wi-Fi:
-
-# If you're on Wi-Fi, (1) make sure nothing is soft-blocked, (2) connect with iwctl.
-rfkill list
-rfkill unblock all         # if you see "Soft blocked: yes" for wlan      (safe to run always)
-
-# Discover your wireless device name (often "wlan0" on ISO)
-iwctl device list          
-
-# Scan & connect (replace SSID if your AP name has spaces keep the quotes)
-iwctl station "YOUR-DEV" scan
-iwctl station "YOUR-DEV" get-networks
-iwctl station "YOUR-DEV" connect "YOUR-SSID"   # iwctl will prompt for passphrase
-
----
-
-# DNS & IP sanity checks (these distinguish raw IP reachability vs DNS resolution)
-ping -c 3 1.1.1.1            # raw IP reachability (no DNS involved)
-resolvectl query archlinux.org
-ping -c 3 archlinux.org
-
-# HTTPS test (TLS & HTTP working)
-curl -I https://archlinux.org  # expect "HTTP/2 200" (or 301/302)
-
-# Time sync sanity (NTP via systemd-timesyncd)
-timedatectl status | sed -n '1,12p'  # look for "System clock synchronized: yes"
+localectl list-keymaps | grep -i -E 'no'
 ```
 
-## Step 1: Partition the NVMe drive with systemd-repart
+For my Norwegian keyboard, I use `no-latin1`. Test the layout after loading it and choose another if needed. On a Nordic keyboard using the US layout, the key labelled `\` near Backspace produces `-`.
+
+```zsh
+loadkeys no-latin1
+```
+
+Choose a readable console font. Start with:
+
+```zsh
+setfont ter-118n
+```
+
+If it is too small, try:
+
+```zsh
+setfont ter-132n
+```
+
+For a larger version:
+
+```zsh
+setfont -d ter-132n
+```
+
+### UEFI and clock
+
+Confirm that the firmware variables are available. The command should finish with `UEFI firmware detected`:
+
+```zsh
+ls /sys/firmware/efi/efivars && echo "UEFI firmware detected"
+timedatectl set-ntp true
+```
+
+### Network connection
+
+Check the available interfaces and their state:
+
+```zsh
+ip link
+networkctl list
+```
+
+**Ethernet:** DHCP should be automatic on the ISO. Look for an address and gateway:
+
+```zsh
+networkctl status | sed -n '1,80p'
+```
+
+**Wi-Fi:** Check for a soft block, unblock wireless if needed, and identify your wireless device:
+
+```zsh
+rfkill list
+```
+
+If wireless is soft-blocked:
+
+```zsh
+rfkill unblock all
+```
+
+List devices, then replace `YOUR-DEV` and `YOUR-SSID` in the connection commands. Keep the quotes, especially when the network name contains spaces. `iwctl` prompts for the passphrase.
+
+```zsh
+iwctl device list
+iwctl station "YOUR-DEV" scan
+iwctl station "YOUR-DEV" get-networks
+iwctl station "YOUR-DEV" connect "YOUR-SSID"
+```
+
+Check IP connectivity, DNS resolution, and HTTPS access. For the final command, expect a successful response or a redirect such as HTTP 301 or 302:
+
+```zsh
+ping -c 3 1.1.1.1
+resolvectl query archlinux.org
+ping -c 3 archlinux.org
+curl -I https://archlinux.org
+```
+
+Confirm the clock status before partitioning:
+
+```zsh
+timedatectl status | sed -n '1,12p'
+```
+
+## Step 1: Partition the disk
+
+**The apply commands below erase the selected disk. Confirm the device before continuing.**
 
 ```zsh
 lsblk -l
-
-# Set the device you want to operate on
-d=/dev/nvme0n1   # change if lsblk shows a different path:
-d=/dev/sda   # if sd# or sda specifically it's this instead.
-
-# Define the desired partitions for systemd-repart using nano
-mkdir -p /tmp/repart.d
 ```
 
-```zsh
-# Create 10-esp.conf
-nano /tmp/repart.d/10-esp.conf
+Set `d` to your installation disk. Choose **one** assignment. For the NVMe example:
 
-# 10-esp.conf
+```zsh
+d=/dev/nvme0n1
+```
+
+For a disk shown as `/dev/sda` instead:
+
+```zsh
+d=/dev/sda
+```
+
+Create the directory for the partition definitions:
+
+```zsh
+mkdir -p /tmp/repart.d
+nano /tmp/repart.d/10-esp.conf
+```
+
+Contents of `/tmp/repart.d/10-esp.conf`:
+
+```ini
 [Partition]
 Type=esp
 Label=EFI
@@ -201,44 +206,47 @@ SizeMinBytes=2G
 SizeMaxBytes=2G
 ```
 
-```zsh
-# Create 20-root.conf
-nano /tmp/repart.d/20-root.conf
+Create the root partition definition:
 
-# 20-root.conf
+```zsh
+nano /tmp/repart.d/20-root.conf
+```
+
+Contents of `/tmp/repart.d/20-root.conf`:
+
+```ini
 [Partition]
 Type=root
 Label=root
 Format=ext4
 ```
 
+Preview the layout:
+
 ```zsh
-# Preview the plan 
 systemd-repart \
   --definitions=/tmp/repart.d \
   --empty=force \
   --discard=no \
   "$d"
+```
 
-# Apply the changes for real. Pick ONE of these options.
-#
-# OPTION A) Normally without fast_commit:
-#
+Choose **one** of the following apply commands.
+
+**Standard Ext4:**
+
+```zsh
 systemd-repart \
   --definitions=/tmp/repart.d \
   --dry-run=no \
   --empty=force \
   --discard=no \
   "$d"
+```
 
----
+**Optional Ext4 fast commits:** `fast_commit` is an alternative journaling option. There have been reports of problems with it, so review whether you want it before choosing this variant.
 
-# OPTION B) If you want `fast_commit` enabled you run this command.
-#
-# ext4 has a faster journaling system called fast_commit
-# Be advised that some have reported issues with it, albeit a few years ago but still
-# According to the Arch wiki it significantly improves performance:
-#
+```zsh
 SYSTEMD_REPART_MKFS_OPTIONS_EXT4='-O fast_commit' \
   systemd-repart \
     --definitions=/tmp/repart.d \
@@ -246,264 +254,254 @@ SYSTEMD_REPART_MKFS_OPTIONS_EXT4='-O fast_commit' \
     --empty=force \
     --discard=no \
     "$d"
+```
 
----
+Inspect the resulting filesystems:
 
-# Optional: verify results
+```zsh
 lsblk -f "$d"
+```
 
-# Optional: verify fast_commit results
-# You should see fast_commit listed under features:
+If you chose fast commits, look for `fast_commit` in the features and inspect the fast commit length:
+
+```zsh
 tune2fs -l /dev/disk/by-label/root | grep features
-
-# optional, stronger check:
 dumpe2fs -h /dev/disk/by-label/root | grep -i 'Fast commit length'
 ```
 
-## Step 2: Mount filesystems (labels match your original layout)
+## Step 2: Mount filesystems
+
+Mount root first:
 
 ```zsh
-# Mount root first
 mount /dev/disk/by-label/root /mnt
 ```
 
-#### Create and mount EFI directory with strict masks
+Then create and mount the EFI directory:
 
 ```zsh
 mkdir -p /mnt/efi
 mount -o fmask=0177,dmask=0077,noexec,nodev,nosuid /dev/disk/by-label/EFI /mnt/efi
 ```
 
-[**Here**](extra/misc/why-EFI-options.md) is some information on why I use these options for mounting the EFI
+See [why I use these EFI mount options](extra/misc/why-EFI-options.md) for an explanation of the masks and restrictions.
 
----
+## Step 3: Install the base system
 
+### Choose mirrors
 
-## Step 3: Base System Install
+Use nearby countries for the mirror list. My example starts with Norway and its neighbours, then includes Germany and the Netherlands.
 
-First update mirrorlist for optimal download speeds, obv replace Norway and Germany.
-A good rule of thumb here is doing your country + closest neighbours and then a few larger neighbours after that.
-So for me it's Norway,Sweden,Denmark then Germany,Netherlands:
+On SystemRescue, install Reflector with `pacman --config=/etc/pacman-rolling.conf -S reflector` before this step.
+
+Choose one of these Reflector commands. The expanded form is easier to read:
 
 ```zsh
-# Update mirrorlist before install so you install with fastest mirrors
-# If on SystemRescue you must run this command before Reflector can be used:
-# pacman --config=/etc/pacman-rolling.conf -S reflector`
-#
-# PROTIP: "\" is a pipe, it basically is a fancy way to add a space to a command.
-# So essentially just write each line until there isnt a "\" and it will run it all as one command.
-# This is good for keeping large commands digestible during install.
-#
-reflector \ # this is a line, press enter                                      
-      --country 'Norway,Sweden,Denmark,Germany,Netherlands' \  # and it goes to the 2nd line, do same as first
-      --age 12 \ # same here & etc under  
-      --protocol https \ 
+reflector \
+      --country 'Norway,Sweden,Denmark,Germany,Netherlands' \
+      --age 12 \
+      --protocol https \
       --sort rate \
       --latest 10 \
-      --save /etc/pacman.d/mirrorlist  # then when pressing enter here w/o "\" it will run all the lines
+      --save /etc/pacman.d/mirrorlist
+```
 
-# When you understand all of this you can use a faster version of this command.
-# This will NOT rate your mirrors by fastest mirrors by testing them,
-# instead it will just sort them based on the countries:
+The shorter form uses country codes:
+
+```zsh
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 -l 10 --sort rate --save /etc/pacman.d/mirrorlist
+```
 
-# Or update reflector with this for reflector to test the mirrors and then rate them
-# with a longer timeout. NOTE that this will take longer time, but may be worth it for you
-# if you want the absolute best mirrors:
+Alternatively, allow a longer download timeout when testing mirrors:
+
+```zsh
 reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
 ```
 
-```zsh
-# and then **Install the base of Arch Linux!** :
-pacstrap /mnt base nano sudo
+### Install the base packages
 
-# Or if you use SystemRescue:
+From the official Arch ISO:
+
+```zsh
+pacstrap /mnt base nano sudo
+```
+
+From SystemRescue, use this instead:
+
+```zsh
 pacstrap -C /etc/pacman-rolling.conf -K /mnt base nano sudo
 ```
 
-## Step 4: System Configuration
+## Step 4: Configure the system
 
-### 4.1 Enter the Base
+### 4.1 Enter the installed system
 
 ```zsh
-# However before you can say you've installed arch you need to configure the system
 arch-chroot /mnt
 ```
 
+Run the following installation commands inside this chroot until the guide tells you to exit it.
 
+### 4.2 Create a user account
 
-### 4.5 Create User Account
+Install Zsh and Git, set the root password, and create your user. Replace `lars` with your chosen username:
 
 ```zsh
-# Install zsh & git
 pacman -S --needed zsh git
 
-# Set root password
 passwd
 
-# Create user with admin privileges (wheel):
 useradd -m -G wheel lars
 passwd lars
 
-# Set zsh as default shell for user
 chsh -s /usr/bin/zsh lars
 ```
 
+Enable sudo for the `wheel` group:
+
 ```zsh
-# Finally enable sudo for wheel group
 EDITOR=nano visudo
-# Uncomment: %wheel ALL=(ALL:ALL) ALL
 ```
 
+In the editor, uncomment `%wheel ALL=(ALL:ALL) ALL`, then save.
 
-### 5.5 Install Packages
+### 4.3 Install kernels and firmware
+
+Install the main and backup kernels with their headers. The name `linux-zen` refers to desktop tuning, not AMD's Zen CPU architecture.
+
 ```zsh
-# linux-zen is a tuned kernel for desktop use.
-# it has nothing to do with the Zen architecture by AMD FYI.
 pacman -S --needed linux-zen linux-lts linux-zen-headers linux-lts-headers
+```
 
-# Install firmware and some core packages:
-# For AMD CPUs:
+Choose the firmware command for your CPU. For AMD:
+
+```zsh
 pacman -S --needed linux-firmware amd-ucode nano sudo systemd-ukify
+```
 
-# For INTEL CPUs:
+For Intel, use this instead:
+
+```zsh
 pacman -S --needed linux-firmware intel-ucode nano sudo systemd-ukify
 ```
 
+#### Optional: Use Dash for sh scripts
+
+I use Dash for `/usr/bin/sh` to reduce shell startup overhead. Scripts that assume Bash features while declaring themselves as `sh` can fail with this change. Skip it if you prefer to keep the existing shell. `checkbashisms` can help identify such scripts.
+
 ```zsh
-# OPTIONAL: Point /bin/sh to dash for 4x faster sh scripts which can make up a lot
-# of daily operation in Linux
-#
-# BE ADVISED it can lead to problems with "bashisms"
-# but it's not a super huge problem, as it's default on Debian & Ubuntu
-# Because of that it is de facto a standard in Linux for most shell scripts to
-# come with a header that explicitly defines a bash script whenever necessary.
-#
-# You will be fine, but if you are ever unsure then you can
-# run "checkbashisms" on the *.sh file via the terminal or skip this step entirely.
 pacman -S --needed dash checkbashisms
 
-# Then do this to symlink dash to /usr/bin/sh
 ln -sfT dash /usr/bin/sh
 ```
 
-### 4.2 Set Timezone
+### 4.4 Set the timezone
+
+Replace `Europe/Oslo` with your timezone, then set the hardware clock:
 
 ```zsh
-# Set timezone to your own continent and city
 ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
-# Set hardware clock
 hwclock --systohc
 ```
 
-### 4.3 Configure Locale & Keyboard
+### 4.5 Configure language and keyboard
 
-Now we are going to configure our system language. You may edit or skip depending on your language and what you want, but if unsure here is what I usually go with: 
+My setup uses English for the interface, Norwegian day and month names, a 24-hour clock, and metric measurements. Replace the Norwegian locale with your own regional choice, or leave out those overrides to use the main locale throughout.
 
-I am configuring a system that uses the English language in every aspect except for the date format, clock and measurement units. 
-
-* Dates will display with Norwegian names for both days and months and with Norwegian date formatting for DD/MM/YYYY.
-* The clock will display as 00:00 in what the Americans call "military time" instead of 0:00 with AM and PM. 
-* And finally my measurement units to default to what my language uses, which is metric. 
-
-Using the country code in `locale.gen` with fine grained `locale.conf` settings achieves this, if you want this type of system too but with your own language/country defaults you can just use your own in place of the Norwegian one.
+Open the locale list:
 
 ```zsh
-# Open up locale.gen in nano to see list of country codes
 nano /etc/locale.gen
+```
 
-# Go down the list and uncomment both:
-Uncomment: en_US.UTF-8 UTF-8 # for U.S English
-Uncomment: nb_NO.UTF-8 UTF-8 # for Bokmål Norwegian (replace with your own or leave out)
+Uncomment these entries, substituting your regional locale if needed:
 
-# Then generate locales
+```text
+en_US.UTF-8 UTF-8
+nb_NO.UTF-8 UTF-8
+```
+
+Generate the locales and open the system locale configuration:
+
+```zsh
 locale-gen
-
----
-
-# Set system locale
 nano /etc/locale.conf
+```
 
-# add
-LANG=en_US.UTF-8    # LANG for system language
-LC_TIME=nb_NO.UTF-8 # LC_TIME for date & time to my specific LANG default
-LC_MEASUREMENT=nb_NO.UTF-8 # This defaults your measurement units to your LANG default
+Contents of `/etc/locale.conf`. `LANG` sets the main language; the other two settings override time and measurement formats:
 
----
+```ini
+LANG=en_US.UTF-8
+LC_TIME=nb_NO.UTF-8
+LC_MEASUREMENT=nb_NO.UTF-8
+```
 
-# Set console keymap & font
+Set the console keymap and a larger console font:
+
+```zsh
 nano /etc/vconsole.conf
+```
 
-# add
-KEYMAP=no-latin1 # Keyboard layout for the administrative console
-FONT=ter-118n  # This is a console font which makes boot font larger,
-               # and more easily readable.
----
+Contents of `/etc/vconsole.conf`:
 
-# One issue with kde is that it neither respects nor inherits
-# system level keymaps. It uses its own system for this.
-# So in order to not boot into a system with us keymap
-# and having to manually change it in system settings
-# you have to make a custom user level config.
+```ini
+KEYMAP=no-latin1
+FONT=ter-118n
+```
 
-# Create config folder and
-# the keymap config file
-# Change "lars" to your user
+KDE has its own keyboard configuration. Create it for your user so the desktop starts with the intended layout:
+
+```zsh
 mkdir -p /home/lars/.config
 nano /home/lars/.config/kxkbrc
 ```
 
-```ini
-# Put this in the file, but edit "no" to your own country code:
+Contents of `kxkbrc`. Replace `no` with your layout code:
 
+```ini
 [Layout]
 LayoutList=no
 Use=true
 VariantList=
 ```
 
+Save the file, then set its ownership and permissions. Replace both instances of `lars` in the ownership argument as well as the home directory:
+
 ```zsh
-# Save, then fix ownership
-# again change "lars" to your user:
 chown -R lars:lars /home/lars/.config
 chmod 644 /home/lars/.config/kxkbrc
-
 ```
 
-### 4.4 Set Hostname and Hosts
+### 4.6 Set the hostname
+
+Replace `BigBlue` with the name you want for this computer:
 
 ```zsh
-# Set hostname, echo lets you do it quickly w/o using nano
-# good for one line stuff
-#
 echo "BigBlue" > /etc/hostname
-
-# Configure hosts file
 nano /etc/hosts
+```
 
-## add to /etc/hosts:
+Add these entries to `/etc/hosts`, using the same hostname:
+
+```text
 127.0.0.1 localhost BigBlue
 ::1       localhost
 ```
 
+### 4.7 Install the desktop packages
 
+These lists include KDE Plasma, Dolphin and its plugins, PipeWire audio, fonts, networking, graphics drivers, and supporting tools. Read the [package explanations](extra/misc/pkgchoices.md#essential-packages-included) before installing.
 
-# 4.6 Install the System
+**Privacy choice:** The lists include `pkgstats`, which sends package usage information to Arch Linux. You can omit it and other optional packages. The [package choices guide](extra/misc/pkgchoices.md) explains my reasoning.
 
-These are all the packages needed for a complete & functional KDE Plasma desktop environment. 
+Choose **one** package list for your GPU.
 
-What is included is the complete KDE Plasma desktop stack, English spell check, graphics drivers with hardware acceleration drivers, CUDA (NVIDIA), networking, various helpers for other packages like `usbutils` and `tessaract`, the Dolphin file manager and its plugins, PipeWire sound support, and fonts. - For a detailed description of each package, you can read [**this**](extra/misc/pkgchoices.md#essential-packages-included)
+#### NVIDIA
 
-**Note:** An official Arch Linux developed telemetry package that helps Arch Linux out by sending a list of the packages you use to the devs & maintainers of Arch is included here called `pkgstats`, other less "controversial" packages are also included and these can be left out if desired. - [**Here's**](extra/misc/pkgchoices.md) why I included those. **Please review them before installing.**
-
-
-NVIDIA: 
 ```zsh
-# pipe commands, like before type out each pipe line, press enter on each until base-devel
-# then when u press enter it installs it all
 pacman -S --needed \
   networkmanager reflector pkgstats \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
@@ -517,7 +515,8 @@ pacman -S --needed \
   base-devel
 ```
 
-or AMDGPU:
+#### AMDGPU
+
 ```zsh
 pacman -S --needed \
   networkmanager reflector pkgstats \
@@ -535,7 +534,10 @@ pacman -S --needed \
   base-devel
 ```
 
-or Intel GPUs (I think):
+#### Intel GPU
+
+I have not verified this setup on my own hardware. Check the package choices for your GPU before using it.
+
 ```zsh
 pacman -S --needed \
   networkmanager reflector pkgstats \
@@ -553,145 +555,118 @@ pacman -S --needed \
   base-devel
 ```
 
-### OPTIONAL: wireless-regdb
-If you use wireless then an **essential package** is also `wireless-regdb`. It installs regulatory.db, a machine-readable table of Wi-Fi rules per country  that allows you to connect properly. If regulatory.db is missing or cannot be read, Linux falls back to the “world” regdomain 00. That profile is **intentionally conservative,** which means fewer channels and more restrictions. For example, world 00 marks many 5 GHz channels as passive-scan only and limits parts of 2.4 GHz (12–13 passive, 14 effectively off).
+#### Wi-Fi regulatory database
 
-This is not needed if you only use Ethernet.
+If you use Wi-Fi, install `wireless-regdb` and set your region. Its regulatory database describes the channels and restrictions for each country. Without a usable database, the conservative world domain can limit available channels. Ethernet-only systems can skip this step.
 
 ```zsh
-# install
 pacman -S --needed wireless-regdb
-
-# after install enable your region
 nano /etc/conf.d/wireless-regdom
+```
 
-# For example, for Norway look for the one that says "NO",
-# then uncomment the line by removing the # symbol at the beginning
-# so it looks exactly like this:
+Uncomment the entry for your country. For Norway:
+
+```sh
 WIRELESS_REGDOM="NO"
-
-# then save
 ```
 
+### 4.8 Configure the initramfs
 
-
-### 4.6 Configure Initramfs
+Edit both `MODULES` and `HOOKS` in `/etc/mkinitcpio.conf`:
 
 ```zsh
-# Edit mkinitcpio configuration, you will have to edit both MODULES & HOOKS
-# Modules loads drivers early on which prevents the race issues that plague NVIDIA on Linux
-# NVIDIA users are also required to remove 'kms' from HOOKS because of this.
 nano /etc/mkinitcpio.conf
-
----
-
-# MODULES
-#
-# For amdgpu just put 'amdgpu' in modules
-# NVIDIA on the other hand is as always a bit more involved:
-
-MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
-
----
-
-# HOOKS
-#
-# - IMPORTANT: Again, you must remove 'kms' from HOOKS=() if you use nvidia, AMDGPU can ignore this however
-
-HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block filesystems fsck)
-
-
 ```
 
-### 4.8 Install UKIs and Configure Bootloader
+For NVIDIA, the guide loads these modules early and omits `kms` from the hooks:
+
+```sh
+MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block filesystems fsck)
+```
+
+For AMDGPU, use `amdgpu` in `MODULES`; the NVIDIA instruction to remove `kms` does not apply.
+
+### 4.9 Install UKIs and configure the boot loader
+
+Install systemd-boot. Keep `--variables=yes` so bootctl writes the firmware boot variables from the chroot. Without that override, container detection introduced in systemd 257 can cause that step to be skipped.
 
 ```zsh
-# Install systemd-boot
-#
-# NOTE: Remember to include `--variables=yes` flag. - Here's why:
-# Starting with systemd version 257, bootctl began detecting
-# environments like arch-chroot as containers...
-#
-# This is an intended change and without it, it silently skips
-# the step of writing EFI variables to NVRAM...
-#
-# For non-nerds: This prevents issues where the boot entry
-# might not appear in the firmware's boot menu...
-#
 bootctl install --esp-path=/efi --variables=yes
 ```
 
-### Add a minimal cmdline with kernel option(s)
+#### Kernel command line
 
-`/etc/kernel/cmdline` is a configuration file that stores the Linux kernel command-line parameters that should be used when generating boot entries or Unified Kernel Images (UKIs). It typically contains a single line with options such as `rw`, `quiet`, `loglevel=3`, NVIDIA parameters, zswap settings, and other kernel arguments. Tools such as `kernel-install` read this file so the same kernel parameters are automatically embedded or applied whenever a kernel image is rebuilt. 
-
-i.e Since we use UKIs this is where your Linux kernel settings will go but we will also place root filesystem settings in here due to using systemd-gpt-automount which doesn't use fstab for this and in general.
+`/etc/kernel/cmdline` holds the parameters embedded in the UKIs. This guide also puts root mount options there because it uses GPT discovery instead of a root entry in `fstab`.
 
 ```zsh
-# Open up cmdline and edit it
 nano /etc/kernel/cmdline
 ```
 
-```zsh
-## add to /etc/kernel/cmdline :
+Contents of `/etc/kernel/cmdline`, all on one line:
+
+```text
 rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=zstd zswap.max_pool_percent=30
 ```
 
-With `systemd-gpt-auto-generator` you do not need to specify UUIDs of your drives, the only thing required here is `rw`. Read more about the other settings added [**here**](extra/misc/kernelflags.md).
+GPT discovery avoids needing a root filesystem UUID here. Read the [kernel flag explanations](extra/misc/kernelflags.md) before choosing the additional settings.
 
-#### Make the ESP directory
+#### Generate the UKIs
+
+Create the directory and open the kernel-install configuration:
+
 ```zsh
-# Make ESP directory
 mkdir -p /efi/EFI/Linux
 ```
 
-#### Edit kernel-install config so it installs UKIs to the ESP
-
 ```zsh
-# Edit:
 nano /etc/kernel/install.conf
 ```
 
-```zsh
-# Add only:
+Contents of `/etc/kernel/install.conf`:
+
+```ini
 layout=uki
 ```
 
-### Now install kernel UKIs
+Install the kernel images:
+
 ```zsh
-# Simply run
 kernel-install add-all
 ```
 
-#### Configure bootloader
+Open the boot loader configuration:
 
 ```zsh
-# write the loader
 nano /efi/loader/loader.conf
+```
 
-## add to loader
+Contents of `/efi/loader/loader.conf`:
+
+```text
 timeout 10
 console-mode auto
 editor no
 ```
 
-### 4.9 Create swap file & Configure Zswap
+### 4.10 Create a swap file
 
-For swapping I always go with `zswap` file instead of a swap partition or `zram`.  I used to use `zram` but I have read some write-ups done by much smarter people than myself who have come to the conclusion that for most users `zswap` is recommended. If you are curious, read [**this**](https://chrisdown.name/2026/03/24/zswap-vs-zram-when-to-use-what.html) and [**this**](https://linuxblog.io/zswap-better-than-zram/).
+I use Zswap with a swap file rather than Zram. For background on that choice, see [Chris Down's Zswap and Zram comparison](https://chrisdown.name/2026/03/24/zswap-vs-zram-when-to-use-what.html) and [LinuxBlog's discussion of Zswap](https://linuxblog.io/zswap-better-than-zram/).
+
+Create and initialize a 16 GiB swap file. `--file` creates the file with the required allocation and permissions; `-U clear` clears its UUID:
 
 ```zsh
-# Create a 16 GiB swap file and initialize it in one step.
-#   --size 16G   -> allocate a 16 GiB file
-#   --file       -> create the file with correct mode and real blocks
-#   -U clear     -> clear any existing UUID in the header
 mkswap -U clear --size 16G --file /swapfile
 ```
 
-edit:
+Create the swap unit:
+
 ```zsh
 nano /etc/systemd/system/swapfile.swap
 ```
-and add:
+
+Contents of `/etc/systemd/system/swapfile.swap`:
+
 ```ini
 [Unit]
 Description=Swap file
@@ -703,247 +678,218 @@ Priority=100
 [Install]
 WantedBy=swap.target
 ```
-then:
+
+Enable it for boot:
+
 ```zsh
 systemctl enable swapfile.swap
 ```
 
----
+## Kernel and desktop settings
 
-## Kernel Optimizations & Tweaks
+### Kernel settings
 
-`/etc/sysctl.d/` is the drop-in configuration directory for persistent Linux kernel changes & tweaks during runtime. Settings in *.conf files in this directory are applied automatically during boot. The changes offered here are a combination of CachyOS settings and other sources. To read what they do, middle click [**here.**](configs/70-settings.conf) to open it in another tab
+Files in `/etc/sysctl.d/` configure kernel parameters at boot. My settings combine choices from CachyOS and other sources. Read the [settings and their explanations](extra/misc/kernel-settings.md) before applying them.
+
+Clone this repository and copy the configuration:
 
 ```zsh
-# Clone repo first:
 cd /tmp
 git clone https://github.com/larsoyd/ArchLinuxTutorials.git
 
-# Then leave tmp directory
 cd
-# Create sysctl.d folder
 mkdir -p /etc/sysctl.d/
 
-# copy from tmp
 cp /tmp/ArchLinuxTutorials/configs/70-settings.conf /etc/sysctl.d/70-settings.conf
 ```
 
+Load the system's sysctl settings:
+
 ```zsh
-# Load settings from all system configuration files to configure kernel parameters at runtime.
 sysctl --system
 ```
-
----
 
 ### Enable REISUB via sysctl
 
-* This is an optional but highly recommended tweak which enables all the Magic SysRq functions needed for **REISUB.** This is a way to safely shut down your system if it ever freezes without having to use the power button which carries the inherent risk of corrupting your file system. - [**Read this document**](extra/misc/REISUB.md) carefully to understand what it is, how to use it, and why you should want to enable it despite the risks.
+This optional setting enables the Magic SysRq functions used by REISUB to recover from a frozen system. Read the [REISUB instructions and risks](extra/misc/REISUB.md) before enabling it.
 
 ```zsh
-# create file
 nano /etc/sysctl.d/99-sysrq.conf
 ```
 
-```zsh
-# /etc/sysctl.d/99-sysrq.conf
-#
-# 244 is the sum of:
-# 4: keyboard control, used by R
-# 64: signal processes, used by E and I
-# 16: sync filesystems, used by S
-# 32: remount filesystems read-only, used by U
-# 128: reboot or power off, used by B
+Contents of `/etc/sysctl.d/99-sysrq.conf`:
+
+```conf
 kernel.sysrq = 244
 ```
 
+The value `244` combines keyboard control (`4`), process signals (`64`), filesystem sync (`16`), read-only remounts (`32`), and reboot or power off (`128`).
+
+Apply the settings:
+
 ```zsh
-# Load settings from all system configuration files to configure kernel parameters at runtime.
 sysctl --system
 ```
 
----
-
 ### Udev rules
 
-udev is Linux’s device manager.  It reacts to hardware events, such as a disk being added or changed, and applies matching rules from .rules files. This can help tweak the system behavior to your liking. Rule files are processed in lexical order, so the numeric prefix in `60-ioschedulers.rules` for example controls when this rule is evaluated relative to other udev rules.
+Udev reacts to device events and processes `.rules` files in filename order. This rule selects I/O schedulers for hard disks, SATA/MMC SSDs, and NVMe SSDs.
 
-#### 60-ioschedulers.rules
-
-This udev rule persistently & dynamically sets Linux block-device I/O schedulers when storage devices are added or changed based on the best scheduler for w/e you have. An I/O scheduler controls how read and write requests are ordered before they reach a storage device. The goal is better desktop responsiveness and more sensible latency behavior per drive type, instead of relying on one default for everything.
+Create the directory:
 
 ```zsh
-# Create folder
 mkdir -p /etc/udev/rules.d
+```
 
-# Auto (if repo cloned)
+Choose either **copying the supplied rule**:
+
+```zsh
 cp /tmp/ArchLinuxTutorials/rules.d/60-ioschedulers.rules /etc/udev/rules.d/60-ioschedulers.rules
+```
 
-# Manually:
+Or **creating it manually**:
+
+```zsh
 nano /etc/udev/rules.d/60-ioschedulers.rules
 ```
 
+For the manual option, use these contents:
+
 ```conf
-# /etc/udev/rules.d/60-ioschedulers.rules
-# HDD
 ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="1", \
     ATTR{queue/scheduler}="bfq"
 
-# SSD
 ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", \
     ATTR{queue/scheduler}="mq-deadline"
 
-# NVMe SSD
 ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", \
     ATTR{queue/scheduler}="kyber"
 ```
 
-The rest of the rules are optional/hardware specific. [**Here's the list of them**](extra/tutorials/udev-rules.md) . You may pick and choose which ones seem best for your system.
+See the [optional udev rules](extra/tutorials/udev-rules.md) for other hardware-specific choices.
 
----
+### Module settings
 
-
-### modprobe.d optimizations 
+These settings are adapted from CachyOS. Review the [module settings and tradeoffs](extra/misc/kernel-settings.md#module-settings) and choose the files that apply to your hardware.
 
 ```zsh
-# These are optimizations as well.
-# Create folder
 mkdir -p /etc/modprobe.d/
+```
 
-# These are pretty much verbatim lifted from CachyOS
-# Go and analyze them yourself before copying to ensure
-# you actually want their tweaks. Most of them are general
-# improvements that you won't notice any regression from,
-# but its still good to be certain.
-#
-# copy NVIDIA (if you have NVIDIA)
+For NVIDIA:
+
+```zsh
 cp /tmp/ArchLinuxTutorials/configs/nvidia.conf /etc/modprobe.d/20-nvidia.conf
+```
 
-# copy AMDGPU (if you plan to use AMDGPU)
+For AMDGPU, if you want the supplied driver selection settings:
+
+```zsh
 cp /tmp/ArchLinuxTutorials/configs/amdgpu.conf /etc/modprobe.d/21-amdgpu.conf
+```
 
-# copy blacklist
+To apply the watchdog blacklist:
+
+```zsh
 cp /tmp/ArchLinuxTutorials/configs/blacklist.conf /etc/modprobe.d/22-blacklist.conf
 ```
 
----
+### Colour emoji fallback
 
-### Fix Emojis rendering as black and white
-
-Several programs on Linux like Firefox are finicky when it comes to looking up the best font for emojis. Often they default to monochrome emojis instead of your color emojis. The best solution is just to add a color emoji font as an explicit fallback
-
-This fix uses Noto-Fonts-Emoji, we installed it in the list of packages. If you later replace it with another Emoji package, make sure to update this as well.
+Some applications select monochrome emoji fonts. This configuration adds Noto Color Emoji as an explicit fallback. The package list above includes `noto-fonts-emoji`; update the configuration if you later choose another emoji font.
 
 ```zsh
-# make dir if it doesn't already exist
 mkdir -p /etc/fonts/conf.d
 
-# copy it from tmp
 cp /tmp/ArchLinuxTutorials/configs/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
 ```
 
----
+### GTK portals
 
-### Force GTK to use Portals
+These settings request portal integration for GTK applications on KDE, including file pickers:
+
 ```zsh
-# This is important for file pickers and GTK windows on KDE
-# This may mean nothing to you now, but basically its the
-# difference between either having a maximize button on
-# the titlebar of Firefox or not.
-#
 mkdir -p /etc/environment.d
-nano /etc/environment.d/99-portal.conf 
+nano /etc/environment.d/99-portal.conf
 ```
 
+Contents of `/etc/environment.d/99-portal.conf`:
+
 ```ini
-# 99-portal.conf 
 GTK_USE_PORTAL=1
 GDK_DEBUG=portals
 ```
 
----
+### Configure systemd-resolved
 
-### Add a DNS Resolver (systemd-resolved)
+I use systemd-resolved for its local DNS stub, per-link DNS routing, and split-DNS support for VPNs and multiple networks. It also offers LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration.
 
-* This is a good desktop default. What you gain over the more typical default Arch setup is DNS behavior. With plain NetworkManager plus a conventional `/etc/resolv.conf`, DNS is usually just a flat list of nameservers. With `systemd-resolved`, you get a modern stub resolver at `127.0.0.53`, per-link DNS routing, and better split-DNS behavior, which matters for VPNs and multi-network systems. The resolver also supports LLMNR, mDNS, DNSSEC controls, and DNS-over-TLS configuration, i.e it has some features you may want to learn & use in the future. 
-
-* `systemd-resolved` maintains `/run/systemd/resolve/stub-resolv.conf` for traditional programs, and that file should be used through a symlink from `/etc/resolv.conf`. 
-
-* **NOTE: It must be configured to use the resolver before you reboot into Arch due to the chroot environment. I show how to do that in the last step, but be very wary of not skipping it!**
+Create NetworkManager's configuration:
 
 ```zsh
-# Create NetworkManager's local config directory
 mkdir -p /etc/NetworkManager/conf.d
 
-# Create the systemd-resolved DNS config
 nano /etc/NetworkManager/conf.d/20-systemd-resolved.conf
 ```
 
-```ini
-# /etc/NetworkManager/conf.d/20-systemd-resolved.conf
+Contents of `/etc/NetworkManager/conf.d/20-systemd-resolved.conf`:
 
+```ini
 [main]
 dns=systemd-resolved
 rc-manager=auto
 ```
 
+Enable the resolver:
+
 ```zsh
-# Enable the service for the installed system.
 systemctl enable systemd-resolved.service
 ```
 
----
+**Complete the resolver symlink step below after leaving the chroot and before unmounting.** Traditional DNS clients need `/etc/resolv.conf` to point to the stub configuration.
 
+## Step 5: Complete the installation
 
-## Step 5: Complete Installation
+Inside the chroot, enable the services. Include `cups.service` if you use a printer, and `bluetooth.service` if you installed `bluez` and `bluez-utils` for Bluetooth.
 
 ```zsh
-# Enable Essential Services
-# 
-# Include cups.service if you are using printer
-# Include bluetooth.service for Bluetooth if you installed bluez and bluez-utils
 systemctl enable NetworkManager plasmalogin systemd-timesyncd systemd-boot-update.service \
 fstrim.timer reflector.timer pkgstats.timer
+```
 
-# Exit environment
+Exit the chroot:
+
+```zsh
 exit
+```
 
-# Make /etc/resolv.conf use systemd-resolved's stub resolver.
-#
-# ! ENSURE you do this here before umounting !
-#
-# This is what makes traditional DNS clients use 127.0.0.53 correctly.
+Back in the live environment, create the resolver symlink **before unmounting**:
+
+```zsh
 ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+```
 
-# When done and confirmed done, then unmount all partitions
+Unmount the installed system and shut down:
+
+```zsh
 umount -R /mnt
-
-# And shut down system.
 shutdown now
 ```
 
-Remove ArchISO USB from computer then boot back into it via power button.
-If you did everything correct, **congrats you just installed Arch Linux!**
+Remove the installation USB, then turn the computer back on. You should now be able to boot into Arch and KDE Plasma.
 
----
+## Troubleshooting
 
-### TROUBLESHOOT 
+### The panel is missing or on the wrong monitor
 
-#### 1) "My Panel/Taskbar is not appearing! / its on the wrong monitor!"
+1. Right-click the desktop and open **Display Configuration**.
+2. Open **Change Screen Priorities** and move your preferred monitor up the list.
+3. Apply the change. The panel should move to the primary screen and remain there after rebooting.
 
- 1. Right click on desktop and click Display Configuration. 
- 2. Go to "Change Screen Priorities" and click the arrows up in prio for the monitor you want
- the panel on.
- 3. Then press OK. It should refresh and show panel on your primary now. This persists on reboot. 
-   
-This happens to me every time I install KDE on my desktop with three monitors.  I have no idea why. Used to be worse when changing primary monitor didnt move the panel, back then you had to refresh the theme then it would move, but now all you need to do to fix this issue is this. This only happens on multi monitor setups, my laptop with one screen obv doesn't have this issue.
+I encounter this on my desktop with three monitors. Changing the screen priority has been enough to fix it on that setup.
 
+## Next steps
 
----
+Continue with the [post-install tutorial](arch_kde_post_tutorial.md) for my preferred desktop settings, applications, and maintenance tools. It is optional, but I recommend reading it even if you only adopt some of the choices.
 
-# 1) Post-Install Tutorial
-Head on over to the [Post-Install Tutorial](arch_kde_post_tutorial.md) to set up your system with the best defaults (IMO). In it I teach you many things that you should know when using Arch so I do not consider it to be optional, but technically after this tutorial is over you have a bootable system with KDE on Arch so if you want to trial and error instead be my guest. 
-
-If you don't want to do the post-install but you still want to enable SecureBoot and drive encryption, then click [**here**](extra/tutorials/secureboot.md)
-
----
-
+For boot security and encryption, see the [Secure Boot guide](extra/tutorials/secureboot.md) and [LUKS guide](extra/tutorials/luks.md).

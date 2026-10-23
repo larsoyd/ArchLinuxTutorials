@@ -1,4 +1,4 @@
-> Click [HERE](../../arch_kde_tutorial.md#48-install-ukis-and-configure-bootloader) to go back to the tutorial.
+> Click [HERE](../../arch_kde_tutorial.md#49-install-ukis-and-configure-the-boot-loader) to go back to the tutorial.
 
 # Kernel cmdline Options
 

@@ -1,24 +1,22 @@
-> Click [HERE](../../arch_kde_tutorial.md#step-2-mount-filesystems-labels-match-your-original-layout) to go back to the tutorial.
+# EFI mount options
 
-I mount the EFI like this:
+[Return to the installation guide](../../arch_kde_tutorial.md#step-2-mount-filesystems).
+
+I mount the EFI System Partition with these options:
 
 ```zsh
 mkdir -p /mnt/efi
 mount -o fmask=0177,dmask=0077,noexec,nodev,nosuid /dev/disk/by-label/EFI /mnt/efi
 ```
 
-Those options are a security-friendly way to mount the EFI System Partition.
-They won’t get in your way for normal use.
+VFAT does not store Unix permissions. The masks supply them when the filesystem is mounted:
 
-fmask=0177 and dmask=0077: VFAT does not store Unix permissions.
-These masks tell the kernel how to fake them: files become 600 (owner read/write, no exec),
-directories 700 (owner only).
+| Option | Effect |
+|---|---|
+| `fmask=0177` | Files appear with mode `600`: root can read and write them. |
+| `dmask=0077` | Directories appear with mode `700`: root can access them. |
+| `noexec` | Prevent execution of programs from this mount. |
+| `nodev` | Do not interpret files on this mount as device nodes. |
+| `nosuid` | Ignore setuid and setgid bits. |
 
-In other words, only root can read or write there, and files are not marked executable.
-They are the right defaults for an EFI partition and won’t interfere with normal operation.
-
-noexec: blocks running programs from that filesystem. 
-nodev: device files on that filesystem are not treated as devices. 
-nosuid: any setuid or setgid bit is ignored, so binaries there cannot gain elevated privileges. 
-
-
+These restrictions apply to access through the mounted filesystem.

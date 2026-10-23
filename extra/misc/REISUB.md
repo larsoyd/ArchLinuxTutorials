@@ -1,21 +1,28 @@
-> Click [HERE](../../arch_kde_tutorial.md#enable-reisub-via-sysctl) to go back to the tutorial.
+# REISUB: restart a frozen system
 
-## REISUB - WHAT? HOW? WHY?
+[Return to the installation guide](../../arch_kde_tutorial.md#enable-reisub-via-sysctl).
 
-* REISUB is an emergency restart procedure for Linux. You use it when the computer appears completely frozen and normal options, such as closing programs, switching to a virtual terminal with **CTRL + ALT and then pressing F4,** or choosing Restart in the GUI, no longer works. The only option without this left is to use the power button, **which is not recommended on Linux as it can easily lead to file system corruption.**
+REISUB is an emergency restart sequence for Linux. Use it as a last resort when the desktop is frozen and normal recovery, such as switching to a virtual terminal with Ctrl+Alt+F4, no longer works. It gives the kernel a chance to sync and remount filesystems before rebooting, reducing the risk associated with abruptly cutting power.
 
----
+## How to use it
 
-* REISUB is activated by holding **Alt + SysRq/Print Screen, then pressing R E I S U B one at a time,** allowing a moment between S, U, and B. The kernel documents R as restoring keyboard mode, E and I as terminating processes, S as syncing filesystems, U as remounting read-only, and B as rebooting immediately.
+Hold **Alt+SysRq/Print Screen** and press **R E I S U B**, one key at a time. Allow time between the sync, remount, and reboot steps.
 
-* This can be a bit tough to remember since you won't use this much or ever hopefully, so the best way to remember it is to write a text file called REISUB in your home folder and just have it there so you are reminded of it. After you reboot into your system you can go on my repo and simply download this file `REISUB.md` and put it in your user folder/home manually, that way you have the reminder *and* a guide.
-  
-* You can also visualize Rei from Neon Genesis Evangelion eating a vegan subway sandwich, I know it sounds dumb but visual metaphors help you remember things.
+| Key | Action |
+|---|---|
+| R | Restore keyboard mode |
+| E | Ask processes to terminate |
+| I | Kill remaining processes |
+| S | Sync filesystems |
+| U | Remount filesystems read-only |
+| B | Reboot immediately |
 
----
+Keep a copy of this guide somewhere you can consult it when the computer is unresponsive. I remember the name by picturing Rei from *Neon Genesis Evangelion* eating a Subway sandwich. Silly, but it sticks.
 
-* On Arch REISUB is not enabled by default due to upstream security considerations. Arch inherits the systemd default of `16`. Because Magic SysRq is handled directly by the kernel a malicious actor can use it to really mess with your day if they want to troll you. With what I enable they can remount file systems, & reboot your system without a security prompt.
+## Why it is optional
 
-* REISUB is a *last resort* fail safe to reboot a Linux system without using the power button if the system is completely unresponsive. If your system is ever frozen on Linux **YOU MUST NEVER EVER *EVER* use the power button on your comp to forcibly shut it down,** I am not joking when I say that literally every single file system issue I have ever had on Linux was the result of me doing that. Now the problem is that without REISUB the rare times that your system is completely unresponsive you have no choice but to risk your filesystem health by using the power button. Enabling REISUB solves that by giving you  one last escape hatch.
+The installation guide enables the required functions with `kernel.sysrq = 244`. The default described by this guide is `16`, which enables sync alone.
 
-* The risks may sound scary, but for a single user desktop computer it's not really a big deal, for a laptop that you will carry around you might want to evaluate if the risk is worth it, but for the most part even there the risk is minimal. The most realistic worst case scenario is that some marauding Linux nerd wants to be a dick for no reason and reboot your system via the keyboard. But its worth noting that they can literally do that already via the power button. - **TL;DR** I think it is well worth the risk when you compare it to the risk of corrupting your file system via a power shutdown which mind you **is high**. However as always: [**Caveat Utilitor.**](https://legal-resources.uslegalforms.com/c/caveat-utilitor)
+Magic SysRq is handled by the kernel and does not ask for a desktop password. Enabling these functions lets someone with keyboard access terminate processes, remount filesystems, or reboot the machine. Consider that tradeoff, especially for a laptop used in public.
+
+I enable it on my desktop because I want another recovery option before resorting to the power button. It is an emergency tool, not a replacement for normal shutdown.

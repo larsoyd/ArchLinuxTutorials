@@ -1,4 +1,3 @@
-# /etc/udev/rules.d/20-audio-pm.rules
 # Disable HDA audio power saving on external power and restore it on battery
 
 ACTION=="add", SUBSYSTEM=="sound", KERNEL=="card*", DRIVERS=="snd_hda_intel", TEST!="/run/udev/snd-hda-intel-powersave", \

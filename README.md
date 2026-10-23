@@ -1,16 +1,26 @@
-# Complete Arch Linux Tutorial w/ Automounting Partitions & KDE Plasma 6
+# Arch Linux with KDE Plasma
 
-This is a OPINIONATED Arch installation guide for people that just want a working system to game on & daily drive. This tutorial is only for installing Arch Linux with KDE Plasma 6.
-The tutorial is split into a Install tutorial which is the ArchISO/chroot part of the tutorial, while the Post-Install is after rebooting into the system. Post-Install tutorial is not strictly necessary though strongly recommended.
+An opinionated guide to installing Arch Linux with KDE Plasma, Wayland, and automatic GPT partition discovery. I use this setup for gaming and daily desktop work.
 
-Prerequisites: 
-- A bootable Arch Linux USB (written with `dd` or similar)
-- Internet connection
-- UEFI system
+## Start here
 
-____
+1. [Installation tutorial](arch_kde_tutorial.md): partition the disk, install Arch, and configure the system from the live environment and chroot.
+2. [Post-install tutorial](arch_kde_post_tutorial.md): configure the desktop, install applications, and set up maintenance after the first boot. Optional, but recommended.
 
-- All code is licensed under the MIT License which is attached to this repository as `LICENSE`
+You need a bootable Arch Linux USB, an internet connection, and a UEFI system. The examples use an AMD CPU, an NVIDIA GPU, and an NVMe SSD. Read the installation guide's hardware notes and replace its example disk, username, hostname, and regional settings before running commands.
 
-- All markdown text is licensed under the Creative Commons Attribution-ShareAlike 4.0 International Public
-License which is attached to this repository as `CREATIVE-LICENSE`
+## Supporting guides
+
+| Topic | Guides |
+|---|---|
+| Installation choices | [Packages](extra/misc/pkgchoices.md), [EFI mount options](extra/misc/why-EFI-options.md), [SystemRescue](extra/misc/systemrescue.md) |
+| Kernel and hardware settings | [Kernel command line](extra/misc/kernelflags.md), [Sysctl and module settings](extra/misc/kernel-settings.md), [udev rules](extra/tutorials/udev-rules.md) |
+| Desktop and recovery | [KDE preferences](extra/misc/misc.md), [REISUB](extra/misc/REISUB.md), [mkinitcpio warnings](extra/tutorials/mkinitcpio-fix.md) |
+| Storage and boot security | [New drives](extra/tutorials/newdrive.md), [Secure Boot](extra/tutorials/secureboot.md), [LUKS encryption](extra/tutorials/luks.md) |
+| Hardware workarounds | [Apple fast charging](extra/tutorials/applefastcharge.md), [NVIDIA GSP patch](patches/nvidia-gsp.md) |
+
+The guides link to reusable files in [configs](configs/), [scripts](scripts/), and [rules.d](rules.d/). Review the relevant guide before installing them.
+
+## Licenses
+
+Code is licensed under the [MIT License](LICENSE). Markdown text is licensed under [Creative Commons Attribution-ShareAlike 4.0 International](CREATIVE-LICENSE).

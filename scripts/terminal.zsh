@@ -10,8 +10,7 @@ timestamp="$(date +%Y%m%d-%H%M%S)"
 [[ -f ~/.config/fastfetch/config.jsonc ]] && cp ~/.config/fastfetch/config.jsonc ~/.config/fastfetch/config.jsonc.bak-$timestamp
 
 cat > ~/.config/kitty/titus-nord.conf <<'EOF'
-# Titus-ish Nord / Nordic look for kitty
-# Palette: Nord Polar Night + Frost
+# Nord palette inspired by Chris Titus
 
 font_family      MesloLGS Nerd Font Mono
 bold_font        MesloLGS Nerd Font Mono Bold
