@@ -111,6 +111,8 @@ font_size 18
 
 Reload Kitty's configuration with Ctrl+Shift+F5.
 
+---
+
 ### Build tools and compiler caches
 
 Make sure the basic build tools are installed. `--needed` skips packages that are already up to date:
@@ -215,9 +217,13 @@ LDFLAGS+=" -fuse-ld=mold"
 MAKEFLAGS="-j$(nproc)"
 ```
 
+---
+
 ### Review AUR packages
 
 Read the `PKGBUILD` before installing an AUR package. On an AUR package page, such as the [neofetch page](https://aur.archlinux.org/packages/neofetch), follow the **PKGBUILD** link. Check its sources and build commands for anything unexpected. An LLM can help explain the file, but learning to read it yourself is useful.
+
+---
 
 ### Install Pikaur
 
@@ -246,6 +252,8 @@ Check the installed version:
 ```zsh
 pikaur --version
 ```
+
+---
 
 ### Clean the Pikaur package cache
 
@@ -325,6 +333,8 @@ The installed hook handles subsequent package transactions. Pacman's cache at `/
 ```zsh
 pikaur -S --needed paccache-hook
 ```
+
+---
 
 ### Set up Zsh
 
@@ -443,6 +453,8 @@ Reload your shell configuration:
 source ~/.zshrc
 ```
 
+---
+
 ### Kitty and Fastfetch appearance
 
 The supplied script applies a Nord theme inspired by [Chris Titus's terminal setup](https://youtu.be/hnNjFysodRo?t=2143). It backs up existing Kitty and Fastfetch configuration files before writing its settings.
@@ -498,6 +510,8 @@ Color
 ILoveCandy
 ```
 
+---
+
 ### Nano syntax highlighting
 
 Create Nano's configuration directory and install additional syntax rules. `mkdir -p` also creates missing parent directories and leaves an existing directory intact.
@@ -518,6 +532,8 @@ include "/usr/share/nano/extra/*.nanorc"
 include "/usr/share/nano-syntax-highlighting/*.nanorc"
 EOF
 ```
+
+---
 
 ### Disable Kitty's bell
 
@@ -542,6 +558,8 @@ Reload with Ctrl+Shift+F5. This command sends a bell character so you can check 
 printf '%b' '\a'
 ```
 
+---
+
 ### Show asterisks at the sudo password prompt
 
 Use `visudo` to edit a drop-in:
@@ -562,6 +580,8 @@ Save and test with a fresh password prompt:
 sudo -k
 sudo true
 ```
+
+---
 
 ### Maintenance and multimedia packages
 
@@ -585,6 +605,8 @@ groups
 informant read
 ```
 
+---
+
 ### Browser
 
 I use Firefox:
@@ -598,6 +620,8 @@ Chromium is another option:
 ```zsh
 pikaur -S --needed chromium
 ```
+
+---
 
 ### NVIDIA session variables
 
@@ -658,6 +682,8 @@ Contents of `glx-nvidia-values.sh`:
 ```sh
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 ```
+
+---
 
 ### Firefox settings
 
@@ -821,6 +847,8 @@ fwupdmgr get-updates
 fwupdmgr update
 ```
 
+---
+
 ### Optional Bluetooth adjustments
 
 #### Faster connections
@@ -859,6 +887,8 @@ Restart Bluetooth:
 sudo systemctl restart bluetooth
 ```
 
+---
+
 ### Firewall
 
 Install and enable firewalld, then allow KDE Connect in the public zone:
@@ -869,6 +899,8 @@ sudo systemctl enable --now firewalld
 sudo firewall-cmd --permanent --zone=public --add-service=kdeconnect
 sudo firewall-cmd --reload
 ```
+
+---
 
 ### Enable multilib
 
@@ -969,6 +1001,8 @@ pikaur && checkrebuild
 
 No output from `checkrebuild` normally means it found nothing to rebuild. If it lists a package, rebuild that package with `pikaur -S <pkg> --rebuild`, replacing `<pkg>` with its name.
 
+---
+
 ### Games and Steam
 
 With multilib enabled, install Steam. The optional packages add legacy X11 fonts and automatic loading of the ntsync module:
@@ -1041,6 +1075,8 @@ The resulting `~/.steam/steam/steam_dev.cfg` contains:
 unShaderBackgroundProcessingThreads 8
 ```
 
+---
+
 ### Find files with plocate
 
 Plocate searches a file database, which makes it useful for finding directories such as `steamapps`. Install it, build the database, and try a search:
@@ -1056,6 +1092,8 @@ Start the daily database-update timer:
 ```zsh
 sudo systemctl start --now plocate-updatedb.timer
 ```
+
+---
 
 ### Proton GE
 
@@ -1084,6 +1122,8 @@ pikaur -S --needed \
   paccache-hook
 ```
 
+---
+
 ### Keep UKIs current
 
 Install the kernel-install hook to rebuild UKIs after updates:
@@ -1099,6 +1139,8 @@ sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
 sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ```
 
+---
+
 ### Nohang
 
 I recommend Nohang to terminate processes under severe memory pressure before the desktop becomes unresponsive:
@@ -1108,6 +1150,8 @@ pikaur -S --needed nohang
 
 sudo systemctl enable --now nohang-desktop.service
 ```
+
+---
 
 ### Journal size limit
 
@@ -1136,6 +1180,8 @@ Replace `no` and `pc105` with your layout and keyboard model. My Norwegian keybo
 ```zsh
 sudo localectl set-x11-keymap no pc105
 ```
+
+---
 
 ### USB autosuspend
 
@@ -1223,6 +1269,8 @@ pikaur -S --needed deno nodejs
 mkdir -p ~/.config/yt-dlp && echo "--remote-components ejs:github" >> ~/.config/yt-dlp/config
 ```
 
+---
+
 ### Optional yt-dlp aliases
 
 Add these to `~/.zshrc`. `ytdla` downloads MP3 audio to Music and uses Firefox cookies; `ytdlv` downloads video to Videos. Change the browser argument if needed, though I have only tested the Firefox version.
@@ -1244,6 +1292,8 @@ alias ytdlv='yt-dlp --js-runtimes deno -f "bestvideo+bestaudio" \
 ```
 
 Save and run `source ~/.zshrc`. Use either alias followed by the media URL.
+
+---
 
 ### Clip a video
 
@@ -1345,6 +1395,8 @@ Examples:
 
 Use the tool in accordance with the site's terms and the rights to the media you download.
 
+---
+
 ### Video players
 
 Choose the player you prefer. I currently use Haruna, but VLC and MPV are alternatives.
@@ -1391,6 +1443,8 @@ pikaur -S --needed phonon-qt6-mpv
 mkdir -p ~/.config/mpv
 echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 ```
+
+---
 
 ### Music: Elisa
 
@@ -1440,11 +1494,15 @@ sudo ./lucidglyph.sh uninstall
 reboot
 ```
 
+---
+
 ### Apple device fast charging
 
 The [Apple fast-charging guide](extra/tutorials/applefastcharge.md) uses the kernel's `apple-mfi-fastcharge` driver and a udev rule to request faster charging for supported devices.
 
 The reported `charge_type` is usually `Trickle` or `Fast`. `Fast` confirms the request, not the actual electrical power draw. Use an inline USB power meter to measure watts or amps.
+
+---
 
 ### Advanced: Qt animations on high-refresh-rate monitors
 

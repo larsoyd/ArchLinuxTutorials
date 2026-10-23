@@ -108,6 +108,8 @@ For a larger version:
 setfont -d ter-132n
 ```
 
+---
+
 ### UEFI and clock
 
 Confirm that the firmware variables are available. The command should finish with `UEFI firmware detected`:
@@ -116,6 +118,8 @@ Confirm that the firmware variables are available. The command should finish wit
 ls /sys/firmware/efi/efivars && echo "UEFI firmware detected"
 timedatectl set-ntp true
 ```
+
+---
 
 ### Network connection
 
@@ -320,6 +324,8 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 --sort rate --fastest 10 --download-timeout 30 --save /etc/pacman.d/mirrorlist
 ```
 
+---
+
 ### Install the base packages
 
 From the official Arch ISO:
@@ -344,6 +350,8 @@ arch-chroot /mnt
 
 Run the following installation commands inside this chroot until the guide tells you to exit it.
 
+---
+
 ### 4.2 Create a user account
 
 Install Zsh and Git, set the root password, and create your user. Replace `lars` with your chosen username:
@@ -366,6 +374,8 @@ EDITOR=nano visudo
 ```
 
 In the editor, uncomment `%wheel ALL=(ALL:ALL) ALL`, then save.
+
+---
 
 ### 4.3 Install kernels and firmware
 
@@ -397,6 +407,8 @@ pacman -S --needed dash checkbashisms
 ln -sfT dash /usr/bin/sh
 ```
 
+---
+
 ### 4.4 Set the timezone
 
 Replace `Europe/Oslo` with your timezone, then set the hardware clock:
@@ -406,6 +418,8 @@ ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
 hwclock --systohc
 ```
+
+---
 
 ### 4.5 Configure language and keyboard
 
@@ -475,6 +489,8 @@ chown -R lars:lars /home/lars/.config
 chmod 644 /home/lars/.config/kxkbrc
 ```
 
+---
+
 ### 4.6 Set the hostname
 
 Replace `BigBlue` with the name you want for this computer:
@@ -490,6 +506,8 @@ Add these entries to `/etc/hosts`, using the same hostname:
 127.0.0.1 localhost BigBlue
 ::1       localhost
 ```
+
+---
 
 ### 4.7 Install the desktop packages
 
@@ -570,6 +588,8 @@ Uncomment the entry for your country. For Norway:
 WIRELESS_REGDOM="NO"
 ```
 
+---
+
 ### 4.8 Configure the initramfs
 
 Edit both `MODULES` and `HOOKS` in `/etc/mkinitcpio.conf`:
@@ -586,6 +606,8 @@ HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block file
 ```
 
 For AMDGPU, use `amdgpu` in `MODULES`; the NVIDIA instruction to remove `kms` does not apply.
+
+---
 
 ### 4.9 Install UKIs and configure the boot loader
 
@@ -649,6 +671,8 @@ console-mode auto
 editor no
 ```
 
+---
+
 ### 4.10 Create a swap file
 
 I use Zswap with a swap file rather than Zram. For background on that choice, see [Chris Down's Zswap and Zram comparison](https://chrisdown.name/2026/03/24/zswap-vs-zram-when-to-use-what.html) and [LinuxBlog's discussion of Zswap](https://linuxblog.io/zswap-better-than-zram/).
@@ -709,6 +733,8 @@ Load the system's sysctl settings:
 sysctl --system
 ```
 
+---
+
 ### Enable REISUB via sysctl
 
 This optional setting enables the Magic SysRq functions used by REISUB to recover from a frozen system. Read the [REISUB instructions and risks](extra/misc/REISUB.md) before enabling it.
@@ -730,6 +756,8 @@ Apply the settings:
 ```zsh
 sysctl --system
 ```
+
+---
 
 ### Udev rules
 
@@ -768,6 +796,8 @@ ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", \
 
 See the [optional udev rules](extra/tutorials/udev-rules.md) for other hardware-specific choices.
 
+---
+
 ### Module settings
 
 These settings are adapted from CachyOS. Review the [module settings and tradeoffs](extra/misc/kernel-settings.md#module-settings) and choose the files that apply to your hardware.
@@ -794,6 +824,8 @@ To apply the watchdog blacklist:
 cp /tmp/ArchLinuxTutorials/configs/blacklist.conf /etc/modprobe.d/22-blacklist.conf
 ```
 
+---
+
 ### Colour emoji fallback
 
 Some applications select monochrome emoji fonts. This configuration adds Noto Color Emoji as an explicit fallback. The package list above includes `noto-fonts-emoji`; update the configuration if you later choose another emoji font.
@@ -803,6 +835,8 @@ mkdir -p /etc/fonts/conf.d
 
 cp /tmp/ArchLinuxTutorials/configs/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
 ```
+
+---
 
 ### GTK portals
 
@@ -819,6 +853,8 @@ Contents of `/etc/environment.d/99-portal.conf`:
 GTK_USE_PORTAL=1
 GDK_DEBUG=portals
 ```
+
+---
 
 ### Configure systemd-resolved
 
