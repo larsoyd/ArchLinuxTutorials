@@ -89,12 +89,17 @@ Installing a driver package does not by itself prove that an application is usin
 | `pacman-contrib` | Tools such as `paccache`, `checkupdates`, and `pacdiff` for package and configuration maintenance. |
 | `git` | Version control, also used to obtain AUR build files and source code. |
 | `wget` | Downloads files from the command line. |
+| [`man-db`](https://archlinux.org/packages/core/x86_64/man-db/) | Provides `man` for reading installed manuals and `apropos` for finding them by topic. |
+| [`less`](https://archlinux.org/packages/core/x86_64/less/) | Scrolls and searches text in the terminal, including manuals opened with `man`. Press `/` to search and `q` to quit. |
+| [`man-pages`](https://archlinux.org/packages/core/any/man-pages/) | Adds Linux system and programming manuals. Applications also ship their own manual pages with their packages. |
 | `hunspell` | Spell-checking engine used by many applications. |
 | `hunspell-en_us` | US English dictionary for Hunspell. Add another dictionary if needed. |
 | `quota-tools` | Manages filesystem quotas for users and groups. |
 | `usbutils` | USB inspection tools, especially `lsusb` for identifying connected devices. |
 | `zsh-completions` | Additional command and option completions for Zsh. |
 | `base-devel` | The compiler and build-tool collection expected by `makepkg` and AUR package builds. Install it if you intend to use the AUR. |
+
+Read local documentation with commands such as `man pacman` or `man 5 PKGBUILD`. The `5` selects the manual section for file formats. These manuals remain available without an internet connection.
 
 ### Fonts
 

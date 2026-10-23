@@ -273,7 +273,11 @@ systemd-repart \
   "$d"
 ```
 
-**Optional Ext4 fast commits:** `fast_commit` is an alternative journaling option. There have been reports of problems with it, so review whether you want it before choosing this variant.
+**Optional Ext4 fast commits:** `fast_commit` can reduce the time an application waits when it calls `fsync()` to flush changes to storage. Ext4 normally records whole metadata blocks in its journal, the log used to recover filesystem changes after a crash. Fast commits record only the metadata changes needed to reconstruct the update, reducing how much must be written to the journal.
+
+This works with Ext4's default `data=ordered` mode. Ext4 still performs a full journal commit when an operation cannot use fast commits, the fast-commit area fills, or the normal commit timer expires. The benefit depends on your storage and workload, especially how often applications synchronize small writes. See the [kernel's Ext4 journaling explanation](https://docs.kernel.org/filesystems/ext4/journal.html) for details.
+
+The command below enables the feature while creating the filesystem. Use the standard command above if you want the default Ext4 configuration.
 
 ```zsh
 # Erase the disk and format root with fast commits
@@ -569,6 +573,7 @@ Choose **one** package list for your GPU.
 # Install KDE and the NVIDIA graphics stack
 pacman -S --needed \
   networkmanager reflector pkgstats \
+  man-db less man-pages \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty ark unarchiver unrar 7zip kamera \
   kio-admin plasma-login-manager kdegraphics-thumbnailers ffmpegthumbs kdialog \
@@ -586,6 +591,7 @@ pacman -S --needed \
 # Install KDE and the AMD graphics stack
 pacman -S --needed \
   networkmanager reflector pkgstats \
+  man-db less man-pages \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
   tesseract tesseract-data-eng \
@@ -608,6 +614,7 @@ I have not verified this setup on my own hardware. Check the package choices for
 # Install KDE and the Intel graphics stack
 pacman -S --needed \
   networkmanager reflector pkgstats \
+  man-db less man-pages \
   pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
   plasma-meta dolphin dolphin-plugins konsole kitty ark kio-admin \
   tesseract tesseract-data-eng \

@@ -15,6 +15,7 @@ You need a bootable Arch Linux USB, an internet connection, and a UEFI system. T
 |---|---|
 | Installation choices | [Packages](extra/misc/pkgchoices.md), [EFI mount options](extra/misc/why-EFI-options.md), [SystemRescue](extra/misc/systemrescue.md) |
 | Kernel and hardware settings | [Kernel command line](extra/misc/kernelflags.md), [Sysctl and module settings](extra/misc/kernel-settings.md), [udev rules](extra/tutorials/udev-rules.md) |
+| AUR packages | [How to read a PKGBUILD](extra/tutorials/pkgbuild.md) |
 | Desktop and recovery | [KDE preferences](extra/misc/misc.md), [REISUB](extra/misc/REISUB.md), [mkinitcpio warnings](extra/tutorials/mkinitcpio-fix.md) |
 | Storage and boot security | [New drives](extra/tutorials/newdrive.md), [Secure Boot](extra/tutorials/secureboot.md), [LUKS encryption](extra/tutorials/luks.md) |
 | Hardware workarounds | [Apple fast charging](extra/tutorials/applefastcharge.md), [NVIDIA GSP patch](patches/nvidia-gsp.md) |
