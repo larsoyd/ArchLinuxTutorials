@@ -82,7 +82,7 @@ List available keymaps, or filter the list using part of your country's name or 
 ```zsh
 # Browse available keyboard layouts
 localectl list-keymaps | less
-# Find layouts matching Norway
+# Find layouts matching your country code, example 'no' for Norway
 localectl list-keymaps | grep -i -E 'no'
 ```
 
