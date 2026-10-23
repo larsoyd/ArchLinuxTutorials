@@ -330,7 +330,7 @@ Use nearby countries for the mirror list. My example starts with Norway and its 
 
 On SystemRescue, install Reflector with `pacman --config=/etc/pacman-rolling.conf -S reflector` before this step.
 
-Choose one of these Reflector commands. The expanded form is easier to read:
+Choose one of these Reflector commands. The expanded form is recommended if this is your first time:
 
 ```zsh
 # Rank nearby mirrors and save the mirror list
@@ -343,7 +343,7 @@ reflector \
       --save /etc/pacman.d/mirrorlist
 ```
 
-The shorter form uses country codes:
+This shorter form which uses country codes and is faster to write:
 
 ```zsh
 # Rank nearby mirrors and save the mirror list
@@ -351,7 +351,7 @@ reflector -c NO,SE,DK,DE,NL -a 12 -p https \
 -l 10 --sort rate --save /etc/pacman.d/mirrorlist
 ```
 
-Alternatively, allow a longer download timeout when testing mirrors:
+Or alternatively, one which allows for a longer download timeout and tests mirrors for download speed which it then ranks by fastest. This takes longer but is more accurate:
 
 ```zsh
 # Rank nearby mirrors and save the mirror list
