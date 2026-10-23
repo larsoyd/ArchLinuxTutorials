@@ -1182,6 +1182,26 @@ pikaur -S --needed steam xorg-fonts-misc ntsync-autoload
 steam
 ```
 
+### Fix legacy X11 fonts
+Now make sure those fonts are actually indexed. `xorg-fonts-misc` can be installed while `/usr/share/fonts/misc/fonts.dir` is still missing, so X11 can't find its Unicode fonts. English can still work through X11's built-in Latin-1 fonts, which makes this easy to miss for non-Latin languages.
+
+Run this as your normal desktop user. `xorg-mkfontscale` provides `mkfontdir`, while `xorg-xset` provides `xset` to refresh the running X11/Xwayland font path:
+
+```zsh
+pikaur -S --needed xorg-mkfontscale xorg-xset &&
+sudo mkfontdir /usr/share/fonts/misc &&
+if [ -n "${DISPLAY:-}" ] && timeout 5s xset q >/dev/null 2>&1; then
+    # remove the old entry first so rerunning this doesn't add duplicates
+    timeout 5s xset -fp /usr/share/fonts/misc 2>/dev/null &&
+    timeout 5s xset +fp /usr/share/fonts/misc &&
+    timeout 5s xset fp rehash
+else
+    echo "No X display available. Font index saved for the next desktop session."
+fi
+```
+
+This is safe to run again. It refreshes the index even if it already exists. If you're doing this without a desktop session, the X refresh is simply skipped. Restart Steam afterwards if it was already running.
+
 ### Fix Steam MP4 Playback
 By default MP4 playthrough in Steam Chat is broken under Linux. To fix this you need to run Steam’s H.264 decoder unlock for the Linux web component. Run this with Steam fully closed:
 
