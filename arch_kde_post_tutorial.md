@@ -1,90 +1,74 @@
-# Post-Install Tutorial (KDE)
+# KDE Plasma post-install tutorial
 
-Welcome to the post-install tutorial where we will set up your KDE Plasma install to proper defaults and configurations, before we begin I strongly recommend you go over [**this**](extra/misc/misc.md) list of optional misc. settings you might want to turn off/on that I couldn't find a good place to put in the tutorial itself.
+This guide covers my preferred applications, desktop settings, and maintenance tools after installing Arch. The choices are opinionated: read each section and keep what suits your system. Start with the [optional KDE preferences](extra/misc/misc.md) if you want to change session restoration, cursor effects, or volume feedback.
 
+Run terminal commands as your normal desktop user. Commands that need administrator access use `sudo`. Configuration examples belong in the named file; they are not commands to paste into the terminal.
 
+## Contents
 
+- [1. Chaotic-AUR](#1-chaotic-aur)
+- [2. Terminal and AUR setup](#2-terminal-and-aur-setup)
+- [3. Desktop and application settings](#3-desktop-and-application-settings)
+- [4. Firmware, security, and gaming](#4-firmware-security-and-gaming)
+- [5. Maintenance](#5-maintenance)
+- [6. Keyboard and USB settings](#6-keyboard-and-usb-settings)
+- [7. Media tools](#7-media-tools)
+- [8. Optional display and hardware tweaks](#8-optional-display-and-hardware-tweaks)
+- [Finish](#finish)
 
-## 1 · Chaotic-AUR
+## 1. Chaotic-AUR
 
-Chaotic-AUR is a repository that provides a large number of packages for Arch Linux. Its a binary repository that builds packages from the AUR on Arch. This is good if you don't want to compile packages and if you do not trust yourself to read PKGBUILDs.
+Chaotic-AUR provides prebuilt packages from the AUR, saving local compilation time. I recommend it for convenience, but it is optional. Installing prebuilt packages means trusting that repository and its build process; it does not replace reviewing what you install.
 
-Technically not required, but I recommend adding it.
+Open Kitty from the application launcher under **System**. If Zsh asks about an initial configuration, choose an empty `.zshrc` for now. We will configure it below. Paste terminal commands with Ctrl+Shift+V.
+
+Import and locally sign the repository key, then install the keyring and mirror list:
 
 ```zsh
-# First launch your terminal from your Start Menu / Application Launcher
-# It's called 'kitty'. You can search for it or find it under:
-# System -> kitty
-
-# When you launch it you will be warned about your .zshrc config, don't
-# worry about that, we will deal with it later. Choose option 
-# to create an empty one for the time being.
-
-# Then, retrieve the primary key to enable
-# the installation of Chaotic-AUR's keyring and mirror list. Paste this
-# in the terminal window with CTRL + SHIFT + V:
 sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 sudo pacman-key --lsign-key 3056513887B78AEB
 
-# This allows you to install Chaotic-AUR's
-# chaotic-keyring and chaotic-mirrorlist packages:
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst'
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 ```
 
-```conf
-# Add the mirrorlist to the end of /etc/pacman.conf:
-sudo nano /etc/pacman.conf
+Open pacman's configuration:
 
-# /etc/pacman.conf
+```zsh
+sudo nano /etc/pacman.conf
+```
+
+Add this at the end of `/etc/pacman.conf`:
+
+```ini
 [chaotic-aur]
 Include = /etc/pacman.d/chaotic-mirrorlist
 ```
 
+Update the system and populate the package file databases. Repeat the file database update when adding another repository:
+
 ```zsh
-# Then sync the mirrorlist:
 sudo pacman -Syu
 
-# And finally install all database files for new repository
-# This needs to be done after adding any new repo
-# like if you want to use CachyOS's repos for example:
 sudo pacman -Fy
 ```
 
----
+## 2. Terminal and AUR setup
 
-## 2 · Install AUR Helper (pikaur)
+### Configure Kitty
 
-### 2.1 Prerequisites
+In **System Settings → Default Applications**, set **Terminal Emulator** to Kitty.
 
-### Set Kitty as default terminal in KDE:
+To launch it with Ctrl+Alt+T:
 
-* Go to System Settings
-* Then to Default Applications
-* locate "Terminal Emulator"
-* Set it to `kitty`
+1. Open **System Settings → Shortcuts → Global Shortcuts** and find Konsole.
+2. Remove Konsole's Ctrl+Alt+T shortcut and apply the change.
+3. Choose **Add Application**, select Kitty, and assign Ctrl+Alt+T.
+4. Apply and test the shortcut. You can also pin Kitty to the task manager.
 
-### Clear Konsole Global Shortcut and set it to Kitty instead
+#### Optional copy and paste shortcuts
 
-* System Settings → Shortcuts → Global Shortcuts → search for `konsole`
-* Unbind Konsole from Ctrl+Alt+T
-* After you clear its shortcut, hit Apply. 
-
-### Bind Kitty to Ctrl+Alt+T
-* While still in Global Shortcuts, click “Add Application,” pick `kitty`, set the shortcut to `Ctrl+Alt+T`, then Apply.
-* If a conflict dialog appears, choose to reassign.
-* Test it by pressing the shortcut. `kitty` should now launch with it instead of `konsole`
-
-### Launch Kitty
-
-* Either open it with your shortcut, or click the application launcher located on the bottom left of the panel.
-* Navigate to the "System" submenu, then locate & launch the program entitled: `kitty`
-* Afterwards you can right click on the icon on your Task Manager and pin it for easy access later.
-
----
-
-### Optional: Rebind CTRL + C to copy and CTRL + V to paste
-Here is how to rebind CTRL + C and CTRL + V to copy + paste, Add this to your `kitty` config, `~/.config/kitty/kitty.conf`:
+Add these bindings to `~/.config/kitty/kitty.conf` if you prefer Ctrl+C and Ctrl+V for copying and pasting. Ctrl+C copies a selection or interrupts when nothing is selected; Ctrl+Shift+C sends the interrupt character explicitly.
 
 ```conf
 map ctrl+shift+v no_op
@@ -95,12 +79,11 @@ map ctrl+c copy_and_clear_or_interrupt
 map ctrl+shift+c send_text all \x03
 ```
 
+#### Optional zoom shortcuts
 
-### Optional: Rebind Ctrl + Plus and Ctrl + Minus to Zoom
-Ditto as above but for zooming.
+To use Ctrl+Plus and Ctrl+Minus without Shift, add:
 
 ```conf
-# Zoom font with Ctrl + plus/minus instead of Ctrl + Shift + plus/minus
 map ctrl+plus change_font_size all +2.0
 map ctrl+equal change_font_size all +2.0
 map ctrl+kp_add change_font_size all +2.0
@@ -108,7 +91,6 @@ map ctrl+kp_add change_font_size all +2.0
 map ctrl+minus change_font_size all -2.0
 map ctrl+kp_subtract change_font_size all -2.0
 
-# Disable Kitty's default Ctrl + Shift zoom bindings
 map ctrl+shift+plus no_op
 map ctrl+shift+equal no_op
 map ctrl+shift+kp_add no_op
@@ -117,57 +99,61 @@ map ctrl+shift+minus no_op
 map ctrl+shift+kp_subtract no_op
 ```
 
-### Increase Default Zoom & Allow Changing Kitty Config In Terminal
+#### Font size and remote control
+
+These are my settings for a larger font and remote control. Add them to `~/.config/kitty/kitty.conf` if wanted:
 
 ```conf
-# Remote Control
 allow_remote_control yes
 
-# Font Size
 font_size 18
 ```
 
-Then reload Kitty’s config with Ctrl+Shift+F5.
+Reload Kitty's configuration with Ctrl+Shift+F5.
 
-### Essential build tools, you already installed these during install but just to be sure
+### Build tools and compiler caches
+
+Make sure the basic build tools are installed. `--needed` skips packages that are already up to date:
+
 ```zsh
-sudo pacman -S --needed base-devel git  # when you run pacman with the --needed flag it will skip
-                                        # any package that is already on the system.
-                                        #
-                                        # If you don't do this it will reinstall packages you already have,
-                                        # so it's good to just do it by default to be sure.
+sudo pacman -S --needed base-devel git
 ```
 
-### Optimize Build Environment:
+My build setup uses ccache and sccache for compiler caching, mold for linking, and rustup for the Rust toolchain. It enables local CPU optimizations and link-time optimization where supported while retaining the other existing compiler flags.
 
-This section configures a faster and more optimized local build environment for compiling packages from the AUR, source code, and Rust projects. My config is based on quickness and performance. It installs **ccache** and **sccache** to cache previously compiled code, **mold** as a significantly faster linker, and **rustup** for managing the Rust toolchain. The configuration also enables parallel compilation, LTO where supported which results in slightly smaller and faster binaries, and `target-cpu=native` / `-march=native` so locally compiled software can take advantage of the instruction sets supported by your specific CPU. This optimizes compiled software to run better on your computer.
-
-These settings ONLY affect software you **compile locally** and do not change the optimization level of precompiled packages installed from the official Arch repositories. Because `native` CPU optimizations are used, binaries built with this configuration are intended for the machine they were compiled on and may not work on older or different CPUs. This should be fine for you if you are not planning to distribute any software from your computer. The configuration also keeps Arch's existing compiler and hardening flags where possible while adding caching, faster linking, CPU-specific optimization, and parallel builds to reduce compilation times and improve locally built package performance.
-
+These settings affect software you compile locally, including AUR packages. They do not change prebuilt repository packages. Binaries built with `native` CPU settings may not run on other CPUs, so do not use this configuration for builds you intend to distribute without reviewing it.
 
 ```zsh
 sudo pacman -S --needed ccache mold rustup sccache
 
-# setup rustup
 rustup default stable
 
-# Configure ccache
 mkdir -p ~/.config/ccache/
 mkdir -p ~/.cargo
 ```
 
-```sh
-nano ~/.config/ccache/ccache.conf
+Open the ccache configuration:
 
-# ~/.config/ccache/ccache.conf
+```zsh
+nano ~/.config/ccache/ccache.conf
+```
+
+Contents of `~/.config/ccache/ccache.conf`:
+
+```conf
 cache_dir = $HOME/.cache/ccache
 max_size  = 30G
 ```
 
-```sh
-nano ~/.cargo/config.toml
+Open Cargo's configuration:
 
-# ~/.cargo/config.toml
+```zsh
+nano ~/.cargo/config.toml
+```
+
+Contents of `~/.cargo/config.toml`:
+
+```toml
 [build]
 rustc-wrapper = "sccache"
 
@@ -175,19 +161,23 @@ rustc-wrapper = "sccache"
 rustflags = ["-C", "target-cpu=native", "-C", "link-arg=-fuse-ld=mold"]
 ```
 
-```sh
+Create a makepkg drop-in for Rust builds:
+
+```zsh
 sudo mkdir -p /etc/makepkg.conf.d
 sudo nano /etc/makepkg.conf.d/rust.conf
 ```
 
-```zsh
-# /etc/makepkg.conf.d/rust.conf
+Contents of `/etc/makepkg.conf.d/rust.conf`:
+
+```sh
 RUSTFLAGS="-C link-arg=-fuse-ld=mold -C target-cpu=native"
 ```
 
-EITHER:
+For the user makepkg configuration, choose **one** method.
 
-1) Copy it from my repo
+**Copy the supplied file:** if the repository is already cloned at `/tmp/ArchLinuxTutorials`, skip the clone command.
+
 ```zsh
 cd /tmp
 git clone https://github.com/larsoyd/ArchLinuxTutorials
@@ -195,15 +185,15 @@ cp /tmp/ArchLinuxTutorials/configs/makepkg.conf ~/.makepkg.conf
 cd
 ```
 
-2. Write it manually
+**Or create it manually:**
+
 ```zsh
 nano ~/.makepkg.conf
 ```
 
-```conf
-# ~/.makepkg.conf
+Contents of `~/.makepkg.conf`. This enables compiler caching and mold, disables debug packages, and configures parallel builds:
 
-# Retarget both C and C++ to native while keeping Arch's hardening flags
+```sh
 CFLAGS="${CFLAGS/-march=x86-64-v4/-march=native}"
 CFLAGS="${CFLAGS/-march=x86-64-v3/-march=native}"
 CFLAGS="${CFLAGS/-march=x86-64-v2/-march=native}"
@@ -214,78 +204,58 @@ CXXFLAGS="${CXXFLAGS/-march=x86-64-v3/-march=native}"
 CXXFLAGS="${CXXFLAGS/-march=x86-64-v2/-march=native}"
 CXXFLAGS="${CXXFLAGS/-march=x86-64/-march=native}"
 
-# LTO default if system config had !lto
 OPTIONS=("${OPTIONS[@]/!lto/lto}")
 
-# No Debug Packages
 OPTIONS+=(!debug)
 
-# Enable ccache in the build environment
 BUILDENV=("${BUILDENV[@]/!ccache/ccache}")
 
-# mold default linker
 LDFLAGS+=" -fuse-ld=mold"
 
-# parallel builds
 MAKEFLAGS="-j$(nproc)"
 ```
 
-### DISCLAIMER FOR THE AUR:
+### Review AUR packages
 
-**NOTE:** Before installing anything other than what is in this tutorial from the AUR, 
-**read the PKGBUILD first.**
+Read the `PKGBUILD` before installing an AUR package. On an AUR package page, such as the [neofetch page](https://aur.archlinux.org/packages/neofetch), follow the **PKGBUILD** link. Check its sources and build commands for anything unexpected. An LLM can help explain the file, but learning to read it yourself is useful.
 
-```md
-To do so with `neofetch` for example, go to:
-https://aur.archlinux.org/packages/neofetch
-and click on the hyperlink that says "PKGBUILD"
+### Install Pikaur
 
-LLMs can help in parsing them if you are new, but *try* to learn how to read them without it.
-What you are looking out for are malicious links or anything else out of the ordinary.
-```
+Pikaur is my preferred AUR helper because it shows PKGBUILDs with syntax highlighting during installation and updates. Use another helper if you prefer, but the examples below use Pikaur. Run `pikaur` as your normal user, without a `sudo` prefix.
 
-### Either build pikaur from AUR or install it via Chaotic-AUR
+Choose **one** installation method.
 
-`pikaur` is an AUR helper, it helps you install packages from the AUR - I used to use `yay`, but reviewing PKGBUILDs with `yay` is quite tedious. I now use `pikaur` instead which automatically shows you the PKGBUILD to be read with syntax highlighting. They appear on install and updates, which is important in these trying times for the AUR. - I recommend it personally, but you can use whatever AUR helper strikes your fancy.
+**From Chaotic-AUR:**
 
 ```zsh
-# If you enabled Chaotic-AUR you can just install it like so:
 sudo pacman -S --needed pikaur-git
-
-# But if you want to build it from the AUR
-# without installing from Chaotic-AUR:
-#
-# go to the temporary directory
-cd /tmp
-
-# clone the pikaur pkgbuild from the aur                                      
-git clone https://aur.archlinux.org/pikaur.git
-
-# enter the cloned folder
-cd pikaur
-
-# build the package, then install it and deps
-makepkg -si
-
-# go home, remove the temporary build folder
-cd ~ && rm -rf /tmp/pikaur                      
-
-pikaur --version  # quick test | NOTE: Whenever you run any 'pikaur' command, do not use 'sudo' before it.
 ```
 
-### Configure Automatic Pikaur Cache Cleanup
+**Or build from the AUR:**
 
-Pikaur keeps packages it builds from the AUR in `~/.cache/pikaur/pkg`. Over time this can accumulate old versions of packages and take up a significant amount of disk space.
+```zsh
+cd /tmp
+git clone https://aur.archlinux.org/pikaur.git
+cd pikaur
+makepkg -si
+cd ~ && rm -rf /tmp/pikaur
+```
 
-Pikaur includes an example pacman hook which uses `paccache` from `pacman-contrib` to automatically clean old cached packages after package installs and upgrades.
+Check the installed version:
 
-First make sure `pacman-contrib` is installed:
+```zsh
+pikaur --version
+```
+
+### Clean the Pikaur package cache
+
+Pikaur stores built packages in `~/.cache/pikaur/pkg`. Its example pacman hook uses `paccache` from `pacman-contrib` to remove old cached versions after package transactions.
+
+Install the dependency and copy the hook. `install -D` creates the destination directory if needed:
 
 ```zsh
 sudo pacman -S --needed pacman-contrib
 ```
-
-Install Pikaur's included example hook into the local pacman hooks directory:
 
 ```zsh
 sudo install -Dm644 \
@@ -293,33 +263,27 @@ sudo install -Dm644 \
   /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
 ```
 
-`install -D` creates `/etc/pacman.d/hooks` automatically if it does not already exist.
-
-The example hook contains the placeholder `YOUR_USER`, so replace it with your current username. I have written out a command that will automatically replace it with your name, no need to change anything about it. `$USER` always resolves to your username on Linux. To see this in action just write `echo $USER` in your terminal.
-
-Anyways, here is the command:
+Replace the hook's `YOUR_USER` placeholder with the username from your current shell:
 
 ```zsh
 sudo sed -i "s|YOUR_USER|$USER|g" \
   /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
 ```
 
-By default Pikaur's example keeps only the newest **1 version** of each cached package.
-
-I recommend keeping **2 versions** instead. This retains the current package and one previous package in case you need to downgrade:
+The example keeps one version. I prefer two so the previous package remains available for a downgrade:
 
 ```zsh
 sudo sed -i 's|--keep 1|--keep 2|' \
   /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
 ```
 
-Check the finished hook:
+Inspect the result:
 
 ```zsh
 cat /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
 ```
 
-The important part should now resemble:
+The action section should resemble this, with your actual username in place of `YOUR_USERNAME`:
 
 ```ini
 [Action]
@@ -330,17 +294,13 @@ When = PostTransaction
 Exec = /usr/bin/bash -c '/usr/bin/paccache --cachedir /home/YOUR_USERNAME/.cache/pikaur/pkg --verbose --remove --keep 2;'
 ```
 
-You can also verify that the placeholder was completely removed:
+Check that the original placeholder is gone. No output means no matches were found:
 
 ```zsh
 grep -n 'YOUR_USER' /etc/pacman.d/hooks/pikaur-cache-cleanup.hook
 ```
 
-If that prints nothing, it was replaced successfully.
-
-#### Test the cleanup without deleting anything
-
-You can have `paccache` show what it *would* remove first:
+Preview a cleanup without deleting packages:
 
 ```zsh
 paccache \
@@ -350,7 +310,7 @@ paccache \
   --verbose
 ```
 
-To manually perform the same cleanup:
+To perform that cleanup manually:
 
 ```zsh
 paccache \
@@ -360,52 +320,35 @@ paccache \
   --verbose
 ```
 
-After this, the pacman hook will automatically run the cleanup after package install and upgrade transactions.
-
-**NOTE:** This only manages Pikaur's AUR package cache at:
-
-```text
-~/.cache/pikaur/pkg
-```
-
-Pacman's normal package cache at `/var/cache/pacman/pkg` is separate. This means you should also install a hook for the regular Pacman cache:
+The installed hook handles subsequent package transactions. Pacman's cache at `/var/cache/pacman/pkg` is separate; install its cleanup hook too:
 
 ```zsh
 pikaur -S --needed paccache-hook
 ```
 
----
+### Set up Zsh
 
-### Shell and terminal bliss
+Install Oh My Zsh, autosuggestions, and syntax highlighting:
+
 ```zsh
-# Oh-my-zsh makes your terminal nicer, zsh-autosuggestions and the other are plugins
-# More on them later.
 pikaur -S --needed oh-my-zsh-git zsh-autosuggestions zsh-syntax-highlighting
 ```
 
----
-
-### Copy .zshrc default template config
+Copy the default template and open it:
 
 ```zsh
-# This makes it so you don't have to write out a buncha crap
 cp /usr/share/oh-my-zsh/zshrc ~/.zshrc
 ```
-
-### Configure ~/.zshrc
 
 ```zsh
 nano ~/.zshrc
 ```
 
-#### Configure PATH
+#### Command search path
 
-Instead of adding several separate `export PATH=...` lines, use Zsh's native `path` array.
-
-Add this near the beginning of your `~/.zshrc`:
+Add this near the beginning of `~/.zshrc`. Zsh's `path` array keeps the search path readable; `typeset -U` removes duplicate entries. The order gives your Cargo and user-installed commands priority over later entries.
 
 ```zsh
-# User-installed commands and Rust/Cargo binaries
 typeset -U path PATH
 
 path=(
@@ -419,67 +362,47 @@ path=(
 export PATH
 ```
 
-`typeset -U` makes the Zsh `path` array unique, preventing duplicate PATH entries.
+#### Autosuggestions and prompt
 
-The order also determines priority, so programs installed through Cargo or in your user directories are found before system-wide `/usr/local/bin` entries.
-
-#### Enable Zsh Autosuggestions
-
-Add this after Oh My Zsh has been loaded:
+After the line that loads Oh My Zsh, add:
 
 ```zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 ```
 
-#### Configure the Prompt
-
-You are also going to want to set your name in `PROMPT`, otherwise it will just be `~`.
-
-The prompt below will look like `[ArchLars]`, with `Arch` in blue and `Lars` in white. The current working directory will be cyan.
-
-Replace `Lars` with your own name:
+This prompt shows `[ArchLars]` and the current directory in colour. Replace `Lars` with your name:
 
 ```zsh
 PROMPT='%F{white}%B[%F{#1793d1}Arch%F{white}Lars] %F{cyan}%~ %f%b%(!.#.$) '
 ```
 
-#### Optional Package Install Alias
-
-Here is a convenient alias for installing packages through Pikaur:
+An optional package-install alias:
 
 ```zsh
 alias pacin='pikaur -S --needed'
 ```
 
-With this you can simply write:
+With that alias, these two examples do the same thing. Run either one when you want to install Firefox:
 
 ```zsh
 pacin firefox
 ```
 
-instead of:
-
 ```zsh
 pikaur -S --needed firefox
 ```
 
-#### Enable Zsh Syntax Highlighting
+#### Syntax highlighting
 
-Keep syntax highlighting at the **bottom of `~/.zshrc`**, after the rest of your interactive shell configuration:
+Keep this at the **bottom of `~/.zshrc`**, after the rest of the interactive configuration. It hooks into Zsh's line editor and needs to load last:
 
 ```zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 ```
 
-Syntax highlighting is deliberately loaded last because it hooks into Zsh's line editor and is generally intended to be sourced after other shell configuration.
+#### Optional prompt separator
 
-
-### Add Separator
-
-By default in most Linux terminals including the virtual console (vconsole) each command will not be separated in the terminal. This can make separating each command difficult as I am sure you noticed in the install tutorial. 
-
-The cleanest solution to separate commands is a precmd hook, which Zsh runs immediately before displaying each prompt. add-zsh-hook lets you add this without replacing hooks used by themes or plugins.
-
+A separator makes it easier to distinguish command output from the next prompt. Add this before the syntax-highlighting line in `~/.zshrc`. The `precmd` hook runs before each prompt and leaves other hooks intact.
 
 ```zsh
 autoload -Uz add-zsh-hook
@@ -495,15 +418,14 @@ prompt_separator() {
   print -P "%F{244}${line// /─}%f"
 }
 
-# Prevent duplicates when ~/.zshrc is sourced repeatedly.
+# Avoid duplicate hooks when reloading
 add-zsh-hook -d precmd prompt_separator 2>/dev/null
 add-zsh-hook precmd prompt_separator
 ```
 
+Example terminal output:
 
-The result will resemble:
-
-```zsh
+```text
 ───────────────────────────────────────────────────────────────
 
 [ArchLars] ~ $ checkupdates
@@ -515,294 +437,254 @@ The result will resemble:
 [ArchLars] ~ $ pacman -Ss bibata
 ```
 
-### Reload & Guide
+Reload your shell configuration:
+
 ```zsh
-# Then reload zshrc like so:
 source ~/.zshrc
 ```
 
----
+### Kitty and Fastfetch appearance
 
-### Make Kitty Look Nice
+The supplied script applies a Nord theme inspired by [Chris Titus's terminal setup](https://youtu.be/hnNjFysodRo?t=2143). It backs up existing Kitty and Fastfetch configuration files before writing its settings.
+
+Install the dependencies, then run the script. Skip cloning if the repository already exists at `/tmp/ArchLinuxTutorials`:
+
 ```zsh
-# Ensure you have the dependencies.
 sudo pacman -S --needed zsh kitty fastfetch ttf-meslo-nerd
 
-# Install the Terminal config slightly mocking Chris Titus's look in:
-# https://youtu.be/hnNjFysodRo?t=2143
-
-# Clone repo if you haven't
 cd /tmp
 git clone https://github.com/larsoyd/ArchLinuxTutorials
 cd ArchLinuxTutorials
 
-# Make rice script executible
 chmod +x scripts/terminal.zsh
 
-# Run it
 ./scripts/terminal.zsh
 
-# Go back to HOME
 cd
 ```
 
-#### Add Cursor Trail to Kitty & Font Rendering Improvement
+#### Text rendering and cursor trail
 
-```zsh
-# Cursor trail is a cool animated trail and text composition strategy improves the
-# font rendering
-#
-# Add these to ~/.config/kitty/kitty.conf :
+Add these settings to `~/.config/kitty/kitty.conf`. The text composition setting changes font rendering. The remaining settings enable a cursor trail, set its fade time in seconds, and require a jump of at least two cells:
 
-# Text comp
+```conf
 text_composition_strategy 1.7 0
 
-# Optional: Enable the cursor trail (set value > 0)
 cursor_trail 1
 
-# Optional: Adjust how fast the trail fades (min and max seconds)
 cursor_trail_decay 0.1 0.4
 
-# Optional: Minimum distance (in cells) the cursor must jump to trigger a trail
 cursor_trail_start_threshold 2
 ```
 
-#### TERMINAL USAGE GUIDE w/ AUTOSUGGESTIONS AND SYNTAX HIGHLIGHTING:
+#### Terminal shortcuts
 
-- Right arrow: accept a suggestion to autocomplete a command you've run before. 
+- Press **Right Arrow** to accept an autosuggestion.
+- Type the beginning of a previous command, then press **Up Arrow** to recall a matching command. This is useful for reusing package-install flags.
+- Watch the syntax highlighting for misspelled commands and other obvious mistakes.
 
-- Up arrow: recall a previous command that starts the same way. 
-For example, type 'sudo', then press Up, and it fills in the rest. 
-This is useful when installing packages, like you will in this tutorial.
-Every time you type 'pikaur', you can press Up to autofill your usual flags, 
-then replace the package name with something else.
+## 3. Desktop and application settings
 
-- Syntax highlighting makes commands easier to read, and helps you spot obvious mistakes.
+### Pacman appearance
 
----
-
-### 3 · System Optimisation
-
-#### 3.1 Pacman candy
-Edit `/etc/pacman.conf`:
 ```zsh
 sudo nano /etc/pacman.conf
 ```
+
+In `/etc/pacman.conf`, uncomment `Color` and add `ILoveCandy` beneath it. Uncommenting means removing the leading `#`:
+
 ```conf
-# Color adds color (duh),
-# To add it you need to "Uncomment" the setting,
-# what this means is removing the #'s in front of it.
-# whenever I say to uncomment in the future that is what that means btw.
-#
-# ILoveCandy is a fun setting that adds animations to when you update pacman.
-Color                      # uncomment
-ILoveCandy                 # write this manually under Color
+Color
+ILoveCandy
 ```
 
-### Enable syntax highlighting in nano
+### Nano syntax highlighting
+
+Create Nano's configuration directory and install additional syntax rules. `mkdir -p` also creates missing parent directories and leaves an existing directory intact.
+
+The commands below enable the rules for your user and system-wide:
+
 ```zsh
-# This command `mkdir -p` is essentially, "if it doesnt exist, create it + w/ the subfolder"
-# If it already exists it will skip the action, it doesn't overwrite the folder that's there
-# This is a good way to prevent issues where you try to make a file in a folder that dont exist.
-#
 mkdir -p ~/.config/nano
 
-# package with enhanced rules
 pikaur -S --needed nano-syntax-highlighting
 
-# enable all bundled syntaxes
-# paste into terminal with CTRL + SHIFT + V:
 printf 'include "/usr/share/nano/*.nanorc"\ninclude "/usr/share/nano/extra/*.nanorc"\n' >> ~/.config/nano/nanorc
 echo 'include "/usr/share/nano-syntax-highlighting/*.nanorc"' >> ~/.config/nano/nanorc
 
-# enable it system wide
-# paste into terminal with CTRL + SHIFT + V:
 sudo tee -a /etc/nanorc >/dev/null <<'EOF'
 include "/usr/share/nano/*.nanorc"
 include "/usr/share/nano/extra/*.nanorc"
 include "/usr/share/nano-syntax-highlighting/*.nanorc"
 EOF
 ```
-### Turn off that incessant beeping in kitty without doing it system wide.
-```zsh
-# You can turn this off system wide in KDE settings, but that is a bit overkill.
-nano ~/.config/kitty/kitty.conf
 
-# Add these lines
-# to bottom of file:
+### Disable Kitty's bell
+
+Open the configuration:
+
+```zsh
+nano ~/.config/kitty/kitty.conf
+```
+
+Add these settings:
+
+```conf
 enable_audio_bell no
 visual_bell_duration 0
 window_alert_on_bell no
 bell_on_tab none
+```
 
+Reload with Ctrl+Shift+F5. This command sends a bell character so you can check the result:
 
-# reload the config
-CTRL + SHIFT + F5
-
-# Test that the violation of the Geneva Convention is gone.
-# Printing '\a' should send the BEL character which triggers it if not.
+```zsh
 printf '%b' '\a'
 ```
 
-### Show asterisks when typing your sudo password
-Use `visudo` and add the `pwfeedback` default. This is the safe way to edit sudoers.
+### Show asterisks at the sudo password prompt
+
+Use `visudo` to edit a drop-in:
+
 ```zsh
-# open a drop-in with visudo
 sudo EDITOR=/usr/bin/nano visudo -f /etc/sudoers.d/pwfeedback
+```
 
-# add exactly this line, then save and exit
+Contents of `/etc/sudoers.d/pwfeedback`:
+
+```sudoers
 Defaults pwfeedback
+```
 
-# test by forcing a fresh prompt
+Save and test with a fresh password prompt:
+
+```zsh
 sudo -k
 sudo true
 ```
 
----
+### Maintenance and multimedia packages
 
-### Install Basic packages:
+This list adds Arch news notices through Informant, GStreamer codecs, rebuild detection, AUR utilities, Python's package installer, and community maintenance tools. They are useful additions, though not all are required for a desktop.
 
-This installs a small collection of useful packages that improve day-to-day Arch Linux maintenance and multimedia support. **informant** displays important Arch Linux news before system upgrades, helping catch manual intervention requirements before they become a problem. The **GStreamer plugin** packages add broad audio and video codec support for applications that rely on GStreamer, while **rebuild-detector** can identify packages that may need rebuilding after library upgrades.
-
-**aurutils** provides additional tools for managing and building AUR packages and repositories, **python-pip** provides Python's package installer, and **archlinux-contrib** contains various maintenance scripts and utilities contributed by the Arch Linux community. None of these are strictly required for a working Arch installation, but they provide useful tooling and broader compatibility for a general-purpose desktop system.
+Install them and add your user to the Informant group:
 
 ```zsh
-# Very good stuff to have.
 pikaur -S --needed informant \
 gst-libav gst-plugins-bad gst-plugins-base gst-plugins-good gst-plugins-ugly \
 rebuild-detector aurutils \
 python-pip archlinux-contrib
-
-# add yourself to group informant
 sudo usermod -aG informant $USER
-
-# then reboot 
 reboot
+```
 
-# afterwards confirm you are in that group by running:
+After rebooting, confirm that `informant` appears in your groups, then read the news:
+
+```zsh
 groups
-
-# if you are run informant
 informant read
 ```
 
 ### Browser
-```zsh
-# recommended:
-pikaur -S --needed firefox
 
-# or anything else
-pikaur -S --needed chromium   # example of "anything else"
+I use Firefox:
+
+```zsh
+pikaur -S --needed firefox
 ```
 
-### How to add Environmental Variables:
-
-On Arch with KDE Plasma, you should put environmental variables in Plasma’s session environment directory. This is located in `~/.config/plasma-workspace/env` Create a small .sh file there for each variable. For example, for decoding with NVIDIA you create `~/.config/plasma-workspace/env/libva-values.sh`
-
-
-### Hardware Acceleration on NVIDIA 
+Chromium is another option:
 
 ```zsh
-# Create the file:
+pikaur -S --needed chromium
+```
+
+### NVIDIA session variables
+
+Plasma loads session environment scripts from `~/.config/plasma-workspace/env`. The following examples use separate `.sh` files for NVIDIA settings. Apply only the sections relevant to your hardware.
+
+#### Video acceleration
+
+```zsh
 nano ~/.config/plasma-workspace/env/libva-values.sh
 ```
 
+Contents of `libva-values.sh`:
+
 ```sh
-# Options added to ensure hardware acceleration works
-# on NVIDIA.
-# ~/.config/plasma-workspace/env/libva-values.sh
 export LIBVA_DRIVER_NAME=nvidia
 export MOZ_DISABLE_RDD_SANDBOX=1
 export NVD_BACKEND=direct
+```
 
-# Only if your NVIDIA driver is version
-# 580.105.08 or newer
+For NVIDIA driver **580.105.08 or newer**, also add:
+
+```sh
 export CUDA_DISABLE_PERF_BOOST=1
 ```
 
-
-Then log out of Plasma completely and log back in. After that, check any value with:
+Log out of Plasma completely and log back in. If you added the last setting, check that it returns `1`:
 
 ```zsh
-# For example:
 printenv CUDA_DISABLE_PERF_BOOST
 ```
 
-It should return `1`
+#### GStreamer decoder preference
 
-### NVIDIA GST Libav Fix:
-
-For some NVIDIA users, gst-libav may prioritize the Libav decoder over nvcodec decoders which will inhibit hardware acceleration. The GST_PLUGIN_FEATURE_RANK environment variable can be used to rank decoders and thus alleviate this issue. See "GST_PLUGIN_FEATURE_RANK" in the documentation for more information.
+If GStreamer chooses Libav decoders instead of NVIDIA's hardware decoders, this setting raises the NVIDIA decoder ranks:
 
 ```zsh
-# Create the file:
 nano ~/.config/plasma-workspace/env/gst-nvidia-values.sh
 ```
 
+Contents of `gst-nvidia-values.sh`:
+
 ```sh
-# ~/.config/plasma-workspace/env/gst-nvidia-values.sh
 export GST_PLUGIN_FEATURE_RANK=nvmpegvideodec:MAX,nvmpeg2videodec:MAX,nvmpeg4videodec:MAX,nvh264sldec:MAX,nvh264dec:MAX,nvjpegdec:MAX,nvh265sldec:MAX,nvh265dec:MAX,nvvp9dec:MAX
 ```
 
-Those without AV1 hardware support may also want to disable AV1 decoders (e.g., for YouTube on webkit2gtk based browsers) by appending `avdec_av1:NONE` and `av1dec:NONE` to the list above. 
+Without AV1 hardware support, you may also want to append `avdec_av1:NONE` and `av1dec:NONE` to the comma-separated list, for example when using a WebKitGTK browser.
 
-### NVIDIA GLX Helper:
+#### GLX driver selection
 
-Modern Linux systems use libglvnd, a vendor-neutral OpenGL dispatch layer. Its job is to choose whether OpenGL calls go to Mesa, NVIDIA, etc. It is *supposed* to be automatic, but sometimes it fails for whatever reason. By adding this you help many games and relevant apps use the NVIDIA driver instead of falling back to Mesa, llvmpipe, or the wrong GPU. If you do not set this explicitly and you happen to have this problem the games will run at single digit FPS and you have no idea why. Pretty fun.
+Libglvnd normally selects the OpenGL vendor automatically. If an application selects the wrong renderer, this setting explicitly requests NVIDIA:
 
 ```zsh
-# Create the file:
 nano ~/.config/plasma-workspace/env/glx-nvidia-values.sh
 ```
 
+Contents of `glx-nvidia-values.sh`:
+
 ```sh
-# ~/.config/plasma-workspace/env/glx-nvidia-values.sh
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 ```
 
-### Configuring Firefox:
+### Firefox settings
 
-#### Add VA-API to Firefox (GPU accelerated video)
+Check VA-API support in the terminal:
+
 ```zsh
-# Confirm VA-API support
 vainfo
-
-# Open up about:config and set:
-media.hardware-video-decoding.force-enabled → true
 ```
 
-#### Ensure Firefox media keys dont conflict with Plasma
-```zsh
-# open about:config and set
-media.hardwaremediakeys.enabled → false
-```
+Open `about:config` in Firefox and apply the preferences you want:
 
+| Preference | Value | Purpose |
+|---|---|---|
+| `media.hardware-video-decoding.force-enabled` | `true` | Request hardware video decoding |
+| `media.hardwaremediakeys.enabled` | `false` | Avoid media-key conflicts with Plasma |
+| `middlemouse.paste` | `false` | Disable middle-click paste in Firefox |
 
-#### Turn off Middle Click Paste on Firefox
-```zsh
-# open about:config and set
-middlemouse.paste → false
-```
+To disable middle-click paste in Plasma too, open **System Settings → Workspace → General Behavior** and turn off **Middle Click: Paste selected text**. Log out and back in, or restart, to apply it fully.
 
-Then turn off Middle Click Paste on KDE Plasma:
+#### Optional: Remove tab close and mute buttons
 
-```zsh
-# You also need to set this globally.
-System Settings → Workspace → General Behavior → Middle Click: Paste selected text → Off
-```
-Finally, log out/in or restart for it to fully apply.
+I close tabs with the middle mouse button, so I hide the close and audio buttons. This CSS marks a tab playing audio with an Arch-blue border instead.
 
----
-
-### OPTIONAL: Remove the Close + Mute button on Tabs
-
-If you are like me you close tabs with middle mouse click and you don't care to mute the tab has sound on it then you want to remove these buttons on the tabs since they get in the way. These changes removes those buttons then puts a light blue (`#1793d1`) border around the tab icon instead to indicate what tab is playing audio. Why light blue? It harmonizes with the primary color of Arch Linux and KDE Plasma. Feel free to change it in the code if you like.
-
-1. First, go to `about:config` in URL bar and then put in `toolkit.legacyUserProfileCustomizations.stylesheets` and set it to `true`
-2. Then write `about:support` in the URL bar and press enter.
-3. Go to `Profile Folder` section and press `Open Folder`
-4. Create a new folder in the directory called `chrome` (Yes I know, that is what it is called)
-5. Create a file in there called `userChrome.css` with these contents :
+1. In `about:config`, set `toolkit.legacyUserProfileCustomizations.stylesheets` to `true`.
+2. Open `about:support`, find **Profile Folder**, and select **Open Folder**.
+3. Create a `chrome` directory inside the profile, then a `userChrome.css` file inside it.
+4. Add the CSS below and restart Firefox completely.
 
 ```css
 /* Remove the tab close icon/button */
@@ -823,21 +705,9 @@ If you are like me you close tabs with middle mouse click and you don't care to 
 }
 ```
 
-6. Completely quit and restart Firefox for the changes to take effect. 
-7. Enjoy!
+#### Optional: Match the window buttons to your theme
 
-### OPTIONAL: Fix The Appearance of The Firefox Buttons
-
-By default Firefox hardcodes its own buttons regardless of your system theme. This makes Firefox look gross compared to other applications. To fix this you need to add this to your `userChrome.css`. If you skipped the previous step you must create it before applying this fix.
-Credit to [this wonderful person](https://www.reddit.com/r/firefox/comments/1newm16/working_code_for_userchromecss_for_firefoxnightly/?utm_source=share&utm_medium=mweb3x&utm_name=mweb3xcss&utm_term=1) for figuring out how to do this.
-
-**If you skipped the previous step, do this first:**
-
-1. First, go to `about:config` in URL bar and then put in `toolkit.legacyUserProfileCustomizations.stylesheets` and set it to `true`
-2. Then write `about:support` in the URL bar and press enter.
-3. Go to `Profile Folder` section and press `Open Folder`
-4. Create a new folder in the directory called `chrome` (Yes I know, that is what it is called)
-5. Create a file in there called `userChrome.css` with these contents :
+To use GTK theme button assets, append this CSS to the same `userChrome.css`. If you skipped the previous section, follow its profile-folder steps first. Credit goes to the author of [this Firefox customization example](https://www.reddit.com/r/firefox/comments/1newm16/working_code_for_userchromecss_for_firefoxnightly/?utm_source=share&utm_medium=mweb3x&utm_name=mweb3xcss&utm_term=1).
 
 ```css
 /* Minimize button */
@@ -905,7 +775,7 @@ Credit to [this wonderful person](https://www.reddit.com/r/firefox/comments/1new
 }
 ```
 
-Then after adding this, symlink this to your Firefox chrome directory. Replace profile id with yours:
+Link the theme assets into the profile's `chrome` directory. Replace `PROFILE_ID_HERE` with your actual profile ID, then restart Firefox:
 
 ```zsh
 cd ~/.config/mozilla/firefox/PROFILE_ID_HERE.default-release/chrome
@@ -913,126 +783,86 @@ cd ~/.config/mozilla/firefox/PROFILE_ID_HERE.default-release/chrome
 ln -sfn ~/.config/gtk-3.0/assets buttons
 ```
 
-And finally restart Firefox.
+#### Optional portal and window-button fixes
 
-### OPTIONAL: Various Fixes for Firefox That Might Help You
+Use these only if the portal settings from the installation guide did not give you the expected file picker or window buttons.
 
-Sometimes after install Firefox looks odd, some buttons are off and incorrect. 
-**These optional knobs are only if the GDK portal we set up in the install itself didn't work.**
-**Skip** if whatever entry does not apply to Firefox on your system.
-The technical reason is a bit out of scope for this tutorial, but essentially it thinks that it is
-in another desktop environment. Portals are supposed to fix that, but if they don't you can try these
-fixes:
+For the file picker, set `widget.use-xdg-desktop-portal.file-picker` to `1` in `about:config`.
 
-#### (Optional) - Force Firefox to use Dolphin
+For missing minimize or maximize buttons, try:
+
 ```zsh
-# Optional if needed. GDK_DEBUG=portals set earlier should have done it.
-# If not, force Firefox to do it, open about:config and set:
-widget.use-xdg-desktop-portal.file-picker → 1 (always)
+gsettings set org.gnome.desktop.wm.preferences button-layout 'icon:minimize,maximize,close'
 ```
 
-#### (Optional) - Add all buttons to Firefox
-```zsh
-# Sometimes Firefox does not have the minimize and maximize buttons
-# You can try this remedy:
-gsettings set org.gnome.desktop.wm.preferences button-layout 'icon:minimize,maximize,close'
-# Then log out and back in
+Log out and back in. If the problem remains, the original workaround also suggests installing the GTK portal:
 
-# If that still doesn't work, then try:
+```zsh
 pikaur -S --needed xdg-desktop-portal-gtk
 ```
 
----
+## 4. Firmware, security, and gaming
 
-### 4 · Essential security and quality of life
+### Firmware updates
 
-#### 4.0 Firmware Updates
+Install fwupd and start its service:
+
 ```zsh
-# You are going to need to update your firmware
-# To do this install fwupd and start the service
 sudo pacman -S --needed fwupd
 sudo systemctl start --now fwupd.service
-
-# Sidenote: topgrade which I will talk about later can do all the get updates and install steps for you
-# If you are going to use it, you can skip the manual steps below.
-#
-# If you wish to do it manually:
-# First display all devices detected by fwupd
-$ fwupdmgr get-devices
-
-# To download the latest metadata from the Linux Vendor firmware Service (LVFS): 
-$ fwupdmgr refresh
-
-# To list updates available for any devices on the system: 
-$ fwupdmgr get-updates
-
-# To install updates:
-$ fwupdmgr update
-
 ```
 
+Topgrade, introduced below, can handle the update checks. To do them manually, list devices, refresh LVFS metadata, inspect available updates, and install them:
 
-### OPTIONAL: Enable Fast Connect for Bluetooth
 ```zsh
-# This is only if you use Bluetooth.
-# The Bluetooth configuration is able to use a way
-# to connect to Bluetooth hardware that is faster.
-#
-# The tradeoff is this is only for Bluetooth adapters
-# that support it, and can lead to increased power
-# usage. The benefit is way faster connection.
-#
+fwupdmgr get-devices
+fwupdmgr refresh
+fwupdmgr get-updates
+fwupdmgr update
+```
+
+### Optional Bluetooth adjustments
+
+#### Faster connections
+
+On adapters that support it, fast connectability can shorten connection time at the cost of more power use.
+
+```zsh
 sudo mkdir -p /etc/bluetooth
 sudo nano /etc/bluetooth/main.conf
 ```
 
-Find & Uncomment FastConnectable and change 'false' to 'true':
+Find `FastConnectable` in `/etc/bluetooth/main.conf`, uncomment it, and set:
 
 ```conf
-# Permanently enables the Fast Connectable setting for adapters that
-# support it. When enabled other devices can connect faster to us,
-# however the tradeoff is increased power consumptions. This feature
-# will fully work only on kernel version 4.1 and newer. Defaults to
-# 'false'.
 FastConnectable = true
 ```
 
-### OPTIONAL: Fix Bluetooth mouse stutter
+#### Mouse stutter while reconnecting other devices
+
+On my MX Master 4, frequent scans for paired devices that were switched off coincided with dropped mouse reports. Increasing the scan interval made the mouse smoother, with the tradeoff that those other devices took a few seconds longer to reconnect.
+
 ```zsh
-# This is only if you use a Bluetooth mouse and also have
-# other Bluetooth devices paired that are turned off,
-# like a controller or headphones.
-#
-# The adapter scans every 60ms to reconnect those devices,
-# and every scan makes it miss a report from the mouse.
-# On my MX Master 4 that was 1 in 6 reports dropped, which
-# felt like stutter when turning the camera in games.
-#
-# The tradeoff is turned off devices take a couple of
-# seconds longer to reconnect when you turn them on.
-# The benefit is a way smoother mouse, also on the desktop.
-#
 sudo nano /etc/bluetooth/main.conf
 ```
 
-Find & Uncomment ScanIntervalAutoConnect and ScanWindowAutoConnect under [LE] and set them to:
+Under `[LE]`, uncomment and set these values:
 
 ```conf
-# LE scanning parameters used for passive scanning supporting auto connect
-# scenarios
 ScanIntervalAutoConnect=2048
 ScanWindowAutoConnect=18
 ```
 
-Then restart Bluetooth:
+Restart Bluetooth:
 
 ```zsh
 sudo systemctl restart bluetooth
 ```
 
----
+### Firewall
 
-### 4.1 Firewall
+Install and enable firewalld, then allow KDE Connect in the public zone:
+
 ```zsh
 sudo pacman -S --needed firewalld firewall-applet
 sudo systemctl enable --now firewalld
@@ -1040,152 +870,120 @@ sudo firewall-cmd --permanent --zone=public --add-service=kdeconnect
 sudo firewall-cmd --reload
 ```
 
-### 4.2 Enable multilib for 32-bit support (pre-Steam)
+### Enable multilib
+
+Steam needs 32-bit package support. Open `/etc/pacman.conf`:
 
 ```zsh
-# to enable 32-bit support you need to uncomment
-# a new repository, essentially add it and then update system.
 sudo nano /etc/pacman.conf
 ```
 
-Uncomment in `/etc/pacman.conf`:
+Uncomment this repository section:
+
 ```ini
 [multilib]
 Include = /etc/pacman.d/mirrorlist
 ```
-Update your system to include multilib:
 
-Option 1) Topgrade - Update everything on your system with one command! :
+Then update the system using **one** of the following methods.
+
+#### Option 1: Topgrade
+
+Topgrade can coordinate updates across system packages, AUR packages, Flatpaks, language-specific tools, and firmware. I find it convenient on a system with several package managers.
+
+This example installs the standalone binary. Find the version you want on the [Topgrade releases page](https://github.com/topgrade-rs/topgrade/releases) and replace `vXX.X.X` before running the block. The example target is x86-64 Linux.
+
 ```zsh
-# Topgrade is an optional but super quality of life package
-# With one command of `topgrade` you can upgrade all your packages of any type on your entire system...
-# That is *all* your packages, including flatpaks, sys packages like the kernel, AUR, Rust crate, etc.
-# It also shows available firmware to upgrade. It is so helpful that even though its a bit out there...
-# ... I still think it's essential for QoL on any Arch system.
-# If you think this sounds neat then I strongly recommend it.
-#
-# I am going to show you how to install the self updating binary which is easier to use than the
-# one packaged by the AUR which can't update itself.
-# First go to https://github.com/topgrade-rs/topgrade/releases and look for ver number,
-# the result should be the latest one. replace this ver= with number you find.
-# Paste each line by line.
-#
-# 1. example: ver=v17.0.0
 ver='vXX.X.X'
-
-# 2. This targets your architecture
 target='x86_64-unknown-linux-gnu'
-
-# 3. Sets a tmpdir
 tmpdir="$(mktemp -d)"
-
-# 4. Creates the binary programs folder in HOME folder if it dont exist
 mkdir -p "$HOME/.local/bin"
-
-# 5. Goes to tmpdir 
 cd "$tmpdir" || exit 1
-
-# 6. curl to install the binary
 curl -fLO "https://github.com/topgrade-rs/topgrade/releases/download/$ver/topgrade-$ver-$target.tar.gz"
-
-# 7. Untar the binary
 tar -xzf "topgrade-$ver-$target.tar.gz"
-
-# 8. Install binary to HOME binary programs folder
 install -m 0755 topgrade "$HOME/.local/bin/topgrade"
-
-# 9. Check version to ensure it worked.
 topgrade --version
-
-# 10. Go back HOME
 cd
+```
 
-# --- OPTIONAL ALIAS:
+Optionally add a shorter alias to `~/.zshrc`:
 
-# If you want you can add an alias to run topgrade with a
-# better command name
-#
-# worth it so that you better remember it and to make it fit
-# more in line with the other commands that start with "pac".
-#
-# First edit:
+```zsh
 nano ~/.zshrc
+```
 
-# Then add this to the bottom:
+Add this line:
+
+```zsh
 alias pacup='topgrade'
+```
 
-# Save and exit, then reload zshrc like so:
+Reload the file:
+
+```zsh
 source ~/.zshrc
+```
 
-# Then either write + press enter:
+Run either the alias:
+
+```zsh
 pacup
+```
 
-# or if you didn't add the alias:
+Or the original command:
+
+```zsh
 topgrade
+```
 
-# ---
+After updating, check for packages that need rebuilding against changed libraries:
 
-# This is a good time to teach you the habit of running `checkrebuild` after updates.
-# 'checkrebuild' checks if you need to rebuild any packages towards new dependencies.
-#
-# If you don't do that when needed, it can lead to instability.
+```zsh
 checkrebuild
+```
 
-# If you don't want to remember this, just run this once and then use it from history
-# every time you update. It simply runs topgrade and then after runs checkrebuild in
-# one command:
+For future updates, you can combine the commands. Choose the form that matches whether you added the alias:
+
+```zsh
 topgrade && checkrebuild
+```
 
-# Or for alias:
-
+```zsh
 pacup && checkrebuild
-
-# usually it doesn't list anything, that means you're good, but if it does you need to run
-# pikaur  -S <pkg> --rebuild
 ```
 
-Option 2) with pikaur:
+#### Option 2: Pikaur
+
+Running Pikaur without arguments updates both repository and AUR packages:
+
 ```zsh
-# Tip/Fun Fact: You can update your system by just writing 'pikaur'.
-# This is actually ideal, as pacman -Syu does not update your AUR packages.
-# Try it:
 pikaur
-
-# This is a good time to teach you the habit of running `checkrebuild` after updates.
-# 'checkrebuild' checks if you need to rebuild any packages towards new dependencies.
-#
-# If you don't do that when needed, it can lead to instability.
 checkrebuild
-
-# If you don't want to remember this, just run this once and then use it from history
-# every time you update. It simply updates and then after runs checkrebuild in
-# one command:
-pikaur && checkrebuild
-
-# usually it doesn't list anything, that means you're good, but if it does you need to run
-# pikaur  -S <pkg> --rebuild
 ```
 
-### 4.2.5 Games & Steam
+For future updates, the combined form is:
+
 ```zsh
-# then after enabling multilib DL Steam
-# 
-# xorg-fonts-misc is an optional addition to Steam that was recently added.
-# It simply provides fonts for for non-latin locales. Neat to have.
-#
-# ntsync-autoload is a new optional dep for steam, it loads ntsync for you
-# which means you don't have to do it manually, more on what ntsync is in the
-# manual step below which you can skip if you install this
+pikaur && checkrebuild
+```
+
+No output from `checkrebuild` normally means it found nothing to rebuild. If it lists a package, rebuild that package with `pikaur -S <pkg> --rebuild`, replacing `<pkg>` with its name.
+
+### Games and Steam
+
+With multilib enabled, install Steam. The optional packages add legacy X11 fonts and automatic loading of the ntsync module:
+
+```zsh
 pikaur -S --needed steam xorg-fonts-misc ntsync-autoload
 
-# Run Steam in terminal to install it:
 steam
 ```
 
-### Fix legacy X11 fonts
-Now make sure those fonts are actually indexed. `xorg-fonts-misc` can be installed while `/usr/share/fonts/misc/fonts.dir` is still missing, so X11 can't find its Unicode fonts. English can still work through X11's built-in Latin-1 fonts, which makes this easy to miss for non-Latin languages.
+#### Fix legacy X11 fonts
 
-Run this as your normal desktop user. `xorg-mkfontscale` provides `mkfontdir`, while `xorg-xset` provides `xset` to refresh the running X11/Xwayland font path:
+Make sure those fonts are indexed. `xorg-fonts-misc` can be installed while `/usr/share/fonts/misc/fonts.dir` is missing, leaving X11 unable to find its Unicode fonts. English can still work through built-in Latin-1 fonts, making this easy to miss for other languages.
+
+Run this as your normal desktop user. `xorg-mkfontscale` supplies `mkfontdir`, and `xorg-xset` supplies `xset` to refresh the running X11 or Xwayland font path:
 
 ```zsh
 pikaur -S --needed xorg-mkfontscale xorg-xset &&
@@ -1200,297 +998,234 @@ else
 fi
 ```
 
-This is safe to run again. It refreshes the index even if it already exists. If you're doing this without a desktop session, the X refresh is simply skipped. Restart Steam afterwards if it was already running.
+You can run this again to refresh an existing index. Without a reachable X display, it saves the index and skips the live refresh. Restart Steam afterwards if it was already running.
 
-### Fix Steam MP4 Playback
-By default MP4 playthrough in Steam Chat is broken under Linux. To fix this you need to run Steam’s H.264 decoder unlock for the Linux web component. Run this with Steam fully closed:
+#### Fix Steam MP4 playback
+
+If MP4 playback in Steam Chat is broken, close Steam completely and run its H.264 decoder unlock:
 
 ```zsh
-
 steam steam://unlockh264/
-
 ```
 
-Then let Steam finish whatever it opens/downloads, quit Steam again, and start it normally. 
+Let Steam finish the download or setup it opens, quit it, then start it normally.
 
-### OPTIONAL Enable ntsync by default
+#### Optional: Load ntsync at boot
+
+Skip this if you installed `ntsync-autoload`. Ntsync implements Windows-style synchronization in the kernel for Wine. I use it as a possible performance improvement over earlier synchronization methods.
+
 ```zsh
-# Skip if you installed ntsync-autoload
-#
-# ntsync is an experimental Linux kernel driver mimicking Windows synchronization mechanisms.
-# It should improve performance of Wine synchronization syscalls comparing to their previous,
-# more user-space-based implementations (esync, fsync). Emphasis on should. I have personally
-# noticed no regressions. 
 sudo mkdir -p /usr/lib/modules-load.d/
 sudo nano /usr/lib/modules-load.d/ntsync.conf
 ```
 
-Add this:
+Contents of `/usr/lib/modules-load.d/ntsync.conf`:
 
 ```conf
-# /usr/lib/modules-load.d/ntsync.conf
 ntsync
 ```
 
-### Make Shader Pre-Compilation Faster
+#### Shader preprocessing threads
 
-When running games under Proton the shader compilation can legitimately hit high CPU usage because it is parallel work. This can create runtime stuttering if done during play. To mitigate this shader preprocessing is set on by default beforehand. This usually takes seconds, but sometimes under certain circumstances™ (CLASSIC) shader pre-compilation may only use one core for w/e reason and that is when people usually get frustrated by it and learn bad habits like skipping. 
-
-However this flaw can be overridden by the user by adding a conf file that makes Steam always use more cores for shader comp. Example number is 8 cores, modify the number depending your own CPU and workload. Shader comp is heavy on the CPU so if you are doing other things like streaming or w/e you might want to set a lower number than all the cores. Restart Steam afterwards if it was already running:
-
-
-Here is how to set it:
-
+Shader compilation can use substantial CPU time. If Steam's background preprocessing is using too few threads, you can set the count explicitly. This example uses eight; choose a lower value if you need CPU capacity for other work. Restart Steam after changing it.
 
 ```zsh
 mkdir -p ~/.steam/steam
 
-# Example number is 8 cores, modify the number depending your own CPU and workload.
 printf 'unShaderBackgroundProcessingThreads 8\n' > ~/.steam/steam/steam_dev.cfg
 ```
 
-This is how ~/.steam/steam/steam_dev.cfg will look like afterwards when correctly done:
+The resulting `~/.steam/steam/steam_dev.cfg` contains:
 
 ```cfg
 unShaderBackgroundProcessingThreads 8
 ```
 
+### Find files with plocate
 
+Plocate searches a file database, which makes it useful for finding directories such as `steamapps`. Install it, build the database, and try a search:
 
-### 4.2.6 plocate - Quickly find any file or folder on your Arch Linux system
 ```zsh
-# To quickly learn how to find steamapps for example without googling you can use plocate
-# It's the fastest way to find any file or folder on your system, first install plocate:
 pikaur -S --needed plocate
-
-# Then build the database:
 sudo updatedb
+locate -b '\steamapps'
+```
 
-# And finally write a command like so to find steamapps for example:
-locate -b '\steamapps'   # instant results
+Start the daily database-update timer:
 
-# You may also want to enable the daily systemd timer to update the database automatically:
+```zsh
 sudo systemctl start --now plocate-updatedb.timer
 ```
 
-### ProtonUp-Qt:
+### Proton GE
+
+Install ProtonUp-Qt:
+
 ```zsh
-# install protonup qt (ProtonGE)
 pikaur -S --needed protonup-qt
 ```
 
-### Configure Proton GE as the default in Steam after installing Proton GE from ProtonUp-Qt:
+1. Open ProtonUp-Qt and install the Proton GE version you want.
+2. Open **Steam → Settings → Compatibility**.
+3. Choose **Proton GE** from the dropdown and restart Steam.
 
-0. Open up ProtonUp-Qt and install the latest version of Proton GE
-1. Launch Steam and open **Settings → Compatibility**.  
-2. In the dropdown, choose **Proton GE**.  
-3. Click OK and restart Steam.
+I like Proton GE for games that need additional codecs or compatibility fixes, especially older games with unusual video or audio formats.
 
-ProtonGE is a good default for a lot of games IMO, works just as well as regular Proton for most games and **BETTER** for other games that include 
-propietary codecs and such that Valve cannot package themselves. This helps with games that rely on video files and music with odd/outdated formats.
+## 5. Maintenance
 
+### Package hooks
 
+These hooks check for `.pacnew` files that need merging, run Reflector after mirror-list updates, and clean pacman's cache:
 
----
-
-### 5 · Maintenance hooks
 ```zsh
-# these hooks are great for system maintenance
-#
-# pacdiff shows you if any .pacnew is on your system needed to merge
-#
-# reflector will run reflector any time mirrorlist updates
-#
-# paccache-hook is the GOAT. it cleans your cache after using pacman.
 pikaur -S --needed \
   pacdiff-pacman-hook-git \
   reflector-pacman-hook-git \
   paccache-hook
 ```
 
+### Keep UKIs current
 
-### How to Prevent Stale UKIs
+Install the kernel-install hook to rebuild UKIs after updates:
+
 ```zsh
-# To prevent stale UKIs you need a hook to run after every update
-# Or do it manually, but automatic is better.
-#
 pikaur -S --needed pacman-hook-kernel-install
+```
 
-# NOTE: This may not be needed, sometimes they are not installed
-# other times they are. I have had mixed results. Good to run both
-# anyways just to ensure they are removed.
-#
-# Mask the mkinitcpio hooks to prevent duplicates::
+The guide masks these mkinitcpio hooks to avoid duplicate handling. Their presence can vary by setup:
+
+```zsh
 sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
 sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ```
 
-### Install & Enable Nohang:
+### Nohang
+
+I recommend Nohang to terminate processes under severe memory pressure before the desktop becomes unresponsive:
+
 ```zsh
-# This is an OOM killer. DON'T SKIP. It's VITAL.
 pikaur -S --needed nohang
 
-# Reason why it's vital is this:
-# If your system fills up it's swap and RAM then this will terminate offending processes before your system freeze up.
-# So if you don't have this your computer will just freeze if you are unlucky and this happens to you for w/e reason.
 sudo systemctl enable --now nohang-desktop.service
 ```
 
-### Set Journalctl limit:
+### Journal size limit
+
+I limit the persistent journal to keep disk usage small:
+
 ```zsh
-# SUPER important, DO NOT SKIP. The journal on desktop use fills up very quickly which takes space
-# a large one can slow down boot times after a while.
 sudo mkdir -p /etc/systemd/journald.conf.d
 sudo nano /etc/systemd/journald.conf.d/00-journal-size.conf
 ```
+
+Contents of `/etc/systemd/journald.conf.d/00-journal-size.conf`:
+
 ```ini
 [Journal]
 SystemMaxUse=50M
 ```
 
----
+## 6. Keyboard and USB settings
 
-### Set Keymaps for X11
-This is only if you don't have an US keymap layout. While this tutorial primarily covers how to install a Wayland exclusive environment, setting the keymap in Xorg should still be done even if you are only using Wayland for compatibility reasons. This is not strictly necessary and may be redundant, but there is no harm in generating it so if you ever do hit a compatibility issue then you won't be surprised.
+### X11 keyboard layout
 
-The default X11 keymap is sourced through /etc/X11/xorg.conf.d/00-keyboard.conf which this command generates for you.
+For a non-US keyboard, I also configure an X11 layout for compatibility even though the main desktop uses Wayland. The command generates `/etc/X11/xorg.conf.d/00-keyboard.conf`.
 
-All you have to do is run `set-x11-keymap` with your country code like in the main tutorial, and add a keyboard model after. `pc105` is what I have and its the default in most countries but in the US pc104 is also common. Check what model you use beforehand by using google for either. Best way to tell is on the shape of the Enter key.
+Replace `no` and `pc105` with your layout and keyboard model. My Norwegian keyboard uses `pc105`; some US keyboards use `pc104`.
 
 ```zsh
-# When you have what you need and
-# have edited my defaults to yours, run:
 sudo localectl set-x11-keymap no pc105
 ```
 
----
-
 ### USB autosuspend
-The Linux kernel automatically suspend USB devices when they are not in use. 
-This can sometimes save quite a bit of power, however some USB devices are not compatible with USB power saving and start to misbehave (common for USB mice/keyboards). Some keyboards and mice
-will "fall asleep" and there will be some latency after idle. This is enough to drive you crazy if you don't know what's going on.
 
-udev rules based on whitelist or blacklist filtering can help to mitigate the problem. ATTR{power/control}="on" disables runtime autosuspend for the matched devices; "auto" enables it for all others.  
+Autosuspend saves power, but some keyboards and mice respond poorly after idling. The rules below keep selected input devices awake while allowing other USB devices to suspend. `power/control="on"` disables autosuspend; `"auto"` allows it.
 
-#### RECCOMENDED OPTION A) The example is enabling autosuspend for all USB devices except for keyboards and mice: 
+Choose **one** rule set for `/etc/udev/rules.d/50-usb_power_save.rules`.
 
-Try this before you do Option B, it's simpler
-and it is the reccomended way to do it on the ArchWiki:
+#### Option A: Match product names
+
+This is the simpler example. It excludes products whose names end in `Mouse` or `Keyboard`:
 
 ```zsh
 sudo nano /etc/udev/rules.d/50-usb_power_save.rules
 ```
-```zsh
+
+File contents:
+
+```udev
 ACTION=="add", SUBSYSTEM=="usb", ATTR{product}!="*Mouse", ATTR{product}!="*Keyboard", TEST=="power/control", ATTR{power/control}="auto"
 ```
 
----
+#### Option B: Match interface classes
 
-#### ADVANCED OPTION B) More specific exemptions based on Base Classes:
-
-You can make it more specific like so if you know what you are doing and Option A did not work.
-Often the reason why Option A don't work is due to the mouse and keyboard having a name without
-advertising their function ("Keyboard" and "Mouse").
-
-The HEX codes should be correct according to the Official USB-IF Class Code Specifications. 
-They represent a specific hierarchy of device identification: 
-
-03: The Base Class for HID (Human Interface Device).
-01: The Subclass code for Boot Interface, indicating the device supports the simplified "boot" communication mode.
-01 or 02: The Protocol code, where 01 is for Keyboard and 02 is for Mouse.
+Use this alternative when product names do not identify the devices. It keeps HID boot keyboards (`030101`) and mice (`030102`) awake. The components are class `03` for HID, subclass `01` for the boot interface, and protocol `01` or `02` for keyboard or mouse.
 
 ```zsh
 sudo nano /etc/udev/rules.d/50-usb_power_save.rules
 ```
-```zsh
-# Default: enable autosuspend on USB devices
+
+Alternative file contents:
+
+```udev
 ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", TEST=="power/control", ATTR{power/control}="auto"
 
-# Keep HID boot keyboard (030101) and mouse (030102) awake
 ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{ID_USB_INTERFACES}=="*:030101:*", ATTR{power/control}="on"
 ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{ID_USB_INTERFACES}=="*:030102:*", ATTR{power/control}="on"
 ```
 
-Apply and retrigger, then recheck:
+Reload the rules, retrigger USB events, and inspect the power state:
+
 ```zsh
 sudo udevadm control --reload-rules
 sudo udevadm trigger --subsystem-match=usb --action=add
 
-# Check to see if either approach worked:
 grep -H . /sys/bus/usb/devices/*/power/{control,runtime_status}
 ```
 
----
+## 7. Media tools
 
-#### YT-DLP and aliases I use with it:
+### Install yt-dlp
 
-YT-DLP is a downloader for online media hosted on sites. It's very good.
+Yt-dlp downloads media from supported websites. Choose **one** installation method.
 
-Install (pick one option):
+#### Option A: uv
+
+I prefer the upstream installation through uv. These packages need their own updates through `uv tool upgrade --all`, or a tool such as Topgrade that includes uv updates.
+
+The example uses `UV_NO_MODIFY_PATH=1` with the installer. The earlier Zsh setup already includes `~/.local/bin` in `PATH`.
+
 ```zsh
-OPTION A)
-# From uv (Rust based Python manager, very good)
-#
-# This is recommended as its upstream, though ensure you keep it up to date.
-# If you simply run `pikaur` or `pacman -Syu` it will NOT update this package.
-# You must run `uv tool upgrade --all` as well. This is tedious.
-# The best way instead is to update your system using topgrade since it will
-# automatically detect that uv is on your system and then
-# update that too when ran without you needing to do a damn thing.
-#
-# Yes, topgrade is an amazing tool. I am not sponsored by them
-#
-# UV_NO_MODIFY_PATH=1 prevent the installer from editing shell files.
-# ~/.local/bin is already on your PATH from ~/.zshrc step earlier
 UV_NO_MODIFY_PATH=1 curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Refresh command cache
 rehash
-
-# Verify the standalone uv is first
 type -a uv uvx
 uv --version
-
-# Set it to self update
 uv self update
-
-# Install yt-dlp via uv
-# This also adds curl_cffi into yt-dlp's venv container
-# it is useful for yt-dlp when downloading
-# as certain pages may need the request to look like it's
-# coming from a real browser
-#
-# Default is added to add a number of default things
-# that arent provided OOB like various ways to resolve
-# certain streams.
 uv tool install 'yt-dlp[default,curl-cffi]'
+```
 
---
+The extras provide yt-dlp's default optional dependencies and browser impersonation through `curl_cffi` for sites that need it.
 
-OPTION B)
-# From official repository
-#
-# If not using topgrade / don't want uv, you can also get it from the
-# repositories, reason why its not reccomended is it may lag behind
-# the official package. See why curl_cffi is included above.
+#### Option B: Repository packages
+
+If you prefer package-manager updates, install:
+
+```zsh
 pikaur -S --needed yt-dlp python-curl_cffi
+```
 
----
+#### JavaScript support
 
-# Then install deno and nodejs
+After either installation method, install the runtimes and add the remote-component setting:
+
+```zsh
 pikaur -S --needed deno nodejs
-
-# And finally add a config file to use the solver each time
 mkdir -p ~/.config/yt-dlp && echo "--remote-components ejs:github" >> ~/.config/yt-dlp/config
 ```
 
----
+### Optional yt-dlp aliases
 
-#### OPTIONAL QoL FOR YT-DLP:
-
-- Here are some aliases I use, the first exports cookies from Firefox with `--cookies-from-browser firefox`, if you don't plan to use Firefox change that with another browser. I have not tested the command with another browser, so I am not sure if that works as well but it should. 
-
-Add to `~/.zshrc` with `nano` on the bottom:
+Add these to `~/.zshrc`. `ytdla` downloads MP3 audio to Music and uses Firefox cookies; `ytdlv` downloads video to Videos. Change the browser argument if needed, though I have only tested the Firefox version.
 
 ```zsh
 alias ytdla='yt-dlp \
@@ -1508,24 +1243,20 @@ alias ytdlv='yt-dlp --js-runtimes deno -f "bestvideo+bestaudio" \
     -o "$HOME/Videos/%(title)s.%(ext)s"'
 ```
 
-Save and then run: `source ~/.zshrc`
+Save and run `source ~/.zshrc`. Use either alias followed by the media URL.
 
----
+### Clip a video
 
-#### How to use:
-
-ytdla downloads audio, ytdlv downloads video and places them in appropriate folders with names.
-You simply write either of these and a link. 
-
-- Here is a script I made that makes clipping videos easier.
+This script accepts a URL, a start and end time, and an optional quality limit. It requires yt-dlp and FFmpeg.
 
 ```zsh
 mkdir -p /home/$USER/bin/
 nano /home/$USER/bin/ytclip
 ```
 
-Add this script:
-```zsh                             
+Contents of `/home/$USER/bin/ytclip`:
+
+```bash
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -1563,8 +1294,7 @@ fi
 # Normalise quality label
 QUALITY="$(echo "$QUALITY" | tr '[:upper:]' '[:lower:]')"
 
-# Map quality to a yt-dlp format selector.
-# Height filters use official format selection syntax.
+# Limit the selected video height
 case "$QUALITY" in
   best)
     FMT='bv*+ba/best'
@@ -1584,243 +1314,166 @@ case "$QUALITY" in
     ;;
 esac
 
-# Prefer broadly compatible outputs and containers.
-# -S sorts formats to prefer h264+aac and mp4 where possible.
+# Format sorting preference
 SORT_PREF='res,codec:av1:vp9:h264,ext'
 
 # Safe tags for filename (turn 3:51 into 3m51s)
 start_tag="${START//:/m}s"
 end_tag="${END//:/m}s"
 
-# Perform frame-accurate clipping by forcing keyframes at cuts.
-# This re-encodes the segment for accuracy.
+# Re-encode at cut points for accurate clipping
 exec yt-dlp "$URL" \
   -f "$FMT" -S "$SORT_PREF" --merge-output-format mp4/mkv \
   --download-sections "*${START}-${END}" --force-keyframes-at-cuts \
   -o "%(id)s_${start_tag}_${end_tag}.%(ext)s"
-  ```
+```
+
+Make it executable:
 
 ```zsh
-# make it executable
 chmod +x /home/$USER/bin/ytclip
 ```
 
-#### How to use:
+Usage and examples, with the example URL replaced by your own:
 
-```zsh
+```text
 ytclip <url> <start> - <end> [best|360p|720p|1080p]
 Examples:
   ytclip '(link)' 3:51 - 3:54 360p
   ytclip '(link)' 00:03:51 - 00:03:54 best
 ```
 
-#### DISCLAIMER: I do not condone breaking site ToS with this tool, nor any other form of piracy.
+Use the tool in accordance with the site's terms and the rights to the media you download.
 
+### Video players
 
-## Video Playback
+Choose the player you prefer. I currently use Haruna, but VLC and MPV are alternatives.
 
-My advice is pick one here, you can do both but it's best to not clutter your system.
+#### Haruna
 
-### Option 1) Haruna
+Haruna combines MPV playback with a Qt interface that fits KDE. This also installs the third-party MPV Phonon backend and enables automatic hardware decoding in MPV's configuration:
 
 ```zsh
-# Haruna is KDE's official video player, it is based on MPV but with a Qt based GUI frontend that
-# integrates natively into your KDE Plasma system. This is what I use at the moment. Works with
-# YouTube Playback well.
-#
-# install Haruna (video)
 pikaur -S --needed haruna
 
-# (Third-party) Phonon Support for mpv (installed with Haruna)
 pikaur -S --needed phonon-qt6-mpv
 
-# You have to do this if you want GPU acceleration for your wholesome entertainment
 mkdir -p ~/.config/mpv
 echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 ```
 
-### Option 2) VLC
+#### VLC
 
-#### VLC Install:
+VLC offers a broad GUI and a Phonon backend. In my experience, YouTube playback and NVIDIA hardware acceleration have been less reliable than I would like.
+
 ```zsh
-# VLC is the only officially supported third-party player with official Phonon support on KDE.
-# It's more fully featured than MPV, MPV requires more manual config to look better.
-# However it is buggy in some aspects, like using it for YouTube playback has not been good IMO.
-# It also is not reliable for hardware acceleration on NVIDIA IMO
-#
-# install vlc (video)
 pikaur -S --needed vlc vlc-plugins-all
-
-# Hardware Acceleration:
-## VLC automatically tries to use an available API
-## You can override it by going to Tools > Preferences > Input & Codecs.
-## Choose the suitable option under Hardware-accelerated decoding,
-
-# Phonon backend (for integration within KDE):
 pikaur -S --needed phonon-qt6-vlc
+```
 
-# OPTIONAL: Plugin to allow you to click on the video inside VLC's window
-# and it will be paused or resumed. This is a commonly expected behavior:
+For hardware decoding, check **Tools → Preferences → Input & Codecs → Hardware-accelerated decoding**.
+
+Optionally install click-to-pause support:
+
+```zsh
 pikaur -S --needed vlc-pause-click-plugin
 ```
 
-### Option 3) MPV
-#### MPV Install:
+#### MPV
+
+Choose MPV if you prefer a minimal interface and manual configuration. This also installs the third-party Phonon backend and enables automatic hardware decoding:
+
 ```zsh
-# Has become more popular in recent years, is very powerful but a bit nerdy
-# If you care about manual configs and stuff use MPV, otherwise use VLC or Haruna
-#
-# install mpv (video)
 pikaur -S --needed mpv  
 
-# (Third-party) Phonon Support for mpv
 pikaur -S --needed phonon-qt6-mpv
 
-# You have to do this if you want GPU acceleration for your wholesome entertainment
 mkdir -p ~/.config/mpv
 echo "hwdec=auto" > ~/.config/mpv/mpv.conf
 ```
 
-## Music Playback
+### Music: Elisa
 
-### Elisa
+I use Elisa for its KDE integration:
 
 ```zsh
-# Elisa is KDE's official music player, it also has a Qt based GUI frontend that
-# integrates natively into your KDE Plasma system. This is what I use at the moment.
-#
-# install Elisa (music)
 pikaur -S --needed elisa
 ```
 
-## Optional: Improve Font Rendering
+## 8. Optional display and hardware tweaks
+
+### Font rendering
+
+I prefer Lucidglyph's slightly heavier rendering. It does not affect Chromium browsers in the setup described here. See the [font-rendering discussion](https://old.reddit.com/r/linuxquestions/comments/1qzah2h/the_font_rendering_on_linux_is_just_bad_has/) for the background that led me to try it.
+
+Install the font and Lucidglyph:
+
 ```zsh
-# some people have criticized the font rendering on Linux
-# there is a good thread on this here:
-# https://old.reddit.com/r/linuxquestions/comments/1qzah2h/the_font_rendering_on_linux_is_just_bad_has/
-#
-# I installed this and in my opinion it looks better, albeit a bit more bold but I like that personally.
-#
-# The only real caveat is that it does not work on Chromium browsers.
-# If you use those then you wont see a difference on the internet,
-# but the rest of the system will look better.
-# I prefer it, but YMMV. Try it and see if it works for you,
-# if it doesn't remove it with sudo ./lucidglyph.sh remove
 pikaur -S --needed ttf-dejavu-nerd
-
-# clone project
 git clone https://github.com/maximilionus/lucidglyph
-
-# enter lucidglyph directory
 cd lucidglyph
-
-# install and reboot
 sudo ./lucidglyph.sh install
+```
 
+In **System Settings → Appearance → Fonts**:
 
+- Set the fixed-width font to **DejaVu Sans Mono**.
+- Set General, Small, Toolbar, Menu, and Window title to **Noto Sans**.
+- Set hinting to **Slight** and subpixel rendering to **None**, then apply.
 
-# Set the fonts in KDE Plasma 6
-   a) Open: System Settings
-   b) Go to: Appearance -> Fonts
-   c) Check/Set these entries:
-      - General: Noto Sans
-      - Fixed width: DejaVu Sans Mono
-      - Small: Noto Sans
-      - Toolbar: Noto Sans
-      - Menu: Noto Sans
-      - Window title: Noto Sans
+In `~/.config/kitty/kitty.conf`, use:
 
-   d) Click: Apply
-
-3) Set Font Hinting to “Slight” (and confirm)
-   a) In the same screen: System Settings -> Appearance -> Fonts
-   b) Click: Font Management (or “Configure…” button for anti-aliasing, wording varies)
-   c) In “Anti-Aliasing” / “Sub-pixel rendering” section:
-      - Hinting: Slight
-      - Ensure that "Sub-pixel rendering" is set to "None"
-   d) Click: Apply
-
-# Kitty Terminal
-# add to ~/.config/kitty/kitty.conf
+```conf
 text_composition_strategy 1.7 0
+```
 
-# Reboot to see changes
+Reboot to see the result:
+
+```zsh
 reboot
+```
 
-# uninstall if desired
+If you want to undo Lucidglyph, run this from its checkout and reboot again:
+
+```zsh
 sudo ./lucidglyph.sh uninstall
 reboot
 ```
 
-## OPTIONAL: Enable iPhone Fast Charging on Linux with a udev Rule
+### Apple device fast charging
 
-What many do not know is that Linux is capable of fast charging iOS devices. This is set off by default, so here is how you can set up Linux to request fast charging for an iPhone or another supported Apple iOS device using the kernel's `apple-mfi-fastcharge` driver automatically with an udev rule. 
+The [Apple fast-charging guide](extra/tutorials/applefastcharge.md) uses the kernel's `apple-mfi-fastcharge` driver and a udev rule to request faster charging for supported devices.
 
-### What this checks
+The reported `charge_type` is usually `Trickle` or `Fast`. `Fast` confirms the request, not the actual electrical power draw. Use an inline USB power meter to measure watts or amps.
 
-The `charge_type` file usually reports one of these values:
+### Advanced: Qt animations on high-refresh-rate monitors
 
-```text
-Trickle
-Fast
-```
+**This replaces `qt6-base`, a package KDE Plasma depends on, with a third-party patched build. A broken or delayed update can leave the desktop unusable and may require recovery from a live environment.**
 
-- `Trickle` means Linux has not requested fast charging.
-- `Fast` means Linux has requested fast charging.
-- This does not measure real watts or amps. Use an inline USB power meter if you want to verify actual electrical draw.
+Only consider it if you are comfortable entering a chroot and reinstalling the official `qt6-base` package to recover.
 
-
-The fix works by writing `Fast` to the kernel power-supply attribute. Check it out [**here**](extra/tutorials/applefastcharge.md).
-
----
-
-## ADVANCED: Fix Low FPS in Qt6 Applications on Monitors Over 60Hz
-
-**WARNING! THIS WILL REPLACE THE QT6 BASE SYSTEM PACKAGE WHICH KDE PLASMA DEPENDS ON WITH A PATCHED qt6-base PACKAGE THATS MAINTAINED BY A THIRD PARTY**
-**THIS COMES WITH THE RISK OF ISSUES IF SAID THIRD PARTY FAILS TO UPDATE THE PACKAGE CORRECTLY, POTENTIALLY LEADING TO UNBOOTABLE SYSTEMS!**
-
-If you are okay with chrooting in and reversing a broken update (usually by simply installing qt6-base from the Arch repos again and pressing Y when it asks you to replace your AUR package) and this issue matters enough to you as it does for me, then continue. If not, **DO NOT DO THIS.** - However there is no other fix for this bug other than doing this.
-
-So the problem is that there is a long-standing issue with Qt that makes animations such as Overview transitions and scrolling animations get capped at 60 frames per second on Qt based applications. on KDE Plasma the best way to see this in action is to open up Dolphin (File Manager) or System Settings and then scroll the list up & down on a monitor with a high refresh rate (over 60Hz)
-
-This is still unresolved after more than a year and a half due to the way animations are done in Qt. More information on this can be found [here](https://www.old.reddit.com/r/kde/comments/1p26pu0/highrefreshrate_users_were_working_on_removing/)
-
-Basically Qt6's animations are hard coded to only run at a certain refresh rate due to tech debt of the Qt Framework itself. As of now (2026) the only fix is to use a patched version of qt6-base from the AUR that lowers the hard coded number from 16 (around 60Hz) to 4.
+The workaround targets Qt animations that appear capped around 60 frames per second on faster displays, such as scrolling in Dolphin or System Settings. The patch changes a timing value from 16 to 4. See the [KDE discussion of high-refresh-rate animations](https://www.old.reddit.com/r/kde/comments/1p26pu0/highrefreshrate_users_were_working_on_removing/) for context.
 
 ```zsh
 pikaur -S --needed qt6-base-hifps
 ```
 
----
+## Finish
 
-## Final Reboot
-
-#### Reboot again into new system and you can finally sit back, relax, and use arch btw
+Before the final reboot, you can remove orphaned packages: dependencies no longer required by installed packages. Review the removal list before confirming. The command also removes their configuration files and any dependencies that become unused:
 
 ```zsh
-# before reboot it's worth learning how to find all orphaned packages
-# (those that were installed as dependencies but are no longer needed by anything),
-# and completely remove them, including their configuration files and any now-unused dependencies.
-#
-# This keeps your system without lingering dependencies you aren't using. Try to run it periodically:
 sudo pacman -Rns $(pacman -Qtdq)
-
-# reboot
 reboot
-
-# after reboot open kitty (CTRL + ALT + T)
-pikaur -S --needed fastfetch
-
-# Then run it to see your glorious fetch
-fastfetch
-
-# press prt scr to take a desktop photo
-# save it
 ```
 
-You are now done with the post-install. If you want to enable SecureBoot, you can do so by following [**this**](extra/tutorials/secureboot.md) tutorial. If you need to add a new SSD or any other kind of drive, and you are unsure on how to do that without fstab, you only need to follow [**this**](extra/tutorials/newdrive.md) guide that I wrote on how to do it with systemd .mount and .automount units. - Thank you for reading my tutorial and enjoy Arch Linux!
+After rebooting, open Kitty with Ctrl+Alt+T and try Fastfetch:
 
+```zsh
+pikaur -S --needed fastfetch
+fastfetch
+```
 
+Press Print Screen if you want a screenshot of your desktop.
 
-
-
+For further setup, see [Secure Boot](extra/tutorials/secureboot.md), [LUKS encryption](extra/tutorials/luks.md), and [mounting another drive](extra/tutorials/newdrive.md). Enjoy Arch!
