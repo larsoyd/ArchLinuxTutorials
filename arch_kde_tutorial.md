@@ -259,9 +259,9 @@ systemd-repart \
   "$d"
 ```
 
-Choose **one** of the following apply commands.
+Choose **one** of the following apply commands:
 
-**Standard Ext4:**
+**A) Standard Ext4:**
 
 ```zsh
 # Erase the disk and create the partitions
@@ -273,7 +273,7 @@ systemd-repart \
   "$d"
 ```
 
-**Optional Ext4 fast commits:** `fast_commit` can reduce the time an application waits when it calls `fsync()` to flush changes to storage. Ext4 normally records whole metadata blocks in its journal, the log used to recover filesystem changes after a crash. Fast commits record only the metadata changes needed to reconstruct the update, reducing how much must be written to the journal.
+**B) Ext4 + fast commits:** `fast_commit` can reduce the time an application waits when it calls `fsync()` to flush changes to storage. Ext4 normally records whole metadata blocks in its journal, the log used to recover filesystem changes after a crash. Fast commits record only the metadata changes needed to reconstruct the update, reducing how much must be written to the journal.
 
 This works with Ext4's default `data=ordered` mode. Ext4 still performs a full journal commit when an operation cannot use fast commits, the fast-commit area fills, or the normal commit timer expires. The benefit depends on your storage and workload, especially how often applications synchronize small writes. See the [kernel's Ext4 journaling explanation](https://docs.kernel.org/filesystems/ext4/journal.html) for details.
 
