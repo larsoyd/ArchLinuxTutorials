@@ -2,10 +2,10 @@
 
 [Return to the installation guide](../../arch_kde_tutorial.md#49-install-ukis-and-configure-the-boot-loader).
 
-These options are embedded in the UKIs from `/etc/kernel/cmdline`. This supporting example uses `lz4`; the main installation guide uses `zstd`. Choose the compressor deliberately when reviewing your settings.
+These options are embedded in the UKIs from `/etc/kernel/cmdline`.
 
 ```text
-rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
+rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=zstd zswap.max_pool_percent=30
 ```
 
 | Option | Purpose |
