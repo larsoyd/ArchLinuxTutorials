@@ -363,6 +363,20 @@ pikaur -S --needed paccache-hook
 
 ---
 
+### Package hooks
+
+These hooks check for `.pacnew` files that need merging, run Reflector after mirror-list updates, and clean pacman's cache:
+
+```zsh
+# Install package maintenance hooks
+pikaur -S --needed \
+  pacdiff-pacman-hook-git \
+  reflector-pacman-hook-git \
+  paccache-hook
+```
+
+---
+
 ### Set up Zsh
 
 Install Oh My Zsh, autosuggestions, and syntax highlighting:
@@ -1196,20 +1210,6 @@ pikaur -S --needed protonup-qt
 I like Proton GE for games that need additional codecs or compatibility fixes, especially older games with unusual video or audio formats.
 
 ## 5. Maintenance
-
-### Package hooks
-
-These hooks check for `.pacnew` files that need merging, run Reflector after mirror-list updates, and clean pacman's cache:
-
-```zsh
-# Install package maintenance hooks
-pikaur -S --needed \
-  pacdiff-pacman-hook-git \
-  reflector-pacman-hook-git \
-  paccache-hook
-```
-
----
 
 ### Keep UKIs current
 
