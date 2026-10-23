@@ -363,16 +363,32 @@ pikaur -S --needed paccache-hook
 
 ---
 
-### Package hooks
+### More Package hooks
 
-These hooks check for `.pacnew` files that need merging, run Reflector after mirror-list updates, and clean pacman's cache:
+These hooks check for `.pacnew` files that need merging and run Reflector after mirror-list updates:
 
 ```zsh
 # Install package maintenance hooks
 pikaur -S --needed \
   pacdiff-pacman-hook-git \
-  reflector-pacman-hook-git \
-  paccache-hook
+  reflector-pacman-hook-git
+```
+
+#### Keep UKIs current
+
+Install the kernel-install hook to rebuild UKIs after updates:
+
+```zsh
+# Install the UKI rebuild hook
+pikaur -S --needed pacman-hook-kernel-install
+```
+
+The guide masks these mkinitcpio hooks to avoid duplicate handling. Their presence can vary by setup:
+
+```zsh
+# Mask duplicate mkinitcpio hooks
+sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
+sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
 ```
 
 ---
@@ -1210,25 +1226,6 @@ pikaur -S --needed protonup-qt
 I like Proton GE for games that need additional codecs or compatibility fixes, especially older games with unusual video or audio formats.
 
 ## 5. Maintenance
-
-### Keep UKIs current
-
-Install the kernel-install hook to rebuild UKIs after updates:
-
-```zsh
-# Install the UKI rebuild hook
-pikaur -S --needed pacman-hook-kernel-install
-```
-
-The guide masks these mkinitcpio hooks to avoid duplicate handling. Their presence can vary by setup:
-
-```zsh
-# Mask duplicate mkinitcpio hooks
-sudo ln -s /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
-sudo ln -s /dev/null /etc/pacman.d/hooks/90-mkinitcpio-install.hook
-```
-
----
 
 ### Nohang
 
