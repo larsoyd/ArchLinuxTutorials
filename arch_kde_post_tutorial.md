@@ -1335,7 +1335,7 @@ The example uses `UV_NO_MODIFY_PATH=1` with the installer. The earlier Zsh setup
 
 ```zsh
 # Download and run the uv installer
-UV_NO_MODIFY_PATH=1 curl -LsSf https://astral.sh/uv/install.sh | sh
+export UV_NO_MODIFY_PATH=1 && curl -LsSf https://astral.sh/uv/install.sh | sh
 # Refresh the shell command cache
 rehash
 # Show which uv executables the shell finds
