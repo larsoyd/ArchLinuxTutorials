@@ -16,7 +16,7 @@ rw rootflags=noatime nowatchdog loglevel=3 zswap.enabled=1 zswap.shrinker_enable
 | `loglevel=3` | Set the console logging threshold. |
 | `zswap.enabled=1` | Explicitly enable Zswap. |
 | `zswap.shrinker_enabled=1` | Enable the Zswap shrinker. |
-| `zswap.compressor=lz4` | Select LZ4 compression for this example. |
+| `zswap.compressor=zstd` | Select zstd compression for this example. |
 | `zswap.max_pool_percent=30` | Set the Zswap pool limit as a percentage of RAM. |
 
 I keep the Zswap settings explicit so the intended setup remains visible when changing kernels. If you switch to a Zram setup, review whether to disable Zswap with `zswap.enabled=0` rather than keeping both configurations by accident.
