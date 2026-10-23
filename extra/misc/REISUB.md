@@ -1,4 +1,4 @@
-> Click [HERE](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/arch_kde_tutorial.md#enable-reisub-via-sysctl) to go back to the tutorial.
+> Click [HERE](../../arch_kde_tutorial.md#enable-reisub-via-sysctl) to go back to the tutorial.
 
 ## REISUB - WHAT? HOW? WHY?
 

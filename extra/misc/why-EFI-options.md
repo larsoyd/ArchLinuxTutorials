@@ -1,4 +1,4 @@
-> Click [HERE](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/arch_kde_tutorial.md#step-2-mount-filesystems-labels-match-your-original-layout) to go back to the tutorial.
+> Click [HERE](../../arch_kde_tutorial.md#step-2-mount-filesystems-labels-match-your-original-layout) to go back to the tutorial.
 
 I mount the EFI like this:
 

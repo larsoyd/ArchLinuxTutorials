@@ -1,6 +1,6 @@
 # Post-Install Tutorial (KDE)
 
-Welcome to the post-install tutorial where we will set up your KDE Plasma install to proper defaults and configurations, before we begin I strongly recommend you go over [**this**](misc.md) list of optional misc. settings you might want to turn off/on that I couldn't find a good place to put in the tutorial itself.
+Welcome to the post-install tutorial where we will set up your KDE Plasma install to proper defaults and configurations, before we begin I strongly recommend you go over [**this**](extra/misc/misc.md) list of optional misc. settings you might want to turn off/on that I couldn't find a good place to put in the tutorial itself.
 
 
 
@@ -191,7 +191,7 @@ EITHER:
 ```zsh
 cd /tmp
 git clone https://github.com/larsoyd/ArchLinuxTutorials
-cp /tmp/ArchLinuxTutorials/makepkg.conf ~/.makepkg.conf
+cp /tmp/ArchLinuxTutorials/configs/makepkg.conf ~/.makepkg.conf
 cd
 ```
 
@@ -537,10 +537,10 @@ git clone https://github.com/larsoyd/ArchLinuxTutorials
 cd ArchLinuxTutorials
 
 # Make rice script executible
-chmod +x terminal.zsh
+chmod +x scripts/terminal.zsh
 
 # Run it
-./terminal.zsh
+./scripts/terminal.zsh
 
 # Go back to HOME
 cd

@@ -1,4 +1,4 @@
-> Click [HERE](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/arch_kde_tutorial.md#optional-using-systemrescue-to-install) to go back to the tutorial.
+> Click [HERE](../../arch_kde_tutorial.md#optional-using-systemrescue-to-install) to go back to the tutorial.
 
 ### OPTIONAL: Using SystemRescue To Install
 

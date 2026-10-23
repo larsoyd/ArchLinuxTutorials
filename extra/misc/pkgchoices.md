@@ -1,5 +1,5 @@
 
-> Click [HERE](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/arch_kde_tutorial.md#46-install-the-system) to go back to the tutorial.
+> Click [HERE](../../arch_kde_tutorial.md#46-install-the-system) to go back to the tutorial.
 
 ## **OPTIONAL PACKAGES INCLUDED:**
 

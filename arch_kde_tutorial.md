@@ -274,7 +274,7 @@ mkdir -p /mnt/efi
 mount -o fmask=0177,dmask=0077,noexec,nodev,nosuid /dev/disk/by-label/EFI /mnt/efi
 ```
 
-[**Here**](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/why-EFI-options.md) is some information on why I use these options for mounting the EFI
+[**Here**](extra/misc/why-EFI-options.md) is some information on why I use these options for mounting the EFI
 
 ---
 
@@ -495,9 +495,9 @@ nano /etc/hosts
 
 These are all the packages needed for a complete & functional KDE Plasma desktop environment. 
 
-What is included is the complete KDE Plasma desktop stack, English spell check, graphics drivers with hardware acceleration drivers, CUDA (NVIDIA), networking, various helpers for other packages like `usbutils` and `tessaract`, the Dolphin file manager and its plugins, PipeWire sound support, and fonts. - For a detailed description of each package, you can read [**this**](https://github.com/larsoyd/ArchLinuxTutorials/blob/main/pkgchoices.md#essential-packages-included)
+What is included is the complete KDE Plasma desktop stack, English spell check, graphics drivers with hardware acceleration drivers, CUDA (NVIDIA), networking, various helpers for other packages like `usbutils` and `tessaract`, the Dolphin file manager and its plugins, PipeWire sound support, and fonts. - For a detailed description of each package, you can read [**this**](extra/misc/pkgchoices.md#essential-packages-included)
 
-**Note:** An official Arch Linux developed telemetry package that helps Arch Linux out by sending a list of the packages you use to the devs & maintainers of Arch is included here called `pkgstats`, other less "controversial" packages are also included and these can be left out if desired. - [**Here's**](pkgchoices.md) why I included those. **Please review them before installing.**
+**Note:** An official Arch Linux developed telemetry package that helps Arch Linux out by sending a list of the packages you use to the devs & maintainers of Arch is included here called `pkgstats`, other less "controversial" packages are also included and these can be left out if desired. - [**Here's**](extra/misc/pkgchoices.md) why I included those. **Please review them before installing.**
 
 
 NVIDIA: 
@@ -712,7 +712,7 @@ systemctl enable swapfile.swap
 
 ## Kernel Optimizations & Tweaks
 
-`/etc/sysctl.d/` is the drop-in configuration directory for persistent Linux kernel changes & tweaks during runtime. Settings in *.conf files in this directory are applied automatically during boot. The changes offered here are a combination of CachyOS settings and other sources. To read what they do, middle click [**here.**](70-settings.conf) to open it in another tab
+`/etc/sysctl.d/` is the drop-in configuration directory for persistent Linux kernel changes & tweaks during runtime. Settings in *.conf files in this directory are applied automatically during boot. The changes offered here are a combination of CachyOS settings and other sources. To read what they do, middle click [**here.**](configs/70-settings.conf) to open it in another tab
 
 ```zsh
 # Clone repo first:
@@ -725,7 +725,7 @@ cd
 mkdir -p /etc/sysctl.d/
 
 # copy from tmp
-cp /tmp/ArchLinuxTutorials/70-settings.conf /etc/sysctl.d/70-settings.conf
+cp /tmp/ArchLinuxTutorials/configs/70-settings.conf /etc/sysctl.d/70-settings.conf
 ```
 
 ```zsh
@@ -737,7 +737,7 @@ sysctl --system
 
 ### Enable REISUB via sysctl
 
-* This is an optional but highly recommended tweak which enables all the Magic SysRq functions needed for **REISUB.** This is a way to safely shut down your system if it ever freezes without having to use the power button which carries the inherent risk of corrupting your file system. - [**Read this document**](REISUB.md) carefully to understand what it is, how to use it, and why you should want to enable it despite the risks.
+* This is an optional but highly recommended tweak which enables all the Magic SysRq functions needed for **REISUB.** This is a way to safely shut down your system if it ever freezes without having to use the power button which carries the inherent risk of corrupting your file system. - [**Read this document**](extra/misc/REISUB.md) carefully to understand what it is, how to use it, and why you should want to enable it despite the risks.
 
 ```zsh
 # create file
@@ -797,7 +797,7 @@ ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", \
     ATTR{queue/scheduler}="kyber"
 ```
 
-The rest of the rules are optional/hardware specific. [**Here's the list of them**](udev-rules.md) . You may pick and choose which ones seem best for your system.
+The rest of the rules are optional/hardware specific. [**Here's the list of them**](extra/tutorials/udev-rules.md) . You may pick and choose which ones seem best for your system.
 
 ---
 
@@ -816,13 +816,13 @@ mkdir -p /etc/modprobe.d/
 # but its still good to be certain.
 #
 # copy NVIDIA (if you have NVIDIA)
-cp /tmp/ArchLinuxTutorials/nvidia.conf /etc/modprobe.d/20-nvidia.conf
+cp /tmp/ArchLinuxTutorials/configs/nvidia.conf /etc/modprobe.d/20-nvidia.conf
 
 # copy AMDGPU (if you plan to use AMDGPU)
-cp /tmp/ArchLinuxTutorials/amdgpu.conf /etc/modprobe.d/21-amdgpu.conf
+cp /tmp/ArchLinuxTutorials/configs/amdgpu.conf /etc/modprobe.d/21-amdgpu.conf
 
 # copy blacklist
-cp /tmp/ArchLinuxTutorials/blacklist.conf /etc/modprobe.d/22-blacklist.conf
+cp /tmp/ArchLinuxTutorials/configs/blacklist.conf /etc/modprobe.d/22-blacklist.conf
 ```
 
 ---
@@ -838,7 +838,7 @@ This fix uses Noto-Fonts-Emoji, we installed it in the list of packages. If you 
 mkdir -p /etc/fonts/conf.d
 
 # copy it from tmp
-cp /tmp/ArchLinuxTutorials/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
+cp /tmp/ArchLinuxTutorials/configs/75-noto-color-emoji.conf /etc/fonts/conf.d/75-noto-color-emoji.conf
 ```
 
 ---
