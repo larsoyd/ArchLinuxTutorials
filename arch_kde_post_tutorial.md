@@ -11,7 +11,7 @@ Run terminal commands as your normal desktop user. Commands that need administra
 - [3. Desktop and application settings](#3-desktop-and-application-settings)
 - [4. Firmware, security, and gaming](#4-firmware-security-and-gaming)
 - [5. Maintenance](#5-maintenance)
-- [6. Keyboard and USB settings](#6-keyboard-and-usb-settings)
+- [6. Keyboard, console, and USB settings](#6-keyboard-console-and-usb-settings)
 - [7. Media tools](#7-media-tools)
 - [8. Optional display and hardware tweaks](#8-optional-display-and-hardware-tweaks)
 - [Finish](#finish)
@@ -116,98 +116,6 @@ font_size 18
 ```
 
 Reload Kitty's configuration with Ctrl+Shift+F5.
-
----
-
-### Kmscon virtual consoles
-
-Kmscon gives the virtual consoles reached with Ctrl+Alt+F2 through F6 scalable fonts, Unicode support, and hardware-accelerated rendering. My setup uses DejaVu Sans Mono with FreeType, scales the same terminal across multiple monitors, and starts kmscon when switching to an unused console. The normal tty1 getty stays enabled, and SDDM keeps its graphical console.
-
-These settings match my kmscon 10.0.4 configuration. Use version 10.0.4 or newer for the `scaled` monitor mode and the pixel-based font sizing described below. See the [upstream release notes](https://github.com/kmscon/kmscon/releases/tag/v10.0.4).
-
-#### Install and configure
-
-Install [kmscon from Extra](https://archlinux.org/packages/extra/x86_64/kmscon/), the font, and the optional libraries used for font rendering and acceleration:
-
-```zsh
-# Install the console and its rendering dependencies
-sudo pacman -S --needed kmscon ttf-dejavu fontconfig libglvnd
-
-# Check the installed version
-kmscon --version
-```
-
-Open the configuration:
-
-```zsh
-sudo mkdir -p /etc/kmscon
-sudo nano /etc/kmscon/kmscon.conf
-```
-
-Add or update these settings in `/etc/kmscon/kmscon.conf`, keeping only one active entry for each option:
-
-```conf
-font-engine=freetype
-font-name=DejaVu Sans Mono
-font-size=18
-
-drm
-hwaccel
-
-multi-monitor=scaled
-```
-
-`font-size` sets the font cell height in pixels. With `multi-monitor=scaled`, each monitor shows the same rows and columns, and larger monitors scale up the font to fill more of the screen. `drm` uses the kernel's graphics interface, while `hwaccel` enables 3D acceleration. This requires working kernel mode setting and graphics drivers. The [kmscon configuration manual](https://man.archlinux.org/man/kmscon.conf.5.en) describes these options.
-
-#### Keyboard layout
-
-For a non-US keyboard, complete the shared [X11 keyboard layout](#x11-keyboard-layout) setup before testing kmscon, then return here. That step applies to both X11 compatibility and kmscon and only needs to be done once.
-
-#### Use kmscon on the other consoles
-
-Run this from Kitty in your desktop session. Keep `getty@tty1.service` enabled, and point the automatic-console alias at kmscon:
-
-```zsh
-# Use kmscon for automatically opened consoles
-sudo ln -sfn /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/system/autovt@.service
-
-# Reload the unit definitions
-sudo systemctl daemon-reload
-```
-
-This matches my service setup. [Systemd-logind](https://www.freedesktop.org/software/systemd/man/latest/logind.conf.html#NAutoVTs=) uses this alias when you switch to an unused VT, normally among tty1 through tty6. Consoles already occupied by a graphical session are skipped. The [kmscon service template](https://github.com/kmscon/kmscon/blob/v10.0.4/scripts/systemd/kmsconvt%40.service.in) also requests the normal getty if kmscon fails to start.
-
-Use the alias command above for this arrangement. Enabling the bare `kmsconvt@.service` template also enables its default tty1 instance, which would change this setup.
-
-#### Check it and return to the desktop
-
-Press Ctrl+Alt+F3 to try an unused tty3. You should get a login prompt with the configured font. Log in, check that Norwegian characters and punctuation work, and confirm the service:
-
-```zsh
-# Check that tty3 is running kmscon
-systemctl --no-pager status kmsconvt@tty3.service
-```
-
-Expect `active (running)`. If tty3 already had a normal getty running before the change, try another unused console, or reboot when convenient and check again. Reloading unit definitions does not replace running consoles.
-
-Use Ctrl+Alt+Fn to return to the VT containing Plasma, commonly F1 or F2. Within kmscon, Ctrl+Plus and Ctrl+Minus change the font size, and Shift+PageUp and Shift+PageDown scroll. These shortcuts are listed in `kmscon --help` and the [ArchWiki kmscon page](https://wiki.archlinux.org/title/KMSCON#Tips_and_tricks).
-
-If rendering fails, inspect the log from your desktop session:
-
-```zsh
-# Read the console's log from this boot
-journalctl -b -u kmsconvt@tty3.service --no-pager -n 80
-```
-
-For acceleration problems, replace `hwaccel` with `no-hwaccel` in the configuration and try again after a reboot. To undo the automatic-console change, restore the getty alias from your desktop session:
-
-```zsh
-# Restore normal automatically opened consoles
-sudo ln -sfn /usr/lib/systemd/system/getty@.service /etc/systemd/system/autovt@.service
-sudo systemctl daemon-reload
-```
-
-Reboot when convenient to apply the rollback to consoles that are already running.
 
 ---
 
@@ -1349,11 +1257,11 @@ Contents of `/etc/systemd/journald.conf.d/00-journal-size.conf`:
 SystemMaxUse=50M
 ```
 
-## 6. Keyboard and USB settings
+## 6. Keyboard, console, and USB settings
 
 ### X11 keyboard layout
 
-Configure the system's XKB layout once for X11 compatibility and kmscon, even though the main desktop uses Wayland. If you completed this step from the kmscon section, skip it here. With no `xkb-*` override in its configuration, kmscon [uses these settings through systemd-localed](https://github.com/kmscon/kmscon/blob/v10.0.4/src/misc/dbus.c).
+For a non-US keyboard, I also configure an X11 layout for compatibility even though the main desktop uses Wayland. Kmscon [uses this layout too](https://github.com/kmscon/kmscon/blob/v10.0.4/src/misc/dbus.c), unless you set an `xkb-*` override in its configuration.
 
 Replace `no` and `pc105` with your layout and keyboard model. My Norwegian keyboard uses `no` and `pc105`; use `us` for a US layout.
 
@@ -1365,7 +1273,97 @@ sudo localectl --no-convert set-x11-keymap no pc105
 localectl status
 ```
 
-Expect `X11 Layout: no` and `X11 Model: pc105` for this example. `--no-convert` preserves the existing kernel-console keymap from the installation guide. See [localectl's keyboard commands](https://www.freedesktop.org/software/systemd/man/latest/localectl.html#Commands).
+The output should show `X11 Layout: no` and `X11 Model: pc105` for this example. [`--no-convert`](https://www.freedesktop.org/software/systemd/man/latest/localectl.html#--no-convert) keeps the console keymap set during installation.
+
+---
+
+### Kmscon virtual consoles
+
+I use kmscon for the text consoles reached with Ctrl+Alt+F2 through F6. It lets me use DejaVu Sans Mono there, with hardware acceleration and font scaling across my monitors. I keep the normal getty on tty1. Kmscon uses the [keyboard layout](#x11-keyboard-layout) set above.
+
+#### Install and configure
+
+Install [kmscon](https://archlinux.org/packages/extra/x86_64/kmscon/) and its rendering dependencies:
+
+```zsh
+# Install kmscon and its font
+sudo pacman -S --needed kmscon ttf-dejavu fontconfig libglvnd
+
+# Check the installed version
+kmscon --version
+```
+
+The settings below need [kmscon 10.0.4 or newer](https://github.com/kmscon/kmscon/releases/tag/v10.0.4) for `multi-monitor=scaled`.
+
+```zsh
+sudo mkdir -p /etc/kmscon
+sudo nano /etc/kmscon/kmscon.conf
+```
+
+These are my settings for `/etc/kmscon/kmscon.conf`. Replace any existing entries for the same options:
+
+```conf
+font-engine=freetype
+font-name=DejaVu Sans Mono
+font-size=18
+
+drm
+hwaccel
+
+multi-monitor=scaled
+```
+
+The font size is in pixels. `multi-monitor=scaled` shows the same rows and columns on each screen, with a larger font on larger monitors. `drm` and `hwaccel` use the graphics drivers installed earlier for accelerated rendering. See [kmscon.conf(5)](https://man.archlinux.org/man/kmscon.conf.5.en) for the other options.
+
+#### Enable kmscon
+
+Run this from Kitty and keep `getty@tty1.service` enabled:
+
+```zsh
+# Use kmscon for automatically opened consoles
+sudo ln -sfn /usr/lib/systemd/system/kmsconvt@.service /etc/systemd/system/autovt@.service
+
+# Reload the unit definitions
+sudo systemctl daemon-reload
+```
+
+The link tells [systemd-logind](https://www.freedesktop.org/software/systemd/man/latest/logind.conf.html#NAutoVTs=) to start kmscon when you switch to an unused console, normally tty2 through tty6 in this setup. It skips consoles occupied by the desktop. The [kmscon service](https://github.com/kmscon/kmscon/blob/v10.0.4/scripts/systemd/kmsconvt%40.service.in) falls back to getty if it fails to start.
+
+Use the link above to keep tty1 as it is. Enabling `kmsconvt@.service` directly would also enable kmscon on tty1.
+
+#### Try it
+
+Press Ctrl+Alt+F3 to open tty3. Log in and check that the font and keyboard layout are right, then check the service:
+
+```zsh
+# Check that tty3 is running kmscon
+systemctl --no-pager status kmsconvt@tty3.service
+```
+
+It should show `active (running)`. If tty3 already had a getty running, try another unused console or check again after a reboot. The reload command does not replace running consoles.
+
+Ctrl+Alt+F1 or F2 usually takes you back to Plasma. In kmscon, Ctrl+Plus and Ctrl+Minus resize the font. Shift+PageUp and Shift+PageDown scroll. See `kmscon --help` or the [ArchWiki](https://wiki.archlinux.org/title/KMSCON#Tips_and_tricks) for more shortcuts.
+
+#### Troubleshooting and undoing the change
+
+If rendering fails, return to your desktop and check the log:
+
+```zsh
+# Read the console's log from this boot
+journalctl -b -u kmsconvt@tty3.service --no-pager -n 80
+```
+
+For acceleration problems, replace `hwaccel` with `no-hwaccel` and try again after a reboot.
+
+To go back to normal text consoles, restore the getty link from Kitty:
+
+```zsh
+# Restore normal automatically opened consoles
+sudo ln -sfn /usr/lib/systemd/system/getty@.service /etc/systemd/system/autovt@.service
+sudo systemctl daemon-reload
+```
+
+Reboot when convenient to replace any consoles still running kmscon.
 
 ---
 
