@@ -161,21 +161,7 @@ multi-monitor=scaled
 
 #### Keyboard layout
 
-With no `xkb-*` override in its configuration, kmscon [uses the system's XKB settings through systemd-localed](https://github.com/kmscon/kmscon/blob/v10.0.4/src/misc/dbus.c). Check them with:
-
-```zsh
-# Check the system keyboard settings
-localectl status
-```
-
-My system reports `X11 Layout: no` and `X11 Model: pc105`. To use the same Norwegian layout, run:
-
-```zsh
-# Set the Norwegian XKB layout while keeping the console keymap
-sudo localectl --no-convert set-x11-keymap no pc105
-```
-
-Replace `no` with your XKB layout, such as `us`, if needed. Despite the command's name, these settings also apply to kmscon. `--no-convert` preserves the existing kernel-console keymap from the installation guide. See [localectl's keyboard commands](https://www.freedesktop.org/software/systemd/man/latest/localectl.html#Commands).
+For a non-US keyboard, complete the shared [X11 keyboard layout](#x11-keyboard-layout) setup before testing kmscon, then return here. That step applies to both X11 compatibility and kmscon and only needs to be done once.
 
 #### Use kmscon on the other consoles
 
@@ -1367,14 +1353,19 @@ SystemMaxUse=50M
 
 ### X11 keyboard layout
 
-For a non-US keyboard, I also configure an X11 layout for compatibility even though the main desktop uses Wayland. The command generates `/etc/X11/xorg.conf.d/00-keyboard.conf`.
+Configure the system's XKB layout once for X11 compatibility and kmscon, even though the main desktop uses Wayland. If you completed this step from the kmscon section, skip it here. With no `xkb-*` override in its configuration, kmscon [uses these settings through systemd-localed](https://github.com/kmscon/kmscon/blob/v10.0.4/src/misc/dbus.c).
 
-Replace `no` and `pc105` with your layout and keyboard model. My Norwegian keyboard uses `pc105`; some US keyboards use `pc104`.
+Replace `no` and `pc105` with your layout and keyboard model. My Norwegian keyboard uses `no` and `pc105`; use `us` for a US layout.
 
 ```zsh
-# Set the Norwegian X11 keyboard layout
-sudo localectl set-x11-keymap no pc105
+# Set the Norwegian XKB layout while keeping the console keymap
+sudo localectl --no-convert set-x11-keymap no pc105
+
+# Check the system keyboard settings
+localectl status
 ```
+
+Expect `X11 Layout: no` and `X11 Model: pc105` for this example. `--no-convert` preserves the existing kernel-console keymap from the installation guide. See [localectl's keyboard commands](https://www.freedesktop.org/software/systemd/man/latest/localectl.html#Commands).
 
 ---
 
